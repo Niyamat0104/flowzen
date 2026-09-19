@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ⚡ FlowZen — Kanban Board + Intelligent Workflow Engine
 
 FlowZen is a fully deployable, real-time collaborative Kanban board web application and intelligent workflow engine built strictly with **pure HTML5, CSS3, and Vanilla JavaScript (ES6+ ESM)** — no frontend frameworks (no React/Vue/Angular), no build steps or bundlers, and zero custom backend servers.
@@ -58,3 +59,7 @@ A local static web server is running on your machine:
 - **Landing Page**: [http://localhost:8085/index.html](http://localhost:8085/index.html)
 - **Workspace Dashboard**: [http://localhost:8085/boards.html](http://localhost:8085/boards.html)
 - **Interactive Intelligent Board**: [http://localhost:8085/board.html?id=board_demo_1](http://localhost:8085/board.html?id=board_demo_1)
+=======
+# flowzen
+FlowZen is a kanban Board Style agile team collaboration tool 
+>>>>>>> a3786852805e93d9c06131643a51e23b52182b95
