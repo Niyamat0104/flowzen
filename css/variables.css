@@ -1,0 +1,114 @@
+/* TaskFlow Neo-Brutalism Design System - Variables & Tokens */
+:root {
+  /* Color Palette - Light Theme */
+  --bg-main: #FAF8F5;
+  --bg-card: #FFFFFF;
+  --bg-alt: #F3EFE6;
+  --bg-dark-surface: #1E1F2E;
+  
+  --color-black: #0F172A;
+  --color-white: #FFFFFF;
+  --color-border: #000000;
+  --color-muted: #64748B;
+  --shadow-color: #000000;
+  
+  /* Brand Accent Colors */
+  --primary: #7C3AED;        /* Bold Purple */
+  --primary-hover: #6D28D9;
+  --primary-light: #DDD6FE;
+  
+  --secondary: #FACC15;      /* Electric Yellow */
+  --secondary-hover: #EAB308;
+  --secondary-light: #FEF08A;
+  
+  --accent-cyan: #06B6D4;     /* Neon Cyan */
+  --accent-cyan-light: #CFFAFE;
+  
+  --accent-pink: #EC4899;     /* Hot Pink */
+  --accent-pink-light: #FCE7F3;
+  
+  --accent-emerald: #10B981;  /* Vibrant Emerald */
+  --accent-emerald-light: #D1FAE5;
+  
+  --accent-coral: #F43F5E;    /* Vivid Coral / Urgent */
+  --accent-coral-light: #FFE4E6;
+
+  --accent-orange: #F97316;   /* Orange / High Priority */
+  --accent-orange-light: #FFEDD5;
+
+  --accent-blue: #3B82F6;     /* Medium Priority */
+  --accent-blue-light: #DBEAFE;
+
+  --accent-gray: #64748B;     /* Low Priority / Muted */
+  --accent-gray-light: #F1F5F9;
+
+  /* Borders & Shadows - Neo-Brutalist Signatures */
+  --border-width: 2.5px;
+  --border-style: solid;
+  --border-color: var(--color-border);
+  --border-main: var(--border-width) var(--border-style) var(--color-border);
+  
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+
+  /* Hard Offset Drop Shadows */
+  --shadow-sm: 2px 2px 0px var(--shadow-color);
+  --shadow-md: 4px 4px 0px var(--shadow-color);
+  --shadow-lg: 6px 6px 0px var(--shadow-color);
+  --shadow-xl: 8px 8px 0px var(--shadow-color);
+  
+  /* Pressed State Offset */
+  --pressed-transform: translate(2px, 2px);
+  --pressed-shadow: 2px 2px 0px var(--shadow-color);
+
+  --hover-transform: translate(-2px, -2px);
+  --hover-shadow: 6px 6px 0px var(--shadow-color);
+
+  /* Typography */
+  --font-family-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: 'Space Grotesk', var(--font-family-sans);
+
+  /* Transitions */
+  --transition-fast: 0.12s ease-in-out;
+  --transition-normal: 0.2s ease-in-out;
+
+  /* Layout Spacing */
+  --header-height: 72px;
+  --sidebar-width: 260px;
+}
+
+/* Dark Mode Tokens Override - Deep Dark Neo-Brutalist Theme */
+[data-theme="dark"] {
+  --bg-main: #0B0C14;
+  --bg-card: #151624;
+  --bg-alt: #1E2032;
+  --bg-dark-surface: #07080E;
+
+  --color-black: #F1F5F9;
+  --color-white: #0B0C14;
+  --color-border: #3E4265;
+  --color-muted: #94A3B8;
+  --shadow-color: #000000;
+
+  --border-color: var(--color-border);
+  --border-main: 2.5px solid var(--color-border);
+  --shadow-sm: 2px 2px 0px var(--shadow-color);
+  --shadow-md: 4px 4px 0px var(--shadow-color);
+  --shadow-lg: 6px 6px 0px var(--shadow-color);
+  --shadow-xl: 8px 8px 0px var(--shadow-color);
+
+  --primary-light: #2D1B69;
+  --secondary-light: #4A3800;
+  --accent-cyan-light: #0A3C48;
+  --accent-pink-light: #4A0E2E;
+  --accent-emerald-light: #06382B;
+  --accent-coral-light: #4A0D1B;
+  --accent-orange-light: #4A1A08;
+  --accent-blue-light: #0D2659;
+  --accent-gray-light: #1E293B;
+
+  --accent-gray: #94A3B8;
+}
