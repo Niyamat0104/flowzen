@@ -17,9 +17,11 @@ export function filterTasks(tasks, { searchText = '', label = '', priority = '',
       if (!titleMatch && !descMatch && !assigneeMatch) return false;
     }
 
-    // Label filter
+    // Category / Label filter
     if (label && label !== 'all') {
-      if (!task.labels || !task.labels.includes(label)) return false;
+      const matchCategory = task.category && task.category.toLowerCase() === label.toLowerCase();
+      const matchLabels = task.labels && Array.isArray(task.labels) && task.labels.some(l => l.toLowerCase() === label.toLowerCase());
+      if (!matchCategory && !matchLabels) return false;
     }
 
     // Priority filter

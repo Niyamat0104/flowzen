@@ -1,4 +1,4 @@
-/* Base Styles, Reset, and Utilities */
+/* Base Styles, Reset, and Ambient Animated Mesh Utilities */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -20,7 +20,48 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  position: relative;
   transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Ambient Glowing Animated Mesh Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: -20%;
+  left: -20%;
+  width: 140vw;
+  height: 140vh;
+  z-index: -1;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 85% 25%, rgba(6, 182, 212, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 50% 75%, rgba(236, 72, 153, 0.22) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.2) 0%, transparent 45%);
+  filter: blur(60px);
+  animation: ambientMeshFloat 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+[data-theme="dark"] body::before {
+  background: 
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 85% 25%, rgba(6, 182, 212, 0.3) 0%, transparent 45%),
+    radial-gradient(circle at 50% 75%, rgba(236, 72, 153, 0.28) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.25) 0%, transparent 45%);
+}
+
+@keyframes ambientMeshFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, 4%) scale(1.08) rotate(3deg);
+  }
+  100% {
+    transform: translate(-3%, -2%) scale(0.95) rotate(-3deg);
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -46,31 +87,35 @@ button, input, select, textarea {
   color: inherit;
 }
 
-/* Custom Scrollbar - Neo-Brutalist */
+/* Custom Glowing Neon Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-alt);
-  border-left: 2px solid var(--color-border);
+  background: rgba(15, 23, 42, 0.05);
+  border-radius: var(--radius-pill);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(6, 7, 19, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 10px var(--primary-glow);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(135deg, var(--accent-pink), var(--primary));
 }
 
 /* Selection Highlight */
 ::selection {
   background-color: var(--secondary);
-  color: var(--color-border);
+  color: #000000;
 }
 
 /* Utility Layout Classes */

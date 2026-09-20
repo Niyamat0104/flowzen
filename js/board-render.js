@@ -548,12 +548,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function openColumnOptionsModal(columnId) {
-  const column = boardState.columns.find(c => c.id === columnId);
-  if (!column) return;
+export function openColumnOptionsModal(columnId = null) {
+  const column = columnId ? boardState.columns.find(c => c.id === columnId) : null;
 
-  document.getElementById('col-title-input').value = column.title;
-  document.getElementById('col-wip-input').value = column.wipLimit !== null ? column.wipLimit : '';
+  const modalTitle = document.querySelector('#column-options-modal .modal-title');
+  if (modalTitle) modalTitle.innerText = column ? '⚙️ Column Options & WIP Limit' : '➕ Create New Column';
+
+  document.getElementById('col-title-input').value = column ? column.title : '';
+  document.getElementById('col-wip-input').value = column && column.wipLimit !== null ? column.wipLimit : '';
+
+  const deleteColBtn = document.getElementById('delete-col-modal-btn');
+  if (deleteColBtn) {
+    deleteColBtn.style.display = column ? 'inline-flex' : 'none';
+    deleteColBtn.onclick = async () => {
+      if (column && confirm(`Delete column "${column.title}"?`)) {
+        await deleteColumn(column.id);
+        closeModal('column-options-modal');
+        showToast("Column deleted", "info");
+      }
+    };
+  }
 
   const saveBtn = document.getElementById('save-col-modal-btn');
   saveBtn.onclick = async () => {
@@ -561,20 +575,18 @@ function openColumnOptionsModal(columnId) {
     const wipRaw = document.getElementById('col-wip-input').value.trim();
     const wipLimit = wipRaw !== '' ? parseInt(wipRaw) : null;
 
-    if (title) {
-      await saveColumn({ ...column, title, wipLimit });
-      closeModal('column-options-modal');
-      showToast("Column options saved", "success");
+    if (!title) {
+      showToast("Column title is required", "error");
+      return;
     }
-  };
 
-  const deleteColBtn = document.getElementById('delete-col-modal-btn');
-  deleteColBtn.onclick = async () => {
-    if (confirm(`Delete column "${column.title}" and its settings?`)) {
-      await deleteColumn(columnId);
-      closeModal('column-options-modal');
-      showToast("Column deleted", "info");
-    }
+    const payload = column
+      ? { ...column, title, wipLimit }
+      : { title, position: boardState.columns.length, wipLimit };
+
+    await saveColumn(payload);
+    closeModal('column-options-modal');
+    showToast(column ? "Column options saved" : "Column created successfully!", "success");
   };
 
   openModal('column-options-modal');

@@ -175,17 +175,29 @@ function loadBoardFromStorage(boardId) {
     memberIds: ["usr_demo_123", "usr_priya", "usr_aman"]
   };
 
-  const storedMeta = localStorage.getItem(metaKey);
-  boardState.boardData = storedMeta ? JSON.parse(storedMeta) : defaultMeta;
-  if (!storedMeta) localStorage.setItem(metaKey, JSON.stringify(defaultMeta));
+  try {
+    const storedMeta = localStorage.getItem(metaKey);
+    boardState.boardData = storedMeta ? JSON.parse(storedMeta) : { id: boardId, title: "⚡ FlowZen Workspace" };
+    if (!storedMeta) localStorage.setItem(metaKey, JSON.stringify(boardState.boardData));
+  } catch (e) {
+    boardState.boardData = { id: boardId, title: "⚡ FlowZen Workspace" };
+  }
 
-  const storedCols = localStorage.getItem(colKey);
-  boardState.columns = storedCols ? JSON.parse(storedCols) : sampleCols;
-  if (!storedCols) localStorage.setItem(colKey, JSON.stringify(sampleCols));
+  try {
+    const storedCols = localStorage.getItem(colKey);
+    boardState.columns = storedCols ? JSON.parse(storedCols) : sampleCols;
+    if (!storedCols) localStorage.setItem(colKey, JSON.stringify(sampleCols));
+  } catch (e) {
+    boardState.columns = sampleCols;
+  }
 
-  const storedTasks = localStorage.getItem(taskKey);
-  boardState.tasks = storedTasks ? JSON.parse(storedTasks) : sampleTasks;
-  if (!storedTasks) localStorage.setItem(taskKey, JSON.stringify(sampleTasks));
+  try {
+    const storedTasks = localStorage.getItem(taskKey);
+    boardState.tasks = storedTasks ? JSON.parse(storedTasks) : (boardId.startsWith('board_demo_') ? sampleTasks : []);
+    if (!storedTasks) localStorage.setItem(taskKey, JSON.stringify(boardState.tasks));
+  } catch (e) {
+    boardState.tasks = [];
+  }
 
   notifyStateChange();
 }

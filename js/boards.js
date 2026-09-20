@@ -1,21 +1,21 @@
-/* TaskFlow LocalStorage Dashboard & Board Controller */
+/* FlowZen LocalStorage Dashboard & Board Controller */
 import { getCurrentUser } from './auth.js';
 import { showToast, generateId } from './ui-utils.js';
 
-const BOARDS_STORAGE_KEY = 'taskflow_all_boards';
+const BOARDS_STORAGE_KEY = 'flowzen_all_boards';
 
 const DEFAULT_COLUMNS = [
-  { id: 'col_todo', title: '📋 To Do', position: 0, wipLimit: 5 },
-  { id: 'col_in_progress', title: '⚡ In Progress', position: 1, wipLimit: 3 },
-  { id: 'col_review', title: '🔍 Review', position: 2, wipLimit: 4 },
-  { id: 'col_done', title: '🎉 Done', position: 3, wipLimit: null }
+  { id: 'col_backlog', title: '📋 BACKLOG', position: 0, wipLimit: 8 },
+  { id: 'col_todo', title: '📝 TO DO', position: 1, wipLimit: 7 },
+  { id: 'col_in_progress', title: '⚡ IN PROGRESS', position: 2, wipLimit: 4 },
+  { id: 'col_done', title: '🎉 DONE', position: 3, wipLimit: null }
 ];
 
 const INITIAL_DEMO_BOARDS = [
   {
     id: "board_demo_1",
-    title: "🚀 TaskFlow Launch Roadmap",
-    description: "Main project workspace for TaskFlow Neo-Brutalist Kanban deployment",
+    title: "🚀 FlowZen Launch Roadmap",
+    description: "Main project workspace for FlowZen Intelligent Kanban deployment",
     ownerId: "usr_demo_123",
     memberIds: ["usr_demo_123", "usr_priya", "usr_aman"],
     createdAt: new Date().toISOString()
@@ -37,13 +37,14 @@ export async function createBoard(title, description = "") {
     return null;
   }
 
+  const userId = user.id || user.uid;
   const boardId = generateId("board");
   const newBoard = {
     id: boardId,
     title: title.trim(),
     description: description.trim(),
-    ownerId: user.uid,
-    memberIds: [user.uid],
+    ownerId: userId,
+    memberIds: [userId],
     createdAt: new Date().toISOString()
   };
 
@@ -52,9 +53,9 @@ export async function createBoard(title, description = "") {
   saveStoredBoards(existingBoards);
 
   // Initialize board metadata & columns
-  localStorage.setItem(`taskflow_board_${boardId}`, JSON.stringify(newBoard));
-  localStorage.setItem(`taskflow_cols_${boardId}`, JSON.stringify(DEFAULT_COLUMNS));
-  localStorage.setItem(`taskflow_tasks_${boardId}`, JSON.stringify([]));
+  localStorage.setItem(`flowzen_board_${boardId}`, JSON.stringify(newBoard));
+  localStorage.setItem(`flowzen_cols_${boardId}`, JSON.stringify(DEFAULT_COLUMNS));
+  localStorage.setItem(`flowzen_tasks_${boardId}`, JSON.stringify([]));
 
   showToast("Board created successfully!", "success");
   return newBoard;
@@ -62,11 +63,30 @@ export async function createBoard(title, description = "") {
 
 export function fetchUserBoards(callback) {
   const user = getCurrentUser();
-  if (!user) return;
+  if (!user) {
+    if (callback) callback([]);
+    return;
+  }
 
+  const userId = user.id || user.uid;
   const boards = getStoredBoards();
-  const userBoards = boards.filter(b => b.memberIds.includes(user.uid) || b.ownerId === user.uid);
-  callback(userBoards);
+  const userBoards = boards.filter(b => 
+    b.id === 'board_demo_1' || 
+    b.id === 'board_demo_2' || 
+    b.ownerId === userId || 
+    (Array.isArray(b.memberIds) && b.memberIds.includes(userId))
+  );
+  if (callback) callback(userBoards);
+}
+
+export function deleteBoard(boardId) {
+  let boards = getStoredBoards();
+  boards = boards.filter(b => b.id !== boardId);
+  saveStoredBoards(boards);
+  localStorage.removeItem(`flowzen_board_${boardId}`);
+  localStorage.removeItem(`flowzen_cols_${boardId}`);
+  localStorage.removeItem(`flowzen_tasks_${boardId}`);
+  showToast("Board deleted.", "info");
 }
 
 function getStoredBoards() {
@@ -76,7 +96,15 @@ function getStoredBoards() {
       localStorage.setItem(BOARDS_STORAGE_KEY, JSON.stringify(INITIAL_DEMO_BOARDS));
       return INITIAL_DEMO_BOARDS;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return INITIAL_DEMO_BOARDS;
+
+    // Sanitize any boards with missing ownerId or memberIds
+    return parsed.map(b => ({
+      ...b,
+      ownerId: b.ownerId || 'usr_demo_123',
+      memberIds: Array.isArray(b.memberIds) && b.memberIds.length > 0 ? b.memberIds.filter(Boolean) : [b.ownerId || 'usr_demo_123']
+    }));
   } catch (e) {
     return INITIAL_DEMO_BOARDS;
   }

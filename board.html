@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/board.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     /* Intelligence Side Drawer Styling */
     .intelligence-drawer {
@@ -82,6 +83,8 @@
       <button class="btn btn-sm btn-outline" id="activity-feed-toggle-btn">📜 Activity Feed</button>
       <button class="btn btn-sm btn-accent" id="analytics-modal-btn">📊 Insights Analytics</button>
       <button class="btn btn-sm btn-outline" id="add-column-top-btn">➕ Add Column</button>
+      <div id="user-profile-badge" class="badge badge-medium hidden-mobile" style="font-size: 0.85rem; padding: 0.4rem 0.75rem">👤 Loading...</div>
+      <button class="btn btn-sm btn-outline" id="logout-btn">Log Out</button>
     </div>
   </nav>
 
@@ -107,6 +110,16 @@
           <option value="Alex Rivera">👤 Alex Rivera</option>
           <option value="Priya Sharma">👤 Priya Sharma</option>
           <option value="Aman Verma">👤 Aman Verma</option>
+        </select>
+
+        <select class="select" id="filter-label-select" style="width: auto;">
+          <option value="all">All Categories & Labels</option>
+          <option value="Backend">⚙️ Backend</option>
+          <option value="Frontend">🎨 Frontend</option>
+          <option value="Design">🖌️ Design</option>
+          <option value="Docs">📝 Docs</option>
+          <option value="DevOps">🚀 DevOps</option>
+          <option value="Security">🔒 Security</option>
         </select>
 
         <select class="select" id="filter-priority-select" style="width: auto;">
@@ -366,33 +379,53 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
 
   <!-- JS Modules Core App Initialization -->
   <script type="module">
-    import { initAuth, getCurrentUser } from './js/auth.js';
+    import { initAuth, getCurrentUser, logoutUser } from './js/auth.js';
     import { boardState, initBoardStateSync, subscribeToState, saveColumn } from './js/board-state.js';
-    import { renderBoardView, openTaskEditModal } from './js/board-render.js';
+    import { renderBoardView, openTaskEditModal, openColumnOptionsModal } from './js/board-render.js';
     import { initDragAndDrop } from './js/drag-drop.js';
-    import { subscribeActivityFeed } from './activity-log.js';
-    import { renderAnalyticsDashboard } from './analytics.js';
-    import { queryBoardIntelligence } from './flowzen-intelligence.js';
+    import { subscribeActivityFeed } from './js/activity-log.js';
+    import { renderAnalyticsDashboard } from './js/analytics.js';
+    import { queryBoardIntelligence } from './js/flowzen-intelligence.js';
     import { initTheme } from './js/theme.js';
     import { openModal, closeModal, showToast } from './js/ui-utils.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
 
+      // Handle Back-Forward Cache (bfcache) to prevent freeze on browser back button
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+          window.location.reload();
+        }
+      });
+
       const urlParams = new URLSearchParams(window.location.search);
       const boardId = urlParams.get('id') || 'board_demo_1';
 
       initAuth((user) => {
         if (!user) {
-          window.location.href = 'index.html';
+          window.location.href = 'index.html?action=login';
           return;
         }
 
-        initBoardStateSync(boardId);
+        const badge = document.getElementById('user-profile-badge');
+        if (badge && user) {
+          badge.innerText = `👤 ${user.displayName || user.email.split('@')[0]}`;
+        }
+
         subscribeToState(() => renderBoardView());
+        initBoardStateSync(boardId);
+        renderBoardView();
         initDragAndDrop();
         subscribeActivityFeed(boardId, document.getElementById('activity-feed-container'));
       });
+
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          logoutUser();
+        });
+      }
 
       document.getElementById('search-input').addEventListener('input', (e) => {
         boardState.filterState.searchText = e.target.value;
@@ -401,6 +434,11 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
 
       document.getElementById('filter-assignee-select').addEventListener('change', (e) => {
         boardState.filterState.assignee = e.target.value;
+        renderBoardView();
+      });
+
+      document.getElementById('filter-label-select').addEventListener('change', (e) => {
+        boardState.filterState.label = e.target.value;
         renderBoardView();
       });
 
@@ -418,12 +456,8 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
         openTaskEditModal();
       });
 
-      document.getElementById('add-column-top-btn').addEventListener('click', async () => {
-        const title = prompt("Enter title for new column:");
-        if (title && title.trim()) {
-          await saveColumn({ title: title.trim(), position: boardState.columns.length, wipLimit: null });
-          showToast("Column created!", "success");
-        }
+      document.getElementById('add-column-top-btn').addEventListener('click', () => {
+        openColumnOptionsModal(null);
       });
 
       // FlowZen Intelligence Side Drawer Handlers
