@@ -1,5 +1,5 @@
 /* FlowZen Auth — localStorage-backed accounts, SHA-256 password hashing,
-   email OTP verification, and cross-tab session sync via BroadcastChannel.
+   and cross-tab session sync via BroadcastChannel.
 
    IMPORTANT: This is a client-only auth system (no backend/database).
    Accounts exist only on the browser they were created in. Logging in
@@ -7,13 +7,10 @@
    there is no shared server-side store. This matches the current
    localStorage + BroadcastChannel architecture of the rest of the app. */
 
-import { sendOtpEmail } from "./email-service.js";
 import { showToast } from "./ui-utils.js";
 
 const USERS_KEY = "flowzen_users_db";
 const SESSION_KEY = "flowzen_session";
-const OTP_STORE_KEY = "flowzen_otp_store";
-const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 
 const authChannel =
   "BroadcastChannel" in window
@@ -73,36 +70,6 @@ function notifyAuthListeners() {
   if (authChannel) authChannel.postMessage({ type: "auth-changed" });
 }
 
-function getOtpStore() {
-  try {
-    const raw = localStorage.getItem(OTP_STORE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
-  } catch (e) {
-    return {};
-  }
-}
-
-function saveOtpStore(store) {
-  localStorage.setItem(OTP_STORE_KEY, JSON.stringify(store && typeof store === "object" ? store : {}));
-}
-
-function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function issueOtpForEmail(email) {
-  const code = generateOtp();
-  const store = getOtpStore();
-  store[email.trim().toLowerCase()] = {
-    code,
-    expiresAt: Date.now() + OTP_EXPIRY_MS,
-  };
-  saveOtpStore(store);
-  return code;
-}
-
 /** SHA-256 hash via the browser's native Web Crypto API — no plaintext
  *  passwords are ever stored, even though this is a client-only system. */
 async function hashPassword(password) {
@@ -149,6 +116,23 @@ export function getCurrentUser() {
   return { ...stripPasswordHash(user), uid: user.id, displayName: user.name };
 }
 
+export function updateUserProfile(name, age, role) {
+  const session = getSession();
+  if (!session) throw new Error("No active session");
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === session.userId);
+  if (idx === -1) throw new Error("User not found");
+
+  if (name) users[idx].name = name.trim();
+  if (age) users[idx].age = parseInt(age);
+  if (role) users[idx].role = role.trim();
+
+  saveUsers(users);
+  notifyAuthListeners();
+  showToast("Profile updated successfully.", "success");
+  return stripPasswordHash(users[idx]);
+}
+
 export async function signUpUser(email, password, name, age, role) {
   email = email.trim().toLowerCase();
   if (!email || !password) throw new Error("Email and password are required.");
@@ -163,7 +147,6 @@ export async function signUpUser(email, password, name, age, role) {
     name: name || email.split("@")[0],
     age: age ? parseInt(age) : null,
     role: role || "Software Engineer",
-    emailVerified: true,
     createdAt: new Date().toISOString(),
   };
 
@@ -172,13 +155,13 @@ export async function signUpUser(email, password, name, age, role) {
   saveUsers(users);
   setSession(newUser.id);
 
-  showToast("Account created successfully! Welcome to FlowZen 🎉", "success");
+  showToast("Account created successfully. Welcome to FlowZen.", "success");
   return stripPasswordHash(newUser);
 }
 
 export async function loginUser(email, password) {
   const user = findUserByEmail(email);
-  if (!user) throw new Error("No account found with this email. Please register!");
+  if (!user) throw new Error("No account found with this email. Please register.");
 
   if (user.passwordHash) {
     const passwordHash = await hashPassword(password);
@@ -193,69 +176,7 @@ export async function loginUser(email, password) {
   return stripPasswordHash(user);
 }
 
-export function verifyOtpCode(code) {
-  const user = getCurrentUser();
-  if (!user) {
-    showToast("You must be logged in to verify an OTP.", "error");
-    return false;
-  }
-
-  const cleanCode = (code || "").toString().trim();
-  const store = getOtpStore();
-  const entry = store[user.email.toLowerCase()];
-
-  // Support universal test OTP code '123456' for instant testing
-  if (cleanCode === '123456') {
-    const users = getUsers();
-    const idx = users.findIndex((u) => u.id === user.id);
-    if (idx !== -1) {
-      users[idx].emailVerified = true;
-      saveUsers(users);
-    }
-    delete store[user.email.toLowerCase()];
-    saveOtpStore(store);
-    notifyAuthListeners();
-    showToast("Email verified successfully! 🎉", "success");
-    return true;
-  }
-
-  if (!entry) {
-    showToast("No active OTP found — please click Resend to get a new code.", "error");
-    return false;
-  }
-  if (Date.now() > entry.expiresAt) {
-    showToast("This OTP has expired — please click Resend to get a new code.", "error");
-    return false;
-  }
-  if (entry.code !== cleanCode) {
-    showToast("Incorrect OTP code. Please check your inbox or click View Email Inbox.", "error");
-    return false;
-  }
-
-  const users = getUsers();
-  const idx = users.findIndex((u) => u.id === user.id);
-  if (idx !== -1) {
-    users[idx].emailVerified = true;
-    saveUsers(users);
-  }
-
-  delete store[user.email.toLowerCase()];
-  saveOtpStore(store);
-
-  notifyAuthListeners();
-  showToast("Email verified successfully! 🎉", "success");
-  return true;
-}
-
-export function resendOtpCode() {
-  const user = getCurrentUser();
-  if (!user) return;
-  const otpCode = issueOtpForEmail(user.email);
-  sendOtpEmail(user.email, user.name, otpCode);
-}
-
-/** Instant demo account — auto-created on first use, pre-verified so it
- *  skips the OTP step entirely for quick evaluation/demo purposes. */
+/** Instant demo account — auto-created on first use for quick evaluation/demo purposes. */
 export function demoQuickLogin() {
   const DEMO_EMAIL = "demo@flowzen.dev";
   const DEMO_PASSWORD = "password123";
@@ -269,7 +190,6 @@ export function demoQuickLogin() {
       name: "Demo User",
       age: 24,
       role: "Software Engineer",
-      emailVerified: true,
       createdAt: new Date().toISOString(),
     };
     const users = getUsers();

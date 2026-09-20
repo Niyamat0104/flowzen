@@ -114,16 +114,16 @@ export function queryBoardIntelligence(queryText, tasks = [], columns = []) {
   // Question 1: Next recommended task / What should I focus on
   if (q.includes('next') || q.includes('focus') || q.includes('work on') || q.includes('recommend')) {
     if (!intel.recommendation) {
-      return "🤖 FlowZen Intelligence Insight:\nAll current board tasks are either completed or blocked by dependencies!";
+      return "FlowZen Intelligence Insight:\nAll current board tasks are either completed or blocked by dependencies.";
     }
     const rec = intel.recommendation;
-    return `🤖 **FlowZen Recommended Focus Task**:\n\n` +
-      `📌 **${rec.task.title}** (Recommendation Score: ${rec.recScore}/100)\n` +
+    return `FlowZen Recommended Focus Task:\n\n` +
+      `**${rec.task.title}** (Recommendation Score: ${rec.recScore}/100)\n` +
       `• Category: **${rec.category}** | Assignee: **${rec.task.assignee || 'Unassigned'}**\n` +
       `• Estimated: **${rec.estimatedHours}h** → Predicted Effort: **${rec.predictedEffort}h**\n` +
       `• Risk Score: **${rec.riskScore}/100 (${rec.riskLevel})**\n\n` +
       `**Why this task?**\n${rec.recReasons.map(r => `• ${r}`).join('\n')}\n\n` +
-      `**Action**: Start this task now to maximize workflow velocity!`;
+      `**Action**: Start this task now to maximize workflow velocity.`;
   }
 
   // Question 2: Critical / High Risk tasks
@@ -133,10 +133,10 @@ export function queryBoardIntelligence(queryText, tasks = [], columns = []) {
       .sort((a, b) => b.riskScore - a.riskScore);
 
     if (highRisk.length === 0) {
-      return "✅ **FlowZen Risk Assessment**:\nGood news! All active tasks are currently in the Low/Moderate risk range (< 60/100). No critical delays detected.";
+      return "FlowZen Risk Assessment:\nAll active tasks are currently in the Low/Moderate risk range (< 60/100). No critical delays detected.";
     }
 
-    return `🚨 **High Risk & Delayed Tasks (${highRisk.length})**:\n\n` +
+    return `High Risk & Delayed Tasks (${highRisk.length}):\n\n` +
       highRisk.map(item => 
         `• **${item.task.title}** — Risk Score: **${item.riskScore}/100 (${item.riskLevel})**\n` +
         `  Assignee: ${item.task.assignee || 'Unassigned'} | Due: ${item.task.dueDate ? formatDate(item.task.dueDate) : 'No due date'}\n` +
@@ -153,10 +153,10 @@ export function queryBoardIntelligence(queryText, tasks = [], columns = []) {
     const userTasks = intel.analyzedTasks.filter(item => (item.task.assignee || '').toLowerCase().includes(matchedAssignee));
 
     if (userTasks.length === 0) {
-      return `👤 **Task Assignment Insight**:\nNo active tasks are currently assigned to **${fullName}**.`;
+      return `Task Assignment Insight:\nNo active tasks are currently assigned to **${fullName}**.`;
     }
 
-    return `👤 **Active Tasks Assigned to ${fullName} (${userTasks.length})**:\n\n` +
+    return `Active Tasks Assigned to ${fullName} (${userTasks.length}):\n\n` +
       userTasks.map(item => 
         `• **${item.task.title}** (${item.task.priority.toUpperCase()})\n` +
         `  Risk: ${item.riskScore}/100 (${item.riskLevel}) | Est: ${item.estimatedHours}h → Pred: ${item.predictedEffort}h\n` +
@@ -167,9 +167,9 @@ export function queryBoardIntelligence(queryText, tasks = [], columns = []) {
   // Question 4: Bottleneck inquiry
   if (q.includes('bottleneck') || q.includes('column') || q.includes('stage')) {
     if (intel.bottlenecks.length === 0) {
-      return "✅ **Workflow Bottleneck Assessment**:\nNo active column bottlenecks detected. Tasks are evenly distributed across workflow stages.";
+      return "Workflow Bottleneck Assessment:\nNo active column bottlenecks detected. Tasks are evenly distributed across workflow stages.";
     }
-    return `⚠️ **Detected Workflow Bottlenecks (${intel.bottlenecks.length})**:\n\n` +
+    return `Detected Workflow Bottlenecks (${intel.bottlenecks.length}):\n\n` +
       intel.bottlenecks.map(b => `• **${b.columnTitle}**: ${b.reason}`).join('\n');
   }
 
@@ -177,16 +177,16 @@ export function queryBoardIntelligence(queryText, tasks = [], columns = []) {
   if (q.includes('blocked') || q.includes('dependency') || q.includes('lock')) {
     const blockedList = intel.analyzedTasks.filter(t => t.isBlocked);
     if (blockedList.length === 0) {
-      return "🔓 **Dependency Status**:\nNo active tasks are currently blocked by dependencies!";
+      return "Dependency Status:\nNo active tasks are currently blocked by dependencies.";
     }
-    return `🔒 **Blocked Tasks (${blockedList.length})**:\n\n` +
+    return `Blocked Tasks (${blockedList.length}):\n\n` +
       blockedList.map(item => 
         `• **${item.task.title}** is BLOCKED by parent task "${item.parentTaskTitle}".`
       ).join('\n');
   }
 
   // Default General Summary
-  return `🤖 **FlowZen Board Overview**:\n\n` +
+  return `FlowZen Board Overview:\n\n` +
     `• **Active Tasks**: ${activeTasks.length}\n` +
     `• **Completed Tasks History**: ${intel.totalHistoryCount}\n` +
     `• **Next Recommended Focus Task**: "${intel.recommendation ? intel.recommendation.task.title : 'None'}"\n` +

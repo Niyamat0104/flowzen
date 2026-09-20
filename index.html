@@ -3,19 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      FlowZen — Intelligent Real-Time Kanban Board & Workflow Engine
-    </title>
+    <title>FlowZen — Collaborative Intelligent Kanban</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'/></svg>">
     <meta
       name="description"
-      content="FlowZen combines real-time collaborative Kanban boards with an intelligent workflow engine featuring predictive task risk scoring, effort prediction, and automated recommendations."
+      content="FlowZen combines real-time collaborative Kanban boards with an executive workflow engine featuring predictive task risk scoring, effort prediction, and automated recommendations."
     />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Space+Grotesk:wght@700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -25,871 +24,631 @@
     <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/board.css" />
     <link rel="stylesheet" href="css/responsive.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   </head>
   <body>
-    <!-- Top Sticky Navigation -->
+    <!-- Top Executive Navbar -->
     <nav class="navbar">
-      <a href="index.html" class="brand-logo">
-        <span>⚡ FlowZen</span>
-        <span class="brand-badge">INTELLIGENT</span>
+      <a href="index.html" class="brand-logo" style="display: inline-flex; align-items: center; gap: 6px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        <span>FlowZen</span>
+        <span class="brand-badge">ENTERPRISE</span>
       </a>
 
       <div class="flex items-center gap-3" id="nav-actions-container">
-        <a href="#features" class="font-bold hidden-mobile">Features</a>
-        <a href="#how-it-works" class="font-bold hidden-mobile">How It Works</a>
+        <a href="#circular-hub" class="font-bold hidden-mobile">Features</a>
         <button class="btn btn-sm btn-outline theme-toggle-btn">
-          🌙 Dark Mode
+          Dark Mode
         </button>
         <button class="btn btn-sm btn-outline" id="nav-login-btn">
           Log In
+        </button>
+        <button class="btn btn-sm btn-outline" id="nav-profile-btn" style="display: none;">
+          Profile
         </button>
         <button class="btn btn-sm btn-outline" id="nav-logout-btn" style="display: none;">
           Log Out
         </button>
         <button class="btn btn-sm btn-secondary" id="nav-tutorial-btn">
-          💡 Take a Tutorial
+          Tutorial
         </button>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <header
-      style="
-        padding: 4.5rem 1.5rem 3.5rem 1.5rem;
-        text-align: center;
-        background: radial-gradient(
-          circle at center,
-          var(--primary-light) 0%,
-          var(--bg-main) 75%
-        );
-      "
-    >
-      <div class="container" style="max-width: 940px">
-        <span
-          class="badge badge-medium"
-          style="
-            font-size: 0.9rem;
-            padding: 0.35rem 0.75rem;
-            margin-bottom: 1.5rem;
-          "
-        >
-          🤖 POWERED BY FLOWZEN INTELLIGENCE ENGINE
-        </span>
-
-        <h1
-          style="
-            font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-            margin-bottom: 1.35rem;
-            text-transform: uppercase;
-            letter-spacing: -0.03em;
-          "
-        >
-          KANBAN BOARD +
-          <span
-            style="
-              background: var(--secondary);
-              color: #000;
-              padding: 0.1em 0.35em;
-              border: 3px solid var(--color-border);
-              box-shadow: 5px 5px 0px var(--shadow-color);
-            "
-            >INTELLIGENT WORKFLOW</span
-          >
-          ENGINE
+    <header style="padding: 4.5rem 1.5rem 2rem 1.5rem; text-align: center;">
+      <div class="container" style="max-width: 1100px">
+        <!-- Sequential Typewriter Letter Animation Title (Variable Character Styling) -->
+        <h1 class="flowzen-animated-title-container" id="typewriter-title">
+          <span class="flowzen-single-letter letter-f">F</span>
+          <span class="flowzen-single-letter letter-l">L</span>
+          <span class="flowzen-single-letter letter-o">O</span>
+          <span class="flowzen-single-letter letter-w">W</span>
+          <span class="flowzen-single-letter letter-z">Z</span>
+          <span class="flowzen-single-letter letter-e">E</span>
+          <span class="flowzen-single-letter letter-n">N</span>
         </h1>
 
-        <p
-          style="
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--accent-gray);
-            margin-bottom: 2.25rem;
-            max-width: 760px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
-          "
-        >
-          Predict task delay risks (0–100), learn category estimation accuracy,
-          analyze dependency bottlenecks, and get real-time recommendations on
-          what task to work on next.
-        </p>
+        <!-- Significantly Smaller Subtitle -->
+        <h2 class="hero-subtitle-small">
+          EXECUTIVE KANBAN & INTELLIGENT WORKFLOW ENGINE
+        </h2>
 
         <div
           class="flex items-center justify-center gap-4"
-          style="flex-wrap: wrap; margin-bottom: 3.5rem"
+          style="flex-wrap: wrap; margin-bottom: 2rem"
         >
-          <button class="btn btn-lg btn-primary" id="hero-launch-btn">
-            🚀 Launch FlowZen Workspace
+          <button class="btn btn-lg hero-btn-glass-primary" id="hero-launch-btn" style="font-size: 1.05rem; padding: 0.95rem 2.4rem; display: inline-flex; align-items: center; gap: 6px;">
+            Launch Workspace <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </button>
-          <button class="btn btn-lg btn-secondary" id="hero-tutorial-btn">
-            💡 Take a Tutorial
+          <button class="btn btn-lg hero-btn-glass-secondary" id="hero-tutorial-btn" style="font-size: 1.05rem; padding: 0.95rem 2.4rem;">
+            View Tutorial
           </button>
-        </div>
-
-        <!-- Hero Animated Mini Board Mockup -->
-        <div
-          class="card card-purple"
-          style="
-            padding: 1.5rem;
-            border: 3px solid var(--color-border);
-            box-shadow: 10px 10px 0px var(--shadow-color);
-            text-align: left;
-          "
-        >
-          <div
-            class="flex items-center justify-between"
-            style="
-              margin-bottom: 1rem;
-              border-bottom: 2.5px solid var(--color-border);
-              padding-bottom: 0.85rem;
-            "
-          >
-            <div class="flex items-center gap-2">
-              <span style="font-weight: 900; font-size: 1.15rem"
-                >🤖 FlowZen Intelligence Live Preview</span
-              >
-              <span class="badge badge-urgent">PREDICTIVE ENGINE ACTIVE</span>
-            </div>
-            <span style="font-size: 0.85rem; font-weight: 800"
-              >Real-Time Risk Analysis</span
-            >
-          </div>
-
-          <div
-            style="
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-              gap: 1rem;
-            "
-          >
-            <div
-              class="card"
-              style="background: var(--bg-alt); padding: 0.9rem"
-            >
-              <div
-                class="flex items-center justify-between"
-                style="margin-bottom: 0.5rem"
-              >
-                <span style="font-weight: 900; font-size: 0.95rem"
-                  >⚡ In Progress</span
-                >
-                <span class="badge badge-urgent">Risk: 86/100</span>
-              </div>
-              <div class="card" style="padding: 0.7rem; font-size: 0.85rem">
-                <div style="font-weight: 800">Build Authentication Engine</div>
-                <div
-                  style="
-                    font-size: 0.75rem;
-                    color: var(--accent-gray);
-                    margin-top: 4px;
-                  "
-                >
-                  Est: 4h → Pred: 5.2h (Conf: 74%)
-                </div>
-                <div
-                  style="
-                    font-size: 0.72rem;
-                    background: var(--bg-card);
-                    color: var(--color-black);
-                    border: 1.5px solid var(--color-border);
-                    padding: 4px;
-                    margin-top: 6px;
-                    border-radius: 4px;
-                  "
-                >
-                  • Deadline approaching<br />• Blocks 3 downstream tasks
-                </div>
-              </div>
-            </div>
-
-            <div class="card card-yellow" style="padding: 0.9rem">
-              <div
-                style="
-                  font-weight: 900;
-                  font-size: 0.95rem;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                🤖 WHAT TO WORK ON NEXT?
-              </div>
-              <div style="font-size: 0.85rem; font-weight: 800">
-                Build Authentication Engine
-              </div>
-              <div style="font-size: 0.8rem; margin-top: 4px">
-                Recommendation: <strong>92/100</strong>
-              </div>
-              <p
-                style="font-size: 0.75rem; margin-top: 6px; margin-bottom: 8px"
-              >
-                Similar Backend tasks usually take 28% longer. Start this task
-                now.
-              </p>
-              <button
-                class="btn btn-sm btn-primary"
-                id="hero-preview-start-btn"
-                style="width: 100%; font-size: 0.75rem"
-              >
-                🎯 Start Task Now
-              </button>
-            </div>
-
-            <div
-              class="card"
-              style="background: var(--bg-alt); padding: 0.9rem"
-            >
-              <div
-                style="
-                  font-weight: 900;
-                  font-size: 0.95rem;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                🎉 Done & Learned
-              </div>
-              <div class="card" style="padding: 0.7rem; font-size: 0.85rem">
-                <div style="font-weight: 800">FlowZen Design System Tokens</div>
-                <div
-                  style="
-                    font-size: 0.75rem;
-                    color: var(--accent-emerald);
-                    font-weight: 800;
-                    margin-top: 4px;
-                  "
-                >
-                  Historical Ratio Learned: 1.15x
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </header>
 
-    <!-- Feature Showcase Grid -->
-    <section id="features" style="padding: 4.5rem 1.5rem">
-      <div class="container">
-        <div class="text-center" style="margin-bottom: 3.5rem">
-          <h2
-            style="
-              font-size: 2.4rem;
-              text-transform: uppercase;
-              letter-spacing: -0.02em;
-            "
-          >
-            FLOWZEN INTELLIGENCE FEATURES
-          </h2>
-          <p style="font-size: 1.15rem; color: var(--accent-gray)">
-            An intelligent workflow assistant built into your Kanban board.
-          </p>
-        </div>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 1.75rem;
-          "
-        >
-          <div class="card card-interactive card-purple">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">🎯</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              Task Risk Prediction (0–100)
-            </h3>
-            <p>
-              Calculates dynamic risk scores (Low, Moderate, High, Critical)
-              using deadline pressure, priority, effort, age, and dependency
-              impact with explainable reason bullets.
-            </p>
+    <!-- Circular Orbit Feature System Hub -->
+    <section id="circular-hub" style="padding: 2rem 1.5rem 4rem 1.5rem;">
+      <div class="container text-center">
+        <div class="orbit-hub-wrapper">
+          <!-- Circular Central Core -->
+          <div class="black-hole-core-circular">
+            <span style="font-size: 1.25rem; font-weight: 900; color: #FFFFFF; letter-spacing: 0.08em; line-height: 1;">FLOWZEN</span>
+            <span style="font-size: 0.7rem; color: var(--accent-cyan); font-weight: 800; letter-spacing: 0.12em; margin-top: 4px;">ENGINE</span>
           </div>
 
-          <div class="card card-interactive card-yellow">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">🤖</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              "What Should I Work On Next?"
-            </h3>
-            <p>
-              Weighted recommendation algorithm (30% Urgency, 25% Risk, 20%
-              Priority, 15% Dependencies, 10% Effort) surfacing your
-              highest-value focus task.
-            </p>
-          </div>
+          <!-- Rotating Circular Track & Orbit Nodes -->
+          <div class="orbit-ring-track">
+            <!-- Node 1: Task Risk Scoring -->
+            <div class="orbit-node-circular node-pos-1">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Task Risk Scoring</span>
+                <span style="font-size: 0.65rem; color: var(--accent-cyan); font-weight: 700; margin-top: 2px;">0–100 Matrix</span>
+              </div>
+            </div>
 
-          <div class="card card-interactive card-cyan">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">⏱️</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              Predicted Effort & Confidence
-            </h3>
-            <p>
-              Learns category estimation behavior (Backend, Frontend, Design,
-              Docs) to calculate predicted effort (`Estimated × Historical
-              Ratio`) and confidence ratings.
-            </p>
-          </div>
+            <!-- Node 2: Workload Ranker -->
+            <div class="orbit-node-circular node-pos-2">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Workload Ranker</span>
+                <span style="font-size: 0.65rem; color: var(--accent-pink); font-weight: 700; margin-top: 2px;">Priority Rank</span>
+              </div>
+            </div>
 
-          <div class="card card-interactive card-pink">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">🔒</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              Dependency Intelligence
-            </h3>
-            <p>
-              Analyzes workflow relationships, identifying downstream blocked
-              tasks and highlighting tasks with high unblocking impact.
-            </p>
-          </div>
+            <!-- Node 3: Category Effort Velocity -->
+            <div class="orbit-node-circular node-pos-3">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Effort Velocity</span>
+                <span style="font-size: 0.65rem; color: var(--accent-emerald); font-weight: 700; margin-top: 2px;">Category Ratio</span>
+              </div>
+            </div>
 
-          <div class="card card-interactive card-green">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">⚠️</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              Dynamic Bottleneck Detection
-            </h3>
-            <p>
-              Scans Kanban columns for task accumulation anomalies or unusually
-              high residence times, flagging workflow bottlenecks automatically.
-            </p>
-          </div>
+            <!-- Node 4: Multi-Tab Sync -->
+            <div class="orbit-node-circular node-pos-4">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Multi-Tab Sync</span>
+                <span style="font-size: 0.65rem; color: var(--secondary); font-weight: 700; margin-top: 2px;">&lt;50ms Broadcast</span>
+              </div>
+            </div>
 
-          <div class="card card-interactive">
-            <div style="font-size: 2.2rem; margin-bottom: 0.5rem">🔑</div>
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem">
-              6-Digit OTP Email Verification
-            </h3>
-            <p>
-              Secure 6-digit numeric OTP email authentication with auto-focusing
-              inputs and real email dispatching.
-            </p>
+            <!-- Node 5: Agile Kanban Sprints -->
+            <div class="orbit-node-circular node-pos-5">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Agile Sprints</span>
+                <span style="font-size: 0.65rem; color: var(--primary); font-weight: 700; margin-top: 2px;">WIP Limits</span>
+              </div>
+            </div>
+
+            <!-- Node 6: Bottleneck Alerts -->
+            <div class="orbit-node-circular node-pos-6">
+              <div class="orbit-node-inner">
+                <span style="font-weight: 800; font-size: 0.8rem; line-height: 1.2;">Bottleneck Risk</span>
+                <span style="font-size: 0.65rem; color: var(--accent-coral); font-weight: 700; margin-top: 2px;">Live Alerts</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- How It Works Walkthrough -->
-    <section
-      id="how-it-works"
-      style="
-        padding: 4.5rem 1.5rem;
-        background-color: var(--bg-alt);
-        border-top: 3px solid var(--color-border);
-        border-bottom: 3px solid var(--color-border);
-      "
-    >
+    <!-- 3D Turning Task Cards Section (Dribbble Inspired Automatic Animation) -->
+    <section id="3d-card-deck" style="padding: 2rem 1.5rem; position: relative;">
       <div class="container">
-        <div class="text-center" style="margin-bottom: 3.5rem">
-          <h2 style="font-size: 2.4rem; text-transform: uppercase">
-            HOW FLOWZEN WORKS
-          </h2>
-          <p style="font-size: 1.15rem; color: var(--accent-gray)">
-            Continuous historical learning pipeline for your tasks.
-          </p>
-        </div>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.5rem;
-          "
-        >
-          <div class="card text-center">
-            <div
-              class="badge badge-medium"
-              style="
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              1
+        <!-- 3D Card Deck Container (Flawless Automatic 3D Page Flip) -->
+        <div class="deck-3d-container" id="deck-container">
+          <!-- Card 1 -->
+          <div class="task-card-3d active apple-glass-panel" data-card-index="0">
+            <div class="flex items-center justify-between" style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 0.85rem; margin-bottom: 1rem;">
+              <div class="flex items-center gap-3">
+                <div class="avatar-pill" style="width: 38px; height: 38px; font-size: 0.95rem; background: var(--primary);">AV</div>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.98rem;">Alex Vance</div>
+                  <div style="font-size: 0.75rem; color: var(--accent-gray); font-weight: 600;">Lead Systems Architect</div>
+                </div>
+              </div>
+              <span class="badge badge-urgent">RISK: 86/100</span>
             </div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem">
-              Create Task Data
-            </h3>
-            <p style="font-size: 0.9rem">
-              Define category, priority, due date, estimated hours, and task
-              dependencies.
-            </p>
+
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-cyan); letter-spacing: 0.08em; margin-bottom: 0.35rem;">#FLOW-104 • BACKEND</div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.85rem;">Build Auth Engine & Zero-Trust Middleware</h3>
+
+            <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.85rem; margin-bottom: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent-gray); margin-bottom: 0.4rem;">Subtask Checklist</div>
+              <div style="font-size: 0.82rem; font-weight: 600; line-height: 1.6;">
+                <span style="color: var(--accent-emerald);">•</span> OAuth2 PKCE Provider Configuration<br />
+                <span style="color: var(--accent-emerald);">•</span> JWT Secret Key Rotation System<br />
+                <span style="opacity: 0.6;">• Rate Limiting & Anomaly Mitigation</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between" style="font-size: 0.82rem; font-weight: 700; color: var(--accent-emerald);">
+              <span>Est: 4h → Velocity Pred: 5.2h</span>
+              <span class="badge badge-primary">IN PROGRESS</span>
+            </div>
           </div>
 
-          <div class="card text-center">
-            <div
-              class="badge badge-medium"
-              style="
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              2
+          <!-- Card 2 -->
+          <div class="task-card-3d next-1 apple-glass-panel" data-card-index="1">
+            <div class="flex items-center justify-between" style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 0.85rem; margin-bottom: 1rem;">
+              <div class="flex items-center gap-3">
+                <div class="avatar-pill" style="width: 38px; height: 38px; font-size: 0.95rem; background: var(--secondary);">ER</div>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.98rem;">Elena Rostova</div>
+                  <div style="font-size: 0.75rem; color: var(--accent-gray); font-weight: 600;">Principal UI/UX Architect</div>
+                </div>
+              </div>
+              <span class="badge badge-urgent" style="background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border-color: rgba(239, 68, 68, 0.5);">RISK: 94/100</span>
             </div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem">
-              Feature Extraction
-            </h3>
-            <p style="font-size: 0.9rem">
-              FlowZen analyzes deadline pressure, task age, blocked downstream
-              count, and priority.
-            </p>
+
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-pink); letter-spacing: 0.08em; margin-bottom: 0.35rem;">#FLOW-108 • FRONTEND</div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.85rem;">Apple Glassmorphism Design System</h3>
+
+            <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.85rem; margin-bottom: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent-gray); margin-bottom: 0.4rem;">Subtask Checklist</div>
+              <div style="font-size: 0.82rem; font-weight: 600; line-height: 1.6;">
+                <span style="color: var(--accent-emerald);">•</span> Backdrop Filter CSS Tokens<br />
+                <span style="color: var(--accent-emerald);">•</span> Sharp 0px Border Radius System<br />
+                <span style="opacity: 0.6;">• Dark & Light Mode Theme Audit</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between" style="font-size: 0.82rem; font-weight: 700; color: var(--accent-cyan);">
+              <span>Est: 6h → Velocity Pred: 6.8h</span>
+              <span class="badge badge-high">URGENT</span>
+            </div>
           </div>
 
-          <div class="card text-center">
-            <div
-              class="badge badge-medium"
-              style="
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              3
+          <!-- Card 3 -->
+          <div class="task-card-3d next-2 apple-glass-panel" data-card-index="2">
+            <div class="flex items-center justify-between" style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 0.85rem; margin-bottom: 1rem;">
+              <div class="flex items-center gap-3">
+                <div class="avatar-pill" style="width: 38px; height: 38px; font-size: 0.95rem; background: var(--accent-pink);">MC</div>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.98rem;">Marcus Chen</div>
+                  <div style="font-size: 0.75rem; color: var(--accent-gray); font-weight: 600;">Senior DevOps Lead</div>
+                </div>
+              </div>
+              <span class="badge badge-low">RISK: 42/100</span>
             </div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem">
-              Predict & Recommend
-            </h3>
-            <p style="font-size: 0.9rem">
-              Calculates Risk (0–100), Predicted Effort, and surfaces your
-              recommended Next Task.
-            </p>
-          </div>
 
-          <div class="card text-center">
-            <div
-              class="badge badge-medium"
-              style="
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              4
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-emerald); letter-spacing: 0.08em; margin-bottom: 0.35rem;">#FLOW-112 • DEVOPS</div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.85rem;">Broadcast Sync Engine (Multi-Tab Mirroring)</h3>
+
+            <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.85rem; margin-bottom: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent-gray); margin-bottom: 0.4rem;">Subtask Checklist</div>
+              <div style="font-size: 0.82rem; font-weight: 600; line-height: 1.6;">
+                <span style="color: var(--accent-emerald);">•</span> BroadcastChannel Inter-Tab Mirroring<br />
+                <span style="color: var(--accent-emerald);">•</span> Optimistic UI Drag-and-Drop Sync<br />
+                <span style="color: var(--accent-emerald);">•</span> Automated Conflict Resolution
+              </div>
             </div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem">
-              Historical Learning
-            </h3>
-            <p style="font-size: 0.9rem">
-              Record actual completion hours to refine future predictions per
-              task category.
-            </p>
+
+            <div class="flex items-center justify-between" style="font-size: 0.82rem; font-weight: 700; color: var(--accent-pink);">
+              <span>Est: 3h → Velocity Pred: 2.9h</span>
+              <span class="badge badge-low">READY FOR REVIEW</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer
-      style="
-        padding: 3rem 1.5rem;
-        background-color: var(--bg-card);
-        border-top: 3px solid var(--color-border);
-        text-align: center;
-      "
-    >
-      <div class="container">
-        <div class="brand-logo justify-center" style="margin-bottom: 1rem">
-          <span>⚡ FlowZen</span>
-          <span class="brand-badge">INTELLIGENT</span>
-        </div>
-        <p
-          style="
-            font-size: 0.95rem;
-            color: var(--accent-gray);
-            margin-bottom: 1.5rem;
-          "
-        >
-          Pure HTML5, CSS3, Vanilla JS (ES6+) & LocalStorage + BroadcastChannel.
-          Zero external frameworks.
+    <!-- Team Collaboration Showcase with Floating Glass Feature Boxes (Login/Onboarding Style) -->
+    <section class="feature-showcase-section" style="padding: 4.5rem 1.5rem; background: var(--bg-alt);">
+      <div class="container text-center">
+        <span class="badge badge-low" style="margin-bottom: 0.75rem;">ENTERPRISE WORKSPACE COLLABORATION</span>
+        <h2 style="font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: -0.02em;">
+          ENGINEERED FOR MODERN TEAMS
+        </h2>
+        <p style="font-size: 1.05rem; color: var(--accent-gray); max-width: 680px; margin: 0 auto 2.5rem auto;">
+          Accelerate execution velocity with real-time state synchronization, automated risk scoring, and interactive Kanban boards.
         </p>
-        <div style="font-size: 0.85rem; font-weight: 800">
-          © 2026 FlowZen — Kanban Board + Intelligent Workflow Engine. All
-          rights reserved.
+
+        <!-- Illustration Container with 4 Floating Feature Tooltips -->
+        <div class="team-illustration-wrapper">
+          <!-- Floating Feature Box 1: Top Left -->
+          <div class="floating-feature-box float-pos-top-left">
+            <div style="display: flex; align-items: center; color: var(--accent-cyan);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">Real-Time Multi-Tab Sync</div>
+              <div style="font-size: 0.72rem; color: var(--accent-cyan); font-weight: 600;">Zero-Latency Broadcast Channel</div>
+            </div>
+          </div>
+
+          <!-- Floating Feature Box 2: Top Right -->
+          <div class="floating-feature-box float-pos-top-right">
+            <div style="display: flex; align-items: center; color: var(--accent-pink);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">0–100 Predictive Risk Score</div>
+              <div style="font-size: 0.72rem; color: var(--accent-pink); font-weight: 600;">Deadline & Dependency Matrix</div>
+            </div>
+          </div>
+
+          <!-- Main Team Kanban Illustration Image -->
+          <img
+            src="assets/flowzen_team_kanban.jpg"
+            alt="FlowZen Team Workspace Collaboration"
+            class="apple-glass-panel"
+            style="width: 100%; max-width: 920px; display: block; margin: 0 auto; box-shadow: 0 25px 70px rgba(0,0,0,0.65);"
+          />
+
+          <!-- Floating Feature Box 3: Bottom Left -->
+          <div class="floating-feature-box float-pos-bottom-left">
+            <div style="display: flex; align-items: center; color: var(--accent-emerald);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">1-Click Task Completion</div>
+              <div style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 600;">Auto Done Column Routing</div>
+            </div>
+          </div>
+
+          <!-- Floating Feature Box 4: Bottom Right -->
+          <div class="floating-feature-box float-pos-bottom-right">
+            <div style="display: flex; align-items: center; color: var(--secondary);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">Draggable Floating Insights</div>
+              <div style="font-size: 0.72rem; color: var(--secondary); font-weight: 600;">Moveable Analytics Drawer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1 (SS 2 Layout): Kanban Board Drag-and-Drop Showcase -->
+    <section class="feature-showcase-section">
+      <div class="container">
+        <div class="showcase-grid">
+          <div>
+            <span class="badge badge-medium" style="margin-bottom: 1rem;">VISUAL WORKFLOW ENGINE</span>
+            <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1.25rem; line-height: 1.15;">
+              Executive Kanban board
+            </h2>
+            <p style="font-size: 1.05rem; color: var(--accent-gray); line-height: 1.7; margin-bottom: 1.5rem;">
+              Efficient task management is essential for the success of any project. In FlowZen, you can create new work items in the backlog column and seamlessly move them to the kanban board using drag-and-drop functionality. Additionally, you can design custom workflows to outline the stages of a work item's progression.
+            </p>
+            <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+              <span class="badge badge-low">REAL-TIME COLUMNS</span>
+              <span class="badge badge-primary">DRAG-AND-DROP</span>
+              <span class="badge badge-secondary">CUSTOM STAGES</span>
+            </div>
+          </div>
+
+          <!-- UI Visual Mockup (SS 2 Style) -->
+          <div class="apple-glass-panel" style="padding: 1.5rem; position: relative; overflow: hidden;">
+            <div class="flex items-center justify-between" style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 0.75rem;">
+              <div class="flex items-center gap-2">
+                <span class="badge badge-low" style="font-size: 0.7rem;">Detail View</span>
+                <span style="font-weight: 800; font-size: 0.85rem; color: var(--accent-cyan);">+ Item</span>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--accent-gray); font-weight: 700;">Group by: Category</span>
+            </div>
+
+            <div class="grid grid-2 gap-3">
+              <!-- Backlog Column -->
+              <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.85rem;">
+                <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
+                  <span style="font-weight: 800; font-size: 0.8rem; color: var(--color-black);">Backlog (9)</span>
+                  <span style="font-size: 0.7rem; color: var(--accent-gray);">+</span>
+                </div>
+                <div class="card" style="padding: 0.65rem; margin-bottom: 0.5rem; font-size: 0.78rem;">
+                  <div style="font-weight: 700; margin-bottom: 4px;">#FLOW-118 Minify JS & CSS</div>
+                  <div style="font-size: 0.7rem; color: var(--accent-gray);">Faster page rendering</div>
+                </div>
+                <div class="card" style="padding: 0.65rem; font-size: 0.78rem;">
+                  <div style="font-weight: 700; margin-bottom: 4px;">#FLOW-117 Build Auth Engine</div>
+                  <div style="font-size: 0.7rem; color: var(--accent-gray);">OAuth2 PKCE Provider</div>
+                </div>
+              </div>
+
+              <!-- Kanban Board Column -->
+              <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.85rem;">
+                <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
+                  <span style="font-weight: 800; font-size: 0.8rem; color: var(--color-black);">TO DO (4)</span>
+                  <span style="font-size: 0.7rem; color: var(--accent-cyan); font-weight: 700;">21 pts</span>
+                </div>
+                <div class="card" style="padding: 0.65rem; margin-bottom: 0.5rem; font-size: 0.78rem;">
+                  <div style="font-weight: 700; margin-bottom: 4px;">#FLOW-110 Update API Keys</div>
+                  <div style="font-size: 0.7rem; color: var(--accent-gray);">Third-party security</div>
+                </div>
+                <div class="card" style="padding: 0.65rem; font-size: 0.78rem;">
+                  <div style="font-weight: 700; margin-bottom: 4px;">#FLOW-113 Layout Glass Fix</div>
+                  <div style="font-size: 0.7rem; color: var(--accent-gray);">Apple design tokens</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Dragged Item Tooltip -->
+            <div style="position: absolute; bottom: 1.25rem; right: 1.25rem; background: rgba(16, 185, 129, 0.95); color: #FFF; border: 1px solid #10B981; padding: 0.75rem 1rem; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); font-size: 0.78rem; font-weight: 800; transform: rotate(-2deg);">
+              <div>#FLOW-17 Configure CI/CD Pipeline</div>
+              <div style="font-size: 0.68rem; opacity: 0.9; margin-top: 2px;">• Drag to move item to board</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 (SS 3 Layout): Work-In-Progress Limits with Animated Glowing Progress Bars -->
+    <section class="feature-showcase-section" style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="showcase-grid">
+          <!-- Animated Progress Bar UI Mockup (SS 3 Style) -->
+          <div class="apple-glass-panel" style="padding: 1.85rem;">
+            <div class="wip-progress-card">
+              <div class="flex items-center justify-between" style="font-weight: 800; font-size: 0.9rem; margin-bottom: 0.4rem;">
+                <span id="wip-status-title">IN PROGRESS (5)</span>
+                <span id="wip-pts-label" style="color: var(--accent-cyan); font-weight: 800;">21 pts</span>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--accent-gray); display: flex; justify-content: space-between; font-weight: 600;">
+                <span>Min 1</span>
+                <span>Max 3</span>
+              </div>
+
+              <!-- Animated Progress Bar Track -->
+              <div class="wip-bar-track">
+                <div class="wip-bar-fill" id="wip-bar-element"></div>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--accent-emerald); font-weight: 800; text-align: right;" id="wip-pct-text">
+                WIP Threshold: 85% Active
+              </div>
+            </div>
+
+            <!-- Edit Custom Status Form Mockup -->
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.12); padding: 1.25rem;">
+              <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">
+                Edit Custom Status
+              </div>
+              <div class="grid grid-2 gap-2" style="font-size: 0.8rem; margin-bottom: 0.75rem;">
+                <div><span style="color: var(--accent-gray);">Project Name:</span> <strong>Swiftcraft Mobile App</strong></div>
+                <div><span style="color: var(--accent-gray);">Status Name:</span> <strong>In progress</strong></div>
+              </div>
+              <div class="grid grid-2 gap-2" style="font-size: 0.8rem; margin-bottom: 1rem;">
+                <div><span style="color: var(--accent-gray);">Min WIP Limit:</span> <strong>1</strong></div>
+                <div><span style="color: var(--accent-gray);">Max WIP Limit:</span> <strong>3</strong></div>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn btn-sm btn-primary" style="font-size: 0.75rem; padding: 0.35rem 0.85rem;">Update WIP</button>
+                <button class="btn btn-sm btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.85rem;">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span class="badge badge-urgent" style="margin-bottom: 1rem;">VELOCITY PROTECTION</span>
+            <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1.25rem; line-height: 1.15;">
+              Work-in-progress limits
+            </h2>
+            <p style="font-size: 1.05rem; color: var(--accent-gray); line-height: 1.7; margin-bottom: 1.5rem;">
+              Taking on more work items than a team can handle often results in delays, burnout, and inefficiencies. Set work-in-progress limits for each status on your kanban board in FlowZen to enable teams to stay focused, work efficiently, and maintain a sustainable work environment.
+            </p>
+            <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+              <span class="badge badge-medium">BURNOUT MITIGATION</span>
+              <span class="badge badge-high">WIP BOTTLENECK ALERT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 (SS 4 Layout): Kanban Dashboard & Predictive Engine -->
+    <section class="feature-showcase-section">
+      <div class="container">
+        <div class="showcase-grid">
+          <div>
+            <span class="badge badge-low" style="margin-bottom: 1rem;">EXECUTIVE ANALYTICS</span>
+            <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1.25rem; line-height: 1.15;">
+              Kanban dashboard
+            </h2>
+            <p style="font-size: 1.05rem; color: var(--accent-gray); line-height: 1.7; margin-bottom: 1.5rem;">
+              The kanban dashboard is powered by your data, with visual charts to help you assess completion percentages, monitor board activity, and gain valuable insights into team efficiency and progress. It even highlights potential pitfalls and identifies areas for improvement.
+            </p>
+            <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+              <span class="badge badge-primary">COMPLETION GAUGE</span>
+              <span class="badge badge-secondary">EFFORT RATIOS</span>
+              <span class="badge badge-medium">RISK PREDICTION</span>
+            </div>
+          </div>
+
+          <!-- Dashboard Charts Visual Mockup (SS 4 Style) -->
+          <div class="apple-glass-panel" style="padding: 1.85rem; position: relative;">
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.12); padding: 1.25rem; margin-bottom: 1.25rem;">
+              <div class="flex items-center justify-between" style="margin-bottom: 0.75rem;">
+                <span style="font-weight: 800; font-size: 0.9rem; color: var(--color-black);">Item Count Breakdown</span>
+                <span style="font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">Item Type • Priority</span>
+              </div>
+
+              <!-- CSS Donut Chart Mockup -->
+              <div class="flex items-center justify-around" style="padding: 0.5rem 0;">
+                <div style="width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(#10B981 0% 35%, #8B5CF6 35% 75%, #06B6D4 75% 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);">
+                  <div style="width: 65px; height: 65px; border-radius: 50%; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800;">
+                    <span>49</span>
+                    <span style="font-size: 0.58rem; color: var(--accent-gray);">Total</span>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.78rem; font-weight: 700; line-height: 1.8;">
+                  <div style="color: #10B981;">● Story (13 items)</div>
+                  <div style="color: #8B5CF6;">● Task (18 items)</div>
+                  <div style="color: #06B6D4;">● Bug (18 items)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Board Completion Metric -->
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.12); padding: 1.25rem;" class="flex items-center justify-between">
+              <div>
+                <div style="font-weight: 800; font-size: 0.88rem; margin-bottom: 4px;">Board Completion</div>
+                <div style="font-size: 0.75rem; color: var(--accent-gray);">11 Completed • 38 Remaining</div>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 1.6rem; font-weight: 900; color: var(--accent-emerald);">22%</span>
+                <div style="font-size: 0.68rem; color: var(--accent-emerald); font-weight: 700;">Overall Progress</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 (SS 5 Banner): Green Launch Banner -->
+    <section class="cta-banner-green">
+      <div class="container">
+        <h2 style="font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900; margin-bottom: 1.25rem; letter-spacing: -0.02em;">
+          Real-time flow. Free to start.
+        </h2>
+        <p style="font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 2.25rem auto;">
+          Experience predictive task risk scoring, broadcast synchronization, and executive Kanban boards built for modern engineering teams.
+        </p>
+        <button class="btn btn-lg" id="cta-banner-launch-btn" style="background: #FFFFFF; color: #047857; font-weight: 900; font-size: 1.05rem; padding: 1rem 2.5rem; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: inline-flex; align-items: center; gap: 6px;">
+          SIGN UP FREE <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 5 (SS 5 Long Footer): 5-Column Executive Footer -->
+    <footer class="executive-long-footer apple-glass-panel">
+      <div class="container">
+        <div class="footer-5col-grid">
+          <!-- Col 1: Features -->
+          <div>
+            <h4 class="footer-col-title">Features</h4>
+            <ul class="footer-col-list">
+              <li><a href="boards.html">Kanban Software</a></li>
+              <li><a href="boards.html">Backlog Management</a></li>
+              <li><a href="boards.html">Epics & Milestones</a></li>
+              <li><a href="boards.html">Task Risk Scoring</a></li>
+              <li><a href="boards.html">Effort Velocity Ratios</a></li>
+              <li><a href="boards.html">Workload Ranker</a></li>
+              <li><a href="boards.html">WIP Limit Controls</a></li>
+              <li><a href="boards.html">Multi-Tab Sync</a></li>
+              <li><a href="boards.html">Floating Insights Drawer</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 2: Resources -->
+          <div>
+            <h4 class="footer-col-title">Resources</h4>
+            <ul class="footer-col-list">
+              <li><a href="#tutorial-modal" id="footer-link-userguide">User Guide</a></li>
+              <li><a href="#tutorial-modal" id="footer-link-whatsnew">What's New in v2.0</a></li>
+              <li><a href="#tutorial-modal" id="footer-link-faqs">FAQs</a></li>
+              <li><a href="#tutorial-modal" id="footer-link-api">API Documentation</a></li>
+              <li><a href="#tutorial-modal" id="footer-link-security">Security & Zero-Trust</a></li>
+              <li><a href="#tutorial-modal" id="footer-link-performance">Performance Specs</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Agile Basics -->
+          <div>
+            <h4 class="footer-col-title">Agile Basics</h4>
+            <ul class="footer-col-list">
+              <li><a href="#circular-hub">Agile Guide</a></li>
+              <li><a href="#circular-hub">Kanban Methodology</a></li>
+              <li><a href="#circular-hub">Agile Project Management</a></li>
+              <li><a href="#circular-hub">WIP Limit Best Practices</a></li>
+              <li><a href="#circular-hub">Predictive Risk Matrix</a></li>
+              <li><a href="#circular-hub">Velocity Forecasting</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Compare With -->
+          <div>
+            <h4 class="footer-col-title">Compare with</h4>
+            <ul class="footer-col-list">
+              <li><a href="boards.html">FlowZen vs Jira</a></li>
+              <li><a href="boards.html">FlowZen vs Trello</a></li>
+              <li><a href="boards.html">FlowZen vs ClickUp</a></li>
+              <li><a href="boards.html">FlowZen vs Linear</a></li>
+              <li><a href="boards.html">FlowZen vs Asana</a></li>
+              <li><a href="boards.html">FlowZen vs Monday.com</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 5: Platform Specs -->
+          <div>
+            <h4 class="footer-col-title">Platform Specs</h4>
+            <ul class="footer-col-list">
+              <li><a href="#3d-card-deck">Apple Glassmorphism UI</a></li>
+              <li><a href="#3d-card-deck">Pure Vanilla Javascript</a></li>
+              <li><a href="#3d-card-deck">BroadcastChannel Sync</a></li>
+              <li><a href="#3d-card-deck">Sharp 0px Corner System</a></li>
+              <li><a href="#3d-card-deck">Zero-Dependency Engine</a></li>
+              <li><a href="#3d-card-deck">State Mirroring</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Copyright Bar -->
+        <div class="flex items-center justify-between" style="border-top: 1px solid var(--color-border); padding-top: 1.75rem; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--accent-gray);">
+          <div class="flex items-center gap-3">
+            <a href="index.html" class="brand-logo" style="font-size: 1.1rem; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+              <span>FlowZen</span>
+              <span class="brand-badge" style="font-size: 0.6rem;">ENTERPRISE</span>
+            </a>
+            <span>© 2026 FlowZen Workflow Engine. All rights reserved.</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <button class="btn btn-sm btn-outline theme-toggle-btn" style="font-size: 0.75rem;">Toggle Light/Dark</button>
+            <span class="badge badge-low" style="font-size: 0.68rem;">● ALL SYSTEMS OPERATIONAL</span>
+            <span class="badge badge-medium" style="font-size: 0.68rem;">SYNC ACTIVE</span>
+          </div>
         </div>
       </div>
     </footer>
 
-    <!-- Modal 1: Auth Modals (Login & Signup) -->
-    <div class="modal-backdrop" id="auth-modal">
-      <div class="modal">
-        <div class="modal-header">
-          <h3 class="modal-title" id="auth-modal-title">
-            🔐 Sign In to FlowZen
-          </h3>
-          <button class="modal-close" data-close-modal>✕</button>
-        </div>
-        <div class="modal-body">
-          <!-- Auth Tabs (Log In vs Register) -->
-          <div
-            class="auth-tabs"
-            style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem"
-          >
-            <button
-              type="button"
-              class="btn btn-sm btn-primary"
-              id="auth-tab-login"
-              style="flex: 1"
-            >
-              🔐 Log In
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline"
-              id="auth-tab-signup"
-              style="flex: 1"
-            >
-              🚀 Register / Sign Up
-            </button>
-          </div>
-
-          <div
-            class="card card-yellow"
-            style="margin-bottom: 1.25rem; padding: 0.85rem 1rem"
-          >
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <strong style="font-size: 0.95rem"
-                  >⚡ Instant Demo Account</strong
-                >
-                <div style="font-size: 0.8rem; opacity: 0.85">
-                  demo@flowzen.dev (Pass: password123)
-                </div>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-primary"
-                id="demo-quick-login-btn"
-              >
-                ⚡ 1-Click Log In
-              </button>
-            </div>
-          </div>
-
-          <form id="auth-form">
-            <div id="signup-extra-fields" style="display: none">
-              <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input
-                  type="text"
-                  class="input"
-                  id="auth-name-input"
-                  placeholder="e.g. Priya Sharma"
-                />
-              </div>
-
-              <div
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem"
-              >
-                <div class="form-group">
-                  <label class="form-label">Age</label>
-                  <input
-                    type="number"
-                    min="10"
-                    max="120"
-                    class="input"
-                    id="auth-age-input"
-                    placeholder="e.g. 24"
-                    value="24"
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Role / Profession</label>
-                  <select class="select" id="auth-role-input">
-                    <option value="Software Engineer">
-                      💻 Software Engineer
-                    </option>
-                    <option value="Product Designer">
-                      🎨 Product Designer
-                    </option>
-                    <option value="Project Manager">📋 Project Manager</option>
-                    <option value="Student">🎓 Student / Researcher</option>
-                    <option value="Other">💼 Other</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input
-                type="email"
-                class="input"
-                id="auth-email-input"
-                required
-                placeholder="demo@flowzen.dev"
-                value="demo@flowzen.dev"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <input
-                type="password"
-                class="input"
-                id="auth-password-input"
-                required
-                minlength="4"
-                placeholder="••••••••"
-                value="password123"
-              />
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary"
-              style="width: 100%; margin-top: 1rem"
-              id="auth-submit-btn"
-            >
-              Sign In
-            </button>
-          </form>
-
-          <div
-            style="margin-top: 1.25rem; text-align: center; font-size: 0.9rem"
-          >
-            <span id="auth-toggle-msg">Don't have an account?</span>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline"
-              id="auth-toggle-mode-btn"
-              style="margin-left: 0.5rem"
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal 2: 6-Digit OTP Verification Modal -->
-    <div class="modal-backdrop" id="otp-modal">
-      <div class="modal" style="max-width: 480px">
-        <div class="modal-header">
-          <h3 class="modal-title">🔑 Enter 6-Digit OTP Code</h3>
-          <button class="modal-close" data-close-modal>✕</button>
-        </div>
-        <div class="modal-body text-center">
-          <p style="font-size: 0.95rem; color: var(--accent-gray)">
-            We sent a legitimate 6-digit numeric OTP code to your email address:
-            <br /><strong
-              id="otp-recipient-email-display"
-              style="color: var(--color-black)"
-              >...</strong
-            >
-          </p>
-
-          <div
-            class="otp-input-container"
-            style="
-              display: flex;
-              gap: 0.6rem;
-              justify-content: center;
-              margin: 1.5rem 0;
-            "
-          >
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-1"
-              autofocus
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-2"
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-3"
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-4"
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-5"
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-            <input
-              type="text"
-              maxlength="1"
-              class="otp-box"
-              id="otp-6"
-              style="
-                width: 48px;
-                height: 58px;
-                text-align: center;
-                font-size: 1.6rem;
-                font-weight: 900;
-                border: 3px solid var(--color-border);
-                border-radius: 8px;
-                box-shadow: 3px 3px 0px var(--shadow-color);
-                background: var(--bg-card);
-                color: var(--color-black);
-                outline: none;
-              "
-            />
-          </div>
-
-          <button
-            type="button"
-            class="btn btn-primary btn-lg"
-            id="submit-otp-btn"
-            style="width: 100%; margin-bottom: 1rem"
-          >
-            Verify OTP & Launch Workspace 🚀
-          </button>
-
-          <div
-            class="flex items-center justify-between"
-            style="font-size: 0.85rem; font-weight: 700"
-          >
-            <button
-              type="button"
-              class="btn btn-sm btn-outline"
-              id="resend-otp-btn"
-            >
-              🔄 Resend OTP Code
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-secondary"
-              id="preview-inbox-otp-btn"
-            >
-              📬 View Email Inbox
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal 3: Sent Email Inbox Modal -->
-    <div class="modal-backdrop" id="sent-emails-modal">
-      <div class="modal" style="max-width: 680px">
-        <div class="modal-header">
-          <h3 class="modal-title">📬 Sent Email Inbox (OTP Preview)</h3>
-          <button class="modal-close" data-close-modal>✕</button>
-        </div>
-        <div class="modal-body" id="sent-emails-modal-body">
-          <!-- Injected via JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal 2: FlowZen Interactive Feature Tour Tutorial Modal -->
+    <!-- Modal: Tutorial Modal -->
     <div class="modal-backdrop" id="tutorial-modal">
-      <div class="modal" style="max-width: 650px">
+      <div class="modal" style="max-width: 650px; border-radius: 0px !important;">
         <div class="modal-header">
-          <h3 class="modal-title">💡 FlowZen Interactive Feature Tour</h3>
-          <button class="modal-close" data-close-modal>✕</button>
+          <h3 class="modal-title">FLOWZEN SYSTEM TUTORIAL</h3>
+          <button class="modal-close" data-close-modal aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
         <div class="modal-body">
           <div
             class="card card-purple"
-            style="margin-bottom: 1.25rem; padding: 1.25rem"
+            style="margin-bottom: 1.25rem; padding: 1.25rem;"
           >
-            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem">
-              Welcome to FlowZen!
+            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem">
+              Welcome to FlowZen Engine
             </h3>
             <p
               style="
-                font-size: 0.95rem;
+                font-size: 0.92rem;
                 line-height: 1.5;
                 color: var(--color-black);
               "
             >
               FlowZen combines real-time collaborative Kanban boards with an
-              <strong>intelligent workflow engine</strong>. Here is how to get
-              the most out of your workspace:
+              <strong>intelligent workflow engine</strong>.
             </p>
           </div>
 
@@ -902,61 +661,112 @@
             "
           >
             <div class="card card-yellow" style="padding: 1rem">
-              <strong style="font-size: 1rem"
-                >1. 🎯 Dynamic Task Risk Prediction (0–100)</strong
+              <strong style="font-size: 0.95rem"
+                >1. Dynamic Task Risk Scoring (0–100)</strong
               >
-              <p style="font-size: 0.88rem; margin-top: 4px; margin-bottom: 0">
-                Every active task is evaluated using deadline pressure,
-                priority, estimated hours, and dependencies. Risks are
-                categorized into Low, Moderate, High, and Critical with
-                explainable text insights.
+              <p style="font-size: 0.85rem; margin-top: 4px; margin-bottom: 0">
+                Evaluates deadline pressure, priority, estimated hours, and dependencies.
               </p>
             </div>
 
             <div class="card card-cyan" style="padding: 1rem">
-              <strong style="font-size: 1rem"
-                >2. 🤖 "What Should I Work On Next?" Recommendation</strong
+              <strong style="font-size: 0.95rem"
+                >2. Recommended Task Execution</strong
               >
-              <p style="font-size: 0.88rem; margin-top: 4px; margin-bottom: 0">
-                FlowZen ranks active tasks using weighted scoring (30% Urgency,
-                25% Risk, 20% Priority, 15% Dependencies, 10% Effort) to surface
-                your highest-value focus task.
+              <p style="font-size: 0.85rem; margin-top: 4px; margin-bottom: 0">
+                Ranks active tasks using weighted scoring to surface the highest-value task.
               </p>
             </div>
 
             <div class="card card-pink" style="padding: 1rem">
-              <strong style="font-size: 1rem"
-                >3. ⏱️ Predicted Effort & Category Ratios</strong
+              <strong style="font-size: 0.95rem"
+                >3. Multi-Tab Broadcast Sync</strong
               >
-              <p style="font-size: 0.88rem; margin-top: 4px; margin-bottom: 0">
-                Whenever tasks move to Done, FlowZen learns your actual
-                execution speed per category (Backend, Frontend, Design, Docs)
-                to predict realistic effort.
-              </p>
-            </div>
-
-            <div class="card card-green" style="padding: 1rem">
-              <strong style="font-size: 1rem"
-                >4. ⚡ Real-Time Multi-Tab Broadcast Sync</strong
-              >
-              <p style="font-size: 0.88rem; margin-top: 4px; margin-bottom: 0">
-                Open multiple windows or browser tabs side-by-side. Card edits
-                and drag-and-drop moves synchronize instantly (<50ms) across
-                windows!
+              <p style="font-size: 0.85rem; margin-top: 4px; margin-bottom: 0">
+                Synchronizes board moves and edits across browser tabs instantly.
               </p>
             </div>
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-outline" data-close-modal>
-              Close Tour
+              Close
             </button>
             <button
               type="button"
               class="btn btn-primary"
               id="tutorial-launch-workspace-btn"
             >
-              🚀 Launch Workspace Now
+              Launch Workspace
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Auth Modal -->
+    <div class="modal-backdrop" id="auth-modal">
+      <div class="modal" style="max-width: 440px; border-radius: 0px !important;">
+        <div class="modal-header">
+          <h3 class="modal-title" id="auth-modal-title">SIGN IN TO FLOWZEN</h3>
+          <button class="modal-close" data-close-modal aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="flex items-center gap-2" style="margin-bottom: 1.25rem;">
+            <button type="button" class="btn btn-sm btn-primary" id="auth-tab-login" style="flex: 1;">Log In</button>
+            <button type="button" class="btn btn-sm btn-outline" id="auth-tab-signup" style="flex: 1;">Register</button>
+          </div>
+
+          <form id="auth-form">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="input" id="auth-email-input" required placeholder="your.email@company.com" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" class="input" id="auth-password-input" required placeholder="••••••••" />
+            </div>
+
+            <div id="signup-extra-fields" style="display: none;">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="input" id="auth-name-input" placeholder="e.g. Alex Vance" />
+              </div>
+              <div class="grid grid-2 gap-2">
+                <div class="form-group">
+                  <label class="form-label">Age</label>
+                  <input type="number" class="input" id="auth-age-input" placeholder="28" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Role</label>
+                  <select class="select" id="auth-role-input">
+                    <option value="Software Engineer">Software Engineer</option>
+                    <option value="Product Designer">Product Designer</option>
+                    <option value="Product Manager">Product Manager</option>
+                    <option value="DevOps Lead">DevOps Lead</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" id="auth-submit-btn" style="width: 100%; margin-top: 0.5rem;">
+              Sign In
+            </button>
+          </form>
+
+          <div style="margin-top: 1rem; text-align: center;">
+            <button type="button" class="btn btn-sm btn-secondary" id="demo-quick-login-btn" style="width: 100%;">
+              Quick Demo Login
+            </button>
+          </div>
+
+          <div style="margin-top: 1.25rem; text-align: center; font-size: 0.88rem;">
+            <span id="auth-toggle-msg">Don't have an account?</span>
+            <button type="button" class="btn btn-sm btn-outline" id="auth-toggle-mode-btn" style="margin-left: 0.5rem;">
+              Sign Up
             </button>
           </div>
         </div>
@@ -972,22 +782,24 @@
         demoQuickLogin,
         getCurrentUser,
         logoutUser,
+        updateUserProfile,
       } from "./js/auth.js";
-      import { getSentEmails } from "./js/email-service.js";
       import { initTheme } from "./js/theme.js";
       import {
         openModal,
         closeModal,
         escapeHTML,
         showToast,
+        openUserProfileModal,
       } from "./js/ui-utils.js";
 
       let isSignUpMode = false;
+      let cardDeckIndex = 0;
+      let autoTurnTimer = null;
 
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
 
-        // Handle Back-Forward Cache (bfcache) to prevent freeze on browser back button
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
             window.location.reload();
@@ -998,16 +810,12 @@
           updateNavbarState(user);
         });
 
-        setupOtpBoxes();
-
-        // Auto check URL query param ?action=login or ?action=signup
         const urlParams = new URLSearchParams(window.location.search);
         const actionParam = urlParams.get("action");
         if (actionParam === "login" || actionParam === "signup") {
           setAuthMode(actionParam === "signup");
         }
 
-        // Wire Auth Tabs inside auth-modal
         document
           .getElementById("auth-tab-login")
           .addEventListener("click", () => {
@@ -1026,15 +834,101 @@
           });
         }
 
+        // Flawless Automatic 3D Card Turning Logic
+        const deckCards = Array.from(document.querySelectorAll(".task-card-3d"));
+
+        function updateDeckView() {
+          deckCards.forEach((card, idx) => {
+            card.className = "task-card-3d apple-glass-panel";
+            const diff = (idx - cardDeckIndex + deckCards.length) % deckCards.length;
+
+            if (diff === 0) {
+              card.classList.add("active");
+            } else if (diff === 1) {
+              card.classList.add("next-1");
+            } else if (diff === 2) {
+              card.classList.add("next-2");
+            } else {
+              card.classList.add("turned");
+            }
+          });
+        }
+
+        function turnNextCard() {
+          cardDeckIndex = (cardDeckIndex + 1) % deckCards.length;
+          updateDeckView();
+        }
+
+        // Start automatic continuous 3D page turning every 2.8s
+        autoTurnTimer = setInterval(turnNextCard, 2800);
+
+        // Step-by-Step Typewriter Letter Reveal: F -> L -> O -> W -> Z -> E -> N -> Glow Flash -> Stable Static
+        const titleContainer = document.getElementById("typewriter-title");
+        if (titleContainer) {
+          const letters = Array.from(titleContainer.querySelectorAll(".flowzen-single-letter"));
+          letters.forEach((letter, index) => {
+            setTimeout(() => {
+              letter.classList.add("visible");
+              // Once all 7 letters have appeared, trigger the one-shot neon glow burst
+              if (index === letters.length - 1) {
+                setTimeout(() => {
+                  titleContainer.classList.add("glow-once-active");
+                }, 280);
+              }
+            }, 180 + index * 160);
+          });
+        }
+
+        // Animated Progress Bar Sequence (WIP Limits Showcase)
+        const wipFill = document.getElementById("wip-bar-element");
+        const wipPct = document.getElementById("wip-pct-text");
+        const wipTitle = document.getElementById("wip-status-title");
+
+        if (wipFill) {
+          let wipStep = 0;
+          const wipStages = [
+            { title: "TO DO (8)", pct: 40, text: "WIP Threshold: 40% Active" },
+            { title: "IN PROGRESS (5)", pct: 85, text: "WIP Threshold: 85% Active (Glow Alert)" },
+            { title: "TESTING & REVIEW (3)", pct: 100, text: "WIP Threshold: 100% Limit Reached!" }
+          ];
+
+          function animateWipBar() {
+            const stage = wipStages[wipStep];
+            wipFill.style.width = stage.pct + "%";
+            if (wipTitle) wipTitle.innerText = stage.title;
+            if (wipPct) wipPct.innerText = stage.text;
+
+            if (stage.pct >= 85) {
+              wipFill.classList.add("glowing");
+            } else {
+              wipFill.classList.remove("glowing");
+            }
+
+            wipStep = (wipStep + 1) % wipStages.length;
+          }
+
+          animateWipBar();
+          setInterval(animateWipBar, 2400);
+        }
+
         function updateNavbarState(user) {
           const loginBtn = document.getElementById("nav-login-btn");
+          const profileBtn = document.getElementById("nav-profile-btn");
           const logoutBtn = document.getElementById("nav-logout-btn");
           if (loginBtn) {
             if (user) {
-              loginBtn.innerText = `🚀 ${user.displayName || user.email.split("@")[0]} (Dashboard)`;
+              loginBtn.innerText = "Workspaces";
+              if (profileBtn) {
+                profileBtn.innerText = `Profile (${user.displayName || user.email.split("@")[0]})`;
+                profileBtn.style.display = "inline-flex";
+                profileBtn.onclick = () => {
+                  openUserProfileModal(getCurrentUser(), updateUserProfile);
+                };
+              }
               if (logoutBtn) logoutBtn.style.display = "inline-flex";
             } else {
               loginBtn.innerText = "Log In / Register";
+              if (profileBtn) profileBtn.style.display = "none";
               if (logoutBtn) logoutBtn.style.display = "none";
             }
           }
@@ -1054,16 +948,19 @@
           .getElementById("nav-login-btn")
           .addEventListener("click", handleWorkspaceLaunch);
 
-        const heroPreviewBtn = document.getElementById(
-          "hero-preview-start-btn",
-        );
-        if (heroPreviewBtn) {
-          heroPreviewBtn.addEventListener("click", handleWorkspaceLaunch);
-        }
-
         document
           .getElementById("hero-launch-btn")
           .addEventListener("click", handleWorkspaceLaunch);
+
+        const ctaBannerBtn = document.getElementById("cta-banner-launch-btn");
+        if (ctaBannerBtn) {
+          ctaBannerBtn.addEventListener("click", handleWorkspaceLaunch);
+        }
+
+        const footerLaunchBtn = document.getElementById("footer-launch-btn");
+        if (footerLaunchBtn) {
+          footerLaunchBtn.addEventListener("click", handleWorkspaceLaunch);
+        }
 
         const tutorialLaunchBtn = document.getElementById(
           "tutorial-launch-workspace-btn",
@@ -1146,103 +1043,7 @@
               submitBtn.innerText = originalBtnText;
             }
           });
-
-        document
-          .getElementById("submit-otp-btn")
-          .addEventListener("click", () => {
-            const code = [1, 2, 3, 4, 5, 6]
-              .map((i) => document.getElementById(`otp-${i}`).value)
-              .join("");
-            const verified = verifyOtpCode(code);
-            if (verified) {
-              closeModal("otp-modal");
-              window.location.href = "boards.html";
-            }
-          });
-
-        document
-          .getElementById("resend-otp-btn")
-          .addEventListener("click", () => {
-            resendOtpCode();
-          });
-
-        document
-          .getElementById("preview-inbox-otp-btn")
-          .addEventListener("click", () => {
-            closeModal("otp-modal");
-            renderSentEmailsModal();
-          });
       });
-
-      function setupOtpBoxes() {
-        const boxes = [1, 2, 3, 4, 5, 6].map((i) =>
-          document.getElementById(`otp-${i}`),
-        );
-        boxes.forEach((box, idx) => {
-          if (!box) return;
-          box.addEventListener("input", (e) => {
-            if (e.target.value.length === 1 && idx < 5) {
-              boxes[idx + 1].focus();
-            }
-          });
-          box.addEventListener("keydown", (e) => {
-            if (e.key === "Backspace" && !box.value && idx > 0) {
-              boxes[idx - 1].focus();
-            }
-          });
-          box.addEventListener("paste", (e) => {
-            e.preventDefault();
-            const pasted = (e.clipboardData || window.clipboardData)
-              .getData("text")
-              .trim();
-            if (pasted.length === 6 && /^\d+$/.test(pasted)) {
-              pasted.split("").forEach((char, i) => {
-                if (boxes[i]) boxes[i].value = char;
-              });
-              boxes[5].focus();
-            }
-          });
-        });
-      }
-
-      function renderSentEmailsModal() {
-        const container = document.getElementById("sent-emails-modal-body");
-        const emails = getSentEmails();
-
-        if (emails.length === 0) {
-          container.innerHTML = `
-          <div style="text-align: center; padding: 2rem 1rem;">
-            <h3>📬 No Emails Sent Yet</h3>
-            <p style="color: var(--accent-gray);">Create a new account to trigger a 6-digit OTP email.</p>
-          </div>
-        `;
-        } else {
-          container.innerHTML = `
-          <p style="font-size: 0.9rem; color: var(--accent-gray); margin-bottom: 1rem;">
-            Here are the real 6-digit OTP email messages dispatched to users' email addresses:
-          </p>
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
-            ${emails
-              .map(
-                (msg) => `
-              <div class="card" style="padding: 1rem; border: 2.5px solid var(--color-border); background: var(--bg-alt);">
-                <div class="flex items-center justify-between" style="margin-bottom: 0.5rem; border-bottom: 1.5px dashed var(--color-border); padding-bottom: 0.5rem;">
-                  <strong style="font-size: 0.95rem;">To: ${escapeHTML(msg.to)}</strong>
-                  <span style="font-size: 0.75rem; opacity: 0.7;">${new Date(msg.sentAt).toLocaleTimeString()}</span>
-                </div>
-                <div style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;">Subject: ${escapeHTML(msg.subject)}</div>
-                <div style="background: var(--bg-card); color: var(--color-black); padding: 1rem; border: 2px solid var(--color-border); border-radius: 8px;">
-                  ${msg.bodyHTML}
-                </div>
-              </div>
-            `,
-              )
-              .join("")}
-          </div>
-        `;
-        }
-        openModal("sent-emails-modal");
-      }
 
       function setAuthMode(signUp) {
         isSignUpMode = signUp;
@@ -1258,14 +1059,14 @@
         }
 
         document.getElementById("auth-modal-title").innerText = signUp
-          ? "🚀 Register New FlowZen Account"
-          : "🔐 Sign In to FlowZen";
+          ? "REGISTER NEW ACCOUNT"
+          : "SIGN IN TO FLOWZEN";
         document.getElementById("signup-extra-fields").style.display = signUp
           ? "block"
           : "none";
         document.getElementById("auth-submit-btn").innerText = signUp
-          ? "Register Account & Send 6-Digit OTP 📩"
-          : "Sign In ➔";
+          ? "Register Account"
+          : "Sign In";
         document.getElementById("auth-toggle-msg").innerText = signUp
           ? "Already have an account?"
           : "Don't have an account?";

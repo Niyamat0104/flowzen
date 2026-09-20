@@ -11,8 +11,8 @@ export function renderAnalyticsDashboard(tasks, columns, containerEl) {
   const history = getTaskHistory();
 
   // Find Done column
-  const doneCols = columns.filter(c => c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed'));
-  const doneColIds = doneCols.map(c => c.id);
+  const doneCols = columns.filter(c => c.isDoneColumn || c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed') || c.title.toLowerCase().includes('finish'));
+  const doneColIds = doneCols.length > 0 ? doneCols.map(c => c.id) : (columns.length > 0 ? [columns[columns.length - 1].id] : []);
   const doneTasks = tasks.filter(t => doneColIds.includes(t.columnId));
   const completionRate = totalTasks > 0 ? Math.round((doneTasks.length / totalTasks) * 100) : 0;
 
@@ -47,47 +47,47 @@ export function renderAnalyticsDashboard(tasks, columns, containerEl) {
 
   containerEl.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-      <div class="card card-purple">
+      <div class="card card-purple" style="border-radius: 0px !important;">
         <h4 style="font-size: 0.85rem; text-transform: uppercase;">Overall Completion</h4>
-        <div style="font-size: 2.2rem; font-weight: 900; margin: 0.3rem 0;">${completionRate}%</div>
-        <div class="progress-container">
-          <div class="progress-fill" style="width: ${completionRate}%;"></div>
+        <div style="font-size: 2.2rem; font-weight: 800; margin: 0.3rem 0; font-family: var(--font-heading);">${completionRate}%</div>
+        <div class="progress-container" style="border-radius: 0px !important;">
+          <div class="progress-fill" style="width: ${completionRate}%; border-radius: 0px !important;"></div>
         </div>
       </div>
 
-      <div class="card card-yellow">
+      <div class="card card-yellow" style="border-radius: 0px !important;">
         <h4 style="font-size: 0.85rem; text-transform: uppercase;">Completed Tasks</h4>
-        <div style="font-size: 2.2rem; font-weight: 900; margin: 0.3rem 0;">${doneTasks.length} / ${totalTasks}</div>
-        <p style="font-size: 0.8rem; margin: 0;">Active workspace tasks</p>
+        <div style="font-size: 2.2rem; font-weight: 800; margin: 0.3rem 0; font-family: var(--font-heading);">${doneTasks.length} / ${totalTasks}</div>
+        <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Active workspace tasks</p>
       </div>
 
-      <div class="card card-cyan">
+      <div class="card card-cyan" style="border-radius: 0px !important;">
         <h4 style="font-size: 0.85rem; text-transform: uppercase;">Learning History</h4>
-        <div style="font-size: 2.2rem; font-weight: 900; margin: 0.3rem 0;">${history.length}</div>
-        <p style="font-size: 0.8rem; margin: 0;">Completed task records analyzed</p>
+        <div style="font-size: 2.2rem; font-weight: 800; margin: 0.3rem 0; font-family: var(--font-heading);">${history.length}</div>
+        <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Completed task records analyzed</p>
       </div>
     </div>
 
     <!-- Historical Predictive Category Estimation Insights -->
-    <div class="card card-yellow" style="margin-bottom: 1.5rem;">
-      <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">📈 FlowZen Historical Category Estimation Insights</h3>
-      <p style="font-size: 0.85rem; opacity: 0.85; margin-bottom: 1rem;">
+    <div class="card card-yellow" style="margin-bottom: 1.5rem; border-radius: 0px !important;">
+      <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">FlowZen Historical Category Estimation Insights</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
         FlowZen intelligence analyzes your historical completed task accuracy to calculate category estimation ratios:
       </p>
 
       ${categoryBreakdown.length === 0 ? `
-        <div style="font-size: 0.85rem; opacity: 0.8; padding: 0.5rem; border: 1.5px dashed #000; border-radius: 6px; text-align: center;">
+        <div style="font-size: 0.85rem; color: var(--text-tertiary); padding: 0.75rem; border: 1px dashed var(--color-border); border-radius: 0px !important; text-align: center;">
           FlowZen is learning your workflow. Complete tasks to unlock detailed estimation ratios per category (Backend, Frontend, Design, Docs).
         </div>
       ` : `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
           ${categoryBreakdown.map(item => `
-            <div class="card" style="padding: 0.75rem; border: 2px solid #000; background: #FFF;">
-              <div style="font-weight: 900; font-size: 0.95rem;">${escapeHTML(item.cat)}</div>
-              <div style="font-size: 1.25rem; font-weight: 900; color: ${item.isOver ? 'var(--accent-coral)' : 'var(--accent-emerald)'}; margin: 2px 0;">
+            <div class="card" style="padding: 0.75rem; border: 1px solid var(--color-border); background: var(--bg-card); border-radius: 0px !important;">
+              <div style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(item.cat)}</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: ${item.isOver ? 'var(--accent-coral)' : 'var(--accent-emerald)'}; margin: 2px 0;">
                 ${item.diffPctText} error
               </div>
-              <div style="font-size: 0.75rem; font-weight: 700; opacity: 0.8;">
+              <div style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary);">
                 Estimation Ratio: <strong>${item.ratio}x</strong> (${item.count} tasks)
               </div>
             </div>
@@ -97,18 +97,18 @@ export function renderAnalyticsDashboard(tasks, columns, containerEl) {
     </div>
 
     <!-- Tasks per Column Distribution -->
-    <div class="card" style="margin-bottom: 1.5rem;">
-      <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">📊 Tasks per Workflow Stage</h3>
-      <div style="width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-around; gap: 0.5rem; padding-top: 1rem; border-bottom: 2px solid #000;">
+    <div class="card" style="margin-bottom: 1.5rem; border-radius: 0px !important;">
+      <h3 style="font-size: 1.1rem; margin-bottom: 1rem; font-family: var(--font-heading);">Tasks per Workflow Stage</h3>
+      <div style="width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-around; gap: 0.5rem; padding-top: 1rem; border-bottom: 1px solid var(--color-border);">
         ${columns.map(col => {
           const count = tasks.filter(t => t.columnId === col.id).length;
           const pct = totalTasks > 0 ? (count / totalTasks) * 100 : 0;
           const heightPx = Math.max(20, Math.round((pct / 100) * 140));
           return `
             <div style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end;">
-              <span style="font-weight: 900; font-size: 0.85rem; margin-bottom: 4px;">${count}</span>
-              <div style="width: 100%; max-width: 48px; height: ${heightPx}px; background-color: var(--primary); border: 2px solid #000; box-shadow: 2px 2px 0px #000; border-radius: 4px 4px 0 0; transition: height 0.3s ease;"></div>
-              <span style="font-size: 0.75rem; font-weight: 800; margin-top: 6px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 80px;">${col.title}</span>
+              <span style="font-weight: 700; font-size: 0.85rem; margin-bottom: 4px;">${count}</span>
+              <div style="width: 100%; max-width: 48px; height: ${heightPx}px; background-color: var(--primary); border: 1px solid var(--color-border); border-radius: 0px !important; transition: height 0.3s ease;"></div>
+              <span style="font-size: 0.75rem; font-weight: 600; margin-top: 6px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 80px; color: var(--text-secondary);">${col.title}</span>
             </div>
           `;
         }).join('')}
@@ -116,25 +116,25 @@ export function renderAnalyticsDashboard(tasks, columns, containerEl) {
     </div>
 
     <!-- Priority Canvas Donut Chart -->
-    <div class="card">
-      <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">🎯 Priority Breakdown</h3>
+    <div class="card" style="border-radius: 0px !important;">
+      <h3 style="font-size: 1.1rem; margin-bottom: 1rem; font-family: var(--font-heading);">Priority Breakdown</h3>
       <div style="display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 1rem;">
         <canvas id="priorityChartCanvas" width="160" height="160"></canvas>
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="badge badge-urgent">Critical</span> <strong>${priorities.critical}</strong>
+            <span class="badge badge-urgent" style="border-radius: 0px !important;">Critical</span> <strong>${priorities.critical}</strong>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="badge badge-urgent">Urgent</span> <strong>${priorities.urgent}</strong>
+            <span class="badge badge-urgent" style="border-radius: 0px !important;">Urgent</span> <strong>${priorities.urgent}</strong>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="badge badge-high">High</span> <strong>${priorities.high}</strong>
+            <span class="badge badge-high" style="border-radius: 0px !important;">High</span> <strong>${priorities.high}</strong>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="badge badge-medium">Medium</span> <strong>${priorities.medium}</strong>
+            <span class="badge badge-medium" style="border-radius: 0px !important;">Medium</span> <strong>${priorities.medium}</strong>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="badge badge-low">Low</span> <strong>${priorities.low}</strong>
+            <span class="badge badge-low" style="border-radius: 0px !important;">Low</span> <strong>${priorities.low}</strong>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@ function drawPriorityDonutCanvas(priorities, total) {
     critical: '#E11D48',
     urgent: '#F43F5E',
     high: '#F97316',
-    medium: '#FFD23F',
+    medium: '#EAB308',
     low: '#06B6D4'
   };
 
@@ -177,10 +177,10 @@ function drawPriorityDonutCanvas(priorities, total) {
     ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
     ctx.closePath();
 
-    ctx.fillStyle = colors[key] || '#7C3AED';
+    ctx.fillStyle = colors[key] || '#6366F1';
     ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#262626';
     ctx.stroke();
 
     startAngle = endAngle;
@@ -191,3 +191,4 @@ function escapeHTML(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+

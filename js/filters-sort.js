@@ -8,30 +8,33 @@ export function filterTasks(tasks, { searchText = '', label = '', priority = '',
   if (!tasks || !Array.isArray(tasks)) return [];
 
   return tasks.filter(task => {
-    // Text search matching title, description, or assignee
-    if (searchText.trim() !== '') {
+    // Text search matching title, description, assignee, category, or labels
+    if (searchText && searchText.trim() !== '') {
       const q = searchText.toLowerCase().trim();
       const titleMatch = task.title && task.title.toLowerCase().includes(q);
       const descMatch = task.description && task.description.toLowerCase().includes(q);
       const assigneeMatch = task.assignee && task.assignee.toLowerCase().includes(q);
-      if (!titleMatch && !descMatch && !assigneeMatch) return false;
+      const categoryMatch = task.category && task.category.toLowerCase().includes(q);
+      const labelsMatch = task.labels && Array.isArray(task.labels) && task.labels.some(l => l.toLowerCase().includes(q));
+      if (!titleMatch && !descMatch && !assigneeMatch && !categoryMatch && !labelsMatch) return false;
     }
 
     // Category / Label filter
     if (label && label !== 'all') {
-      const matchCategory = task.category && task.category.toLowerCase() === label.toLowerCase();
-      const matchLabels = task.labels && Array.isArray(task.labels) && task.labels.some(l => l.toLowerCase() === label.toLowerCase());
+      const targetLabel = label.toLowerCase();
+      const matchCategory = task.category && task.category.toLowerCase() === targetLabel;
+      const matchLabels = task.labels && Array.isArray(task.labels) && task.labels.some(l => l.toLowerCase() === targetLabel);
       if (!matchCategory && !matchLabels) return false;
     }
 
-    // Priority filter
+    // Priority filter (case-insensitive)
     if (priority && priority !== 'all') {
-      if (task.priority !== priority) return false;
+      if (!task.priority || task.priority.toLowerCase() !== priority.toLowerCase()) return false;
     }
 
-    // Assignee filter
+    // Assignee filter (case-insensitive)
     if (assignee && assignee !== 'all') {
-      if (!task.assignee || task.assignee !== assignee) return false;
+      if (!task.assignee || task.assignee.toLowerCase() !== assignee.toLowerCase()) return false;
     }
 
     // Overdue status filter
@@ -62,8 +65,8 @@ export function sortTasks(tasks, sortBy = 'position') {
 
     case 'priority':
       return copy.sort((a, b) => {
-        const rankA = priorityRank[a.priority] || 0;
-        const rankB = priorityRank[b.priority] || 0;
+        const rankA = priorityRank[(a.priority || '').toLowerCase()] || 0;
+        const rankB = priorityRank[(b.priority || '').toLowerCase()] || 0;
         return rankB - rankA;
       });
 
@@ -75,3 +78,4 @@ export function sortTasks(tasks, sortBy = 'position') {
       return copy.sort((a, b) => (a.position || 0) - (b.position || 0));
   }
 }
+

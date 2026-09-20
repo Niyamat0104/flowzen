@@ -43,7 +43,7 @@ export function validateColumnMove(task, targetColumn, allTasks, columns) {
   const { isBlocked, parentTask } = checkTaskDependency(task, allTasks, columns);
 
   if (isBlocked && parentTask) {
-    showToast(`⛔ Cannot move to Done! Task is BLOCKED by "${parentTask.title}"`, "error", 4500);
+    showToast(`Cannot move to Done. Task is blocked by "${parentTask.title}"`, "error", 4500);
     
     // Trigger Neo-Brutalist card shake animation
     const cardEl = document.querySelector(`[data-task-id="${task.id}"]`);

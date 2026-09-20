@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlowZen — Collaborative Intelligent Kanban</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'/></svg>">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- CSS Design System -->
   <link rel="stylesheet" href="css/variables.css">
@@ -16,7 +17,6 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/board.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     /* Intelligence Side Drawer Styling */
     .intelligence-drawer {
@@ -26,7 +26,7 @@
       width: 400px;
       height: calc(100vh - var(--header-height));
       background-color: var(--bg-card);
-      border-left: 3px solid var(--color-border);
+      border-left: 1px solid var(--color-border);
       box-shadow: var(--shadow-xl);
       z-index: 460;
       display: flex;
@@ -38,28 +38,28 @@
     }
     .query-suggestion-pill {
       font-size: 0.78rem;
-      font-weight: 700;
-      padding: 0.3rem 0.6rem;
+      font-weight: 600;
+      padding: 0.3rem 0.68rem;
       background: var(--bg-alt);
-      border: 1.5px solid #000;
-      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      border-radius: 0px !important;
       cursor: pointer;
-      box-shadow: 2px 2px 0px #000;
       user-select: none;
+      transition: all var(--transition-fast);
     }
     .query-suggestion-pill:hover {
-      background: var(--secondary-light);
+      background: var(--bg-hover);
+      border-color: var(--color-border-hover);
     }
     .query-output-box {
       font-size: 0.88rem;
       line-height: 1.5;
-      font-weight: 600;
+      font-weight: 500;
       white-space: pre-wrap;
       background: var(--bg-alt);
-      border: 2px solid #000;
-      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      border-radius: 0px !important;
       padding: 1rem;
-      box-shadow: 3px 3px 0px #000;
     }
   </style>
 </head>
@@ -69,24 +69,44 @@
   <nav class="navbar">
     <div class="flex items-center gap-3">
       <a href="boards.html" class="btn btn-sm btn-outline" title="Back to Workspaces">
-        ⬅️ Boards
+        Boards
       </a>
-      <a href="index.html" class="brand-logo hidden-mobile">
-        <span>⚡ FlowZen</span>
+      <a href="index.html" class="brand-logo hidden-mobile" style="display: inline-flex; align-items: center; gap: 6px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        <span>FlowZen</span>
       </a>
     </div>
 
     <div class="flex items-center gap-3">
-      <button class="btn btn-sm btn-primary" id="top-new-task-btn">➕ New Task</button>
-      <button class="btn btn-sm btn-secondary" id="intelligence-drawer-toggle-btn">🤖 Intelligence Assistant</button>
-      <button class="btn btn-sm btn-outline theme-toggle-btn">🌙 Dark Mode</button>
-      <button class="btn btn-sm btn-outline" id="activity-feed-toggle-btn">📜 Activity Feed</button>
-      <button class="btn btn-sm btn-accent" id="analytics-modal-btn">📊 Insights Analytics</button>
-      <button class="btn btn-sm btn-outline" id="add-column-top-btn">➕ Add Column</button>
-      <div id="user-profile-badge" class="badge badge-medium hidden-mobile" style="font-size: 0.85rem; padding: 0.4rem 0.75rem">👤 Loading...</div>
+      <button class="btn btn-sm btn-primary" id="top-new-task-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Task
+      </button>
+      <button class="btn btn-sm btn-secondary" id="intelligence-drawer-toggle-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>AI Assistant
+      </button>
+      <button class="btn btn-sm btn-outline theme-toggle-btn">Dark Mode</button>
+      <button class="btn btn-sm btn-outline" id="activity-feed-toggle-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Activity Feed
+      </button>
+      <button class="btn btn-sm btn-outline" id="insights-toggle-btn">Insights</button>
+      <button class="btn btn-sm btn-accent" id="analytics-modal-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>Analytics
+      </button>
+      <button class="btn btn-sm btn-outline" id="manage-team-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team
+      </button>
+      <button class="btn btn-sm btn-outline" id="add-column-top-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add Column
+      </button>
+      <div id="user-profile-badge" class="badge badge-medium hidden-mobile" style="font-size: 0.85rem; padding: 0.4rem 0.75rem; border-radius: 0px !important;">Loading...</div>
       <button class="btn btn-sm btn-outline" id="logout-btn">Log Out</button>
     </div>
   </nav>
+
+  <!-- Floating Side Trigger Button for Insights -->
+  <button class="insights-side-tab-btn" id="insights-side-tab-btn" title="Toggle Floating Insights Panel">
+    <span>Insights</span>
+  </button>
 
   <!-- Main Board Container -->
   <div class="board-container">
@@ -94,41 +114,37 @@
     <!-- Subnav Toolbar -->
     <div class="board-subnav">
       <div class="board-title-group">
-        <h1 class="board-title-text" id="board-title">⚡ Loading Board...</h1>
-        <button class="btn btn-sm btn-outline" id="share-board-btn">🔗 Share Board</button>
+        <h1 class="board-title-text" id="board-title">Loading Board...</h1>
+        <button class="btn btn-sm btn-outline" id="share-board-btn">Share Board</button>
       </div>
 
       <!-- Filters & Sort Controls -->
       <div class="board-toolbar">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
           <input type="text" class="input" id="search-input" placeholder="Search tasks or assignees...">
         </div>
 
         <select class="select" id="filter-assignee-select" style="width: auto;">
           <option value="all">All Assignees</option>
-          <option value="Alex Rivera">👤 Alex Rivera</option>
-          <option value="Priya Sharma">👤 Priya Sharma</option>
-          <option value="Aman Verma">👤 Aman Verma</option>
         </select>
 
         <select class="select" id="filter-label-select" style="width: auto;">
           <option value="all">All Categories & Labels</option>
-          <option value="Backend">⚙️ Backend</option>
-          <option value="Frontend">🎨 Frontend</option>
-          <option value="Design">🖌️ Design</option>
-          <option value="Docs">📝 Docs</option>
-          <option value="DevOps">🚀 DevOps</option>
-          <option value="Security">🔒 Security</option>
+          <option value="Backend">Backend</option>
+          <option value="Frontend">Frontend</option>
+          <option value="Design">Design</option>
+          <option value="Docs">Docs</option>
+          <option value="DevOps">DevOps</option>
+          <option value="Security">Security</option>
         </select>
 
         <select class="select" id="filter-priority-select" style="width: auto;">
           <option value="all">All Priorities</option>
-          <option value="critical">🔴 Critical</option>
-          <option value="urgent">🔴 Urgent</option>
-          <option value="high">🟠 High</option>
-          <option value="medium">🟡 Medium</option>
-          <option value="low">🔵 Low</option>
+          <option value="critical">Critical</option>
+          <option value="urgent">Urgent</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
 
         <select class="select" id="sort-select" style="width: auto;">
@@ -143,30 +159,32 @@
     <!-- Board Quick Stats Bar -->
     <div class="board-stats-bar" id="board-stats-bar-container"></div>
 
-    <!-- 🔥 NEXT RECOMMENDED Task Banner -->
+    <!-- NEXT RECOMMENDED Task Banner -->
     <div id="recommendation-widget-container"></div>
 
-    <!-- Two-Column Layout: Left Kanban Grid + Right Insights Sidebar -->
+    <!-- Main Kanban Grid Viewport -->
     <div class="board-main-layout">
       
-      <!-- Left Main Kanban Viewport -->
+      <!-- Main Kanban Viewport -->
       <div class="kanban-viewport" id="kanban-viewport">
         <!-- Columns rendered dynamically -->
       </div>
 
-      <!-- Right Side INSIGHTS Sidebar Panel -->
-      <aside class="insights-sidebar" id="insights-sidebar-container">
-        <!-- Insights Injected via JS -->
-      </aside>
-
     </div>
   </div>
 
-  <!-- 🤖 FlowZen Intelligence Side Drawer / Query Assistant -->
+  <!-- Floating Draggable INSIGHTS Panel -->
+  <aside class="insights-sidebar" id="insights-sidebar-container">
+    <!-- Insights Injected via JS -->
+  </aside>
+
+  <!-- FlowZen Intelligence Side Drawer / Query Assistant -->
   <div class="intelligence-drawer" id="intelligence-drawer">
-    <div class="modal-header" style="background: var(--secondary);">
-      <h3 class="modal-title" style="font-size: 1.1rem; color: #000;">🤖 FlowZen Intelligence Assistant</h3>
-      <button class="modal-close" id="close-intelligence-drawer">✕</button>
+    <div class="modal-header">
+      <h3 class="modal-title" style="font-size: 1.05rem;">FlowZen AI Assistant</h3>
+      <button class="modal-close" id="close-intelligence-drawer" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
     </div>
     <div style="padding: 1.25rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
       
@@ -182,19 +200,19 @@
       <div>
         <label class="form-label" style="font-size: 0.78rem;">Suggested Board Queries:</label>
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 4px;">
-          <span class="query-suggestion-pill" data-query="Which tasks are critical risk?">🚨 Critical Risks</span>
-          <span class="query-suggestion-pill" data-query="What should I work on next?">🎯 Next Focus</span>
-          <span class="query-suggestion-pill" data-query="Show active tasks assigned to Priya">👤 Priya's Tasks</span>
-          <span class="query-suggestion-pill" data-query="Where are the bottlenecks?">⚠️ Bottlenecks</span>
-          <span class="query-suggestion-pill" data-query="Which tasks are blocked?">🔒 Blocked Tasks</span>
+          <span class="query-suggestion-pill" data-query="Which tasks are critical risk?">Critical Risks</span>
+          <span class="query-suggestion-pill" data-query="What should I work on next?">Next Focus</span>
+          <span class="query-suggestion-pill" data-query="Show active tasks assigned to Priya">Priya's Tasks</span>
+          <span class="query-suggestion-pill" data-query="Where are the bottlenecks?">Bottlenecks</span>
+          <span class="query-suggestion-pill" data-query="Which tasks are blocked?">Blocked Tasks</span>
         </div>
       </div>
 
       <!-- Query Answer Output Box -->
       <div class="query-output-box" id="intelligence-query-output">
-🤖 **FlowZen Intelligence Assistant Ready**
+FlowZen Intelligence Assistant Ready.
 
-Type any question above or click a suggestion pill to inspect risk scores (0-100), task recommendations, bottlenecks, and team task assignments!
+Type any question above or click a suggestion pill to inspect risk scores (0-100), task recommendations, bottlenecks, and team task assignments.
       </div>
 
     </div>
@@ -203,8 +221,10 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   <!-- Activity Feed Side Drawer -->
   <div class="activity-drawer" id="activity-drawer">
     <div class="modal-header">
-      <h3 class="modal-title" style="font-size: 1.1rem;">📜 Live Activity Feed</h3>
-      <button class="modal-close" id="close-activity-drawer">✕</button>
+      <h3 class="modal-title" style="font-size: 1.05rem;">Live Activity Feed</h3>
+      <button class="modal-close" id="close-activity-drawer" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
     </div>
     <div class="activity-feed-list" id="activity-feed-container">
       <!-- Activity items Injected -->
@@ -215,8 +235,10 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   <div class="modal-backdrop" id="task-edit-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title" id="task-modal-title">✏️ Edit Task</h3>
-        <button class="modal-close" data-close-modal>✕</button>
+        <h3 class="modal-title" id="task-modal-title">Edit Task</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
       <div class="modal-body">
         <form id="task-edit-form">
@@ -234,20 +256,18 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
             <div class="form-group">
               <label class="form-label">Assignee</label>
               <select class="select" id="task-assignee-select">
-                <option value="Alex Rivera">👤 Alex Rivera</option>
-                <option value="Priya Sharma">👤 Priya Sharma</option>
-                <option value="Aman Verma">👤 Aman Verma</option>
+                <option value="Unassigned">Unassigned</option>
               </select>
             </div>
 
             <div class="form-group">
               <label class="form-label">Category / Type</label>
               <select class="select" id="task-category-select">
-                <option value="Backend">⚙️ Backend</option>
-                <option value="Frontend">🎨 Frontend</option>
-                <option value="Design">🖌️ Design</option>
-                <option value="Docs">📝 Docs</option>
-                <option value="DevOps">🚀 DevOps</option>
+                <option value="Backend">Backend</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Design">Design</option>
+                <option value="Docs">Docs</option>
+                <option value="DevOps">DevOps</option>
               </select>
             </div>
           </div>
@@ -256,11 +276,11 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
             <div class="form-group">
               <label class="form-label">Priority Level</label>
               <select class="select" id="task-priority-select">
-                <option value="critical">🔴 Critical</option>
-                <option value="urgent">🔴 Urgent</option>
-                <option value="high" selected>🟠 High</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="low">🔵 Low</option>
+                <option value="critical">Critical</option>
+                <option value="urgent">Urgent</option>
+                <option value="high" selected>High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
               </select>
             </div>
 
@@ -287,11 +307,11 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
             <input type="text" class="input" id="task-labels-input" placeholder="e.g. Security, Auth">
           </div>
 
-          <div class="form-group card card-yellow" style="padding: 0.85rem;">
-            <label class="form-label">🔒 Task Dependency (Blocked By)</label>
+          <div class="form-group card card-yellow" style="padding: 0.85rem; border-radius: 0px !important;">
+            <label class="form-label">Task Dependency (Blocked By)</label>
             <select class="select" id="task-dependency-select">
             </select>
-            <span style="font-size: 0.78rem; opacity: 0.85; margin-top: 4px; font-weight: 600;">
+            <span style="font-size: 0.78rem; opacity: 0.85; margin-top: 4px; font-weight: 500;">
               This task will be marked <strong>BLOCKED</strong> until the selected dependency task moves to Done.
             </span>
           </div>
@@ -306,7 +326,8 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="delete-task-modal-btn" style="margin-right: auto; display: none;">🗑️ Delete Task</button>
+            <button type="button" class="btn btn-danger" id="delete-task-modal-btn" style="margin-right: auto; display: none;">Delete Task</button>
+            <button type="button" class="btn btn-outline" id="quick-complete-task-btn">Complete Task</button>
             <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
             <button type="submit" class="btn btn-primary">Save Task</button>
           </div>
@@ -319,8 +340,10 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   <div class="modal-backdrop" id="column-options-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title">⚙️ Column Options & WIP Limit</h3>
-        <button class="modal-close" data-close-modal>✕</button>
+        <h3 class="modal-title">Column Options & WIP Limit</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -331,9 +354,16 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
         <div class="form-group">
           <label class="form-label">WIP (Work-In-Progress) Capacity Limit</label>
           <input type="number" class="input" id="col-wip-input" placeholder="e.g. 4 (Leave empty for no limit)">
-          <span style="font-size: 0.8rem; color: var(--accent-gray); margin-top: 4px;">
+          <span style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 4px;">
             Column header will alert team when tasks exceed this limit.
           </span>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.75rem;">
+          <label class="checkbox-custom">
+            <input type="checkbox" id="col-is-done-checkbox">
+            <span style="font-size: 0.85rem;">Set as Completion Stage (Tasks here are counted as Done)</span>
+          </label>
         </div>
 
         <div class="modal-footer">
@@ -349,8 +379,10 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   <div class="modal-backdrop" id="analytics-modal">
     <div class="modal" style="max-width: 750px;">
       <div class="modal-header">
-        <h3 class="modal-title">📊 FlowZen Intelligence & Workflow Analytics</h3>
-        <button class="modal-close" data-close-modal>✕</button>
+        <h3 class="modal-title">FlowZen Intelligence & Workflow Analytics</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
       <div class="modal-body" id="analytics-modal-body">
         <!-- Rendered via analytics.js -->
@@ -362,32 +394,76 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   <div class="modal-backdrop" id="share-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title">🔗 Share FlowZen Board</h3>
-        <button class="modal-close" data-close-modal>✕</button>
+        <h3 class="modal-title">Share FlowZen Board</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
       <div class="modal-body">
-        <p style="margin-bottom: 1rem; font-weight: 600;">Share this link to collaborate live across multiple tabs or browser windows:</p>
+        <p style="margin-bottom: 1rem; font-weight: 500;">Share this link to collaborate live across multiple tabs or browser windows:</p>
         <div class="form-group">
           <input type="text" class="input" id="share-link-input" readonly>
         </div>
         <button class="btn btn-primary" id="copy-share-link-btn" style="width: 100%;">
-          📋 Copy Link to Clipboard
+          Copy Link to Clipboard
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Manage Board Team Modal -->
+  <div class="modal-backdrop" id="manage-team-modal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Manage Board Team</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="manage-team-list-container" style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="card" style="padding: 1rem; background: var(--bg-alt); border: 1px solid var(--color-border); border-radius: 0px !important;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Add New Member</h4>
+          <form id="add-team-member-form" class="flex flex-column gap-3">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.8rem;">Name *</label>
+              <input type="text" class="input" id="new-member-name" required placeholder="Member's full name">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.8rem;">Email (Optional)</label>
+              <input type="email" class="input" id="new-member-email" placeholder="name@company.com">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.8rem;">Role</label>
+              <select class="select" id="new-member-role">
+                <option value="Member">Member</option>
+                <option value="Viewer">Viewer</option>
+                <option value="Owner">Owner</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; align-self: flex-start;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Board
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- JS Modules Core App Initialization -->
   <script type="module">
-    import { initAuth, getCurrentUser, logoutUser } from './js/auth.js';
+    import { initAuth, getCurrentUser, logoutUser, updateUserProfile } from './js/auth.js';
     import { boardState, initBoardStateSync, subscribeToState, saveColumn } from './js/board-state.js';
-    import { renderBoardView, openTaskEditModal, openColumnOptionsModal } from './js/board-render.js';
+    import { renderBoardView, openTaskEditModal, openColumnOptionsModal, openTeamManagementModal } from './js/board-render.js';
     import { initDragAndDrop } from './js/drag-drop.js';
     import { subscribeActivityFeed } from './js/activity-log.js';
     import { renderAnalyticsDashboard } from './js/analytics.js';
     import { queryBoardIntelligence } from './js/flowzen-intelligence.js';
     import { initTheme } from './js/theme.js';
-    import { openModal, closeModal, showToast } from './js/ui-utils.js';
+    import { openModal, closeModal, showToast, openUserProfileModal } from './js/ui-utils.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
@@ -410,7 +486,12 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
 
         const badge = document.getElementById('user-profile-badge');
         if (badge && user) {
-          badge.innerText = `👤 ${user.displayName || user.email.split('@')[0]}`;
+          badge.innerText = `${user.displayName || user.email.split('@')[0]}`;
+          badge.style.cursor = 'pointer';
+          badge.title = 'Click to view and edit your profile';
+          badge.onclick = () => {
+            openUserProfileModal(getCurrentUser(), updateUserProfile);
+          };
         }
 
         subscribeToState(() => renderBoardView());
@@ -459,6 +540,13 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
       document.getElementById('add-column-top-btn').addEventListener('click', () => {
         openColumnOptionsModal(null);
       });
+
+      const manageTeamBtn = document.getElementById('manage-team-btn');
+      if (manageTeamBtn) {
+        manageTeamBtn.addEventListener('click', () => {
+          openTeamManagementModal();
+        });
+      }
 
       // FlowZen Intelligence Side Drawer Handlers
       const intelDrawer = document.getElementById('intelligence-drawer');
@@ -520,7 +608,28 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
       document.getElementById('close-activity-drawer').addEventListener('click', () => {
         activityDrawer.classList.remove('active');
       });
+
+      // Insights Floating Panel Toggle Handlers
+      const insightsSidebar = document.getElementById('insights-sidebar-container');
+      const toggleInsightsPanel = () => {
+        if (insightsSidebar) {
+          insightsSidebar.classList.toggle('active');
+        }
+      };
+
+      const topInsightsBtn = document.getElementById('insights-toggle-btn');
+      if (topInsightsBtn) {
+        topInsightsBtn.addEventListener('click', toggleInsightsPanel);
+      }
+
+      const sideTabBtn = document.getElementById('insights-side-tab-btn');
+      if (sideTabBtn) {
+        sideTabBtn.addEventListener('click', toggleInsightsPanel);
+      }
     });
   </script>
 </body>
 </html>
+
+
+

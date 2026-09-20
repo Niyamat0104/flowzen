@@ -1,126 +1,127 @@
-/* FlowZen Design System - Futuristic Neon Glassmorphism & Cyberpunk Glow Tokens */
+/* FlowZen Design System — Sharp Corners High-End Executive SaaS Tokens */
 :root {
   /* Color Palette - Light Theme Glass */
-  --bg-main: #F3F0FF;
-  --bg-card: rgba(255, 255, 255, 0.75);
-  --bg-alt: rgba(245, 243, 255, 0.65);
-  --bg-dark-surface: #0F0E1E;
+  --bg-main: #F8FAFC;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-alt: rgba(241, 245, 249, 0.8);
+  --bg-dark-surface: #090A0F;
   
   --color-black: #0F172A;
   --color-white: #FFFFFF;
-  --color-border: rgba(124, 58, 237, 0.25);
+  --color-border: rgba(99, 102, 241, 0.25);
   --color-muted: #64748B;
-  --shadow-color: rgba(124, 58, 237, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.12);
   
-  /* Brand Accent Colors - Electric Neon Palette */
-  --primary: #8B5CF6;        /* Neon Purple */
-  --primary-hover: #7C3AED;
-  --primary-light: rgba(139, 92, 246, 0.15);
-  --primary-glow: rgba(139, 92, 246, 0.4);
+  /* Brand Accent Colors — Sharp Executive SaaS Palette */
+  --primary: #4F46E5;        /* Deep Executive Indigo */
+  --primary-hover: #4338CA;
+  --primary-light: rgba(79, 70, 229, 0.12);
+  --primary-glow: rgba(79, 70, 229, 0.35);
   
-  --secondary: #FACC15;      /* Electric Gold */
-  --secondary-hover: #EAB308;
-  --secondary-light: rgba(250, 204, 21, 0.18);
-  --secondary-glow: rgba(250, 204, 21, 0.45);
+  --secondary: #0EA5E9;      /* Crisp SaaS Cyan */
+  --secondary-hover: #0284C7;
+  --secondary-light: rgba(14, 165, 233, 0.14);
+  --secondary-glow: rgba(14, 165, 233, 0.4);
   
-  --accent-cyan: #06B6D4;     /* Electric Cyan */
-  --accent-cyan-light: rgba(6, 182, 212, 0.15);
-  --accent-cyan-glow: rgba(6, 182, 212, 0.4);
+  --accent-cyan: #0EA5E9;
+  --accent-cyan-light: rgba(14, 165, 233, 0.14);
+  --accent-cyan-glow: rgba(14, 165, 233, 0.35);
   
-  --accent-pink: #EC4899;     /* Neon Pink / Magenta */
-  --accent-pink-light: rgba(236, 72, 153, 0.15);
-  --accent-pink-glow: rgba(236, 72, 153, 0.45);
+  --accent-pink: #D946EF;
+  --accent-pink-light: rgba(217, 70, 239, 0.14);
+  --accent-pink-glow: rgba(217, 70, 239, 0.35);
   
-  --accent-emerald: #10B981;  /* Cyber Emerald */
-  --accent-emerald-light: rgba(16, 185, 129, 0.15);
-  --accent-emerald-glow: rgba(16, 185, 129, 0.4);
+  --accent-emerald: #10B981;
+  --accent-emerald-light: rgba(16, 185, 129, 0.14);
+  --accent-emerald-glow: rgba(16, 185, 129, 0.35);
   
-  --accent-coral: #F43F5E;    /* Neon Coral / Urgent */
-  --accent-coral-light: rgba(244, 63, 94, 0.15);
-  --accent-coral-glow: rgba(244, 63, 94, 0.45);
+  --accent-coral: #EF4444;
+  --accent-coral-light: rgba(239, 68, 68, 0.14);
+  --accent-coral-glow: rgba(239, 68, 68, 0.35);
 
-  --accent-orange: #F97316;   /* Electric Orange */
-  --accent-orange-light: rgba(249, 115, 22, 0.15);
-  --accent-orange-glow: rgba(249, 115, 22, 0.4);
+  --accent-orange: #F97316;
+  --accent-orange-light: rgba(249, 115, 22, 0.14);
+  --accent-orange-glow: rgba(249, 115, 22, 0.35);
 
-  --accent-blue: #3B82F6;     /* Royal Neon Blue */
-  --accent-blue-light: rgba(59, 130, 246, 0.15);
+  --accent-blue: #3B82F6;
+  --accent-blue-light: rgba(59, 130, 246, 0.14);
 
   --accent-gray: #64748B;
-  --accent-gray-light: rgba(241, 245, 249, 0.6);
+  --accent-gray-light: rgba(241, 245, 249, 0.8);
 
-  /* Glassmorphism Signatures */
-  --glass-backdrop: blur(16px) saturate(180%);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
-  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.12);
-  --border-main: 1.5px solid var(--color-border);
+  /* Glassmorphism & Sharp Borders */
+  --glass-backdrop: blur(16px);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.1);
+  --border-main: 1px solid var(--color-border);
   
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-pill: 9999px;
+  /* EXPLICIT SHARP CORNERS (0px) */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-pill: 0px;
 
-  /* Luminous Ambient Shadows */
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px -4px rgba(124, 58, 237, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 16px 36px -6px rgba(124, 58, 237, 0.25), 0 0 20px rgba(6, 182, 212, 0.15);
-  --shadow-xl: 0 24px 48px -8px rgba(124, 58, 237, 0.35), 0 0 30px rgba(236, 72, 153, 0.2);
-  --shadow-neon-primary: 0 0 20px var(--primary-glow);
-  --shadow-neon-cyan: 0 0 20px var(--accent-cyan-glow);
-  --shadow-neon-pink: 0 0 20px var(--accent-pink-glow);
+  /* Executive Minimalist Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 20px -4px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.18);
+  --shadow-xl: 0 24px 48px -8px rgba(0, 0, 0, 0.25);
+  --shadow-neon-primary: 0 0 15px var(--primary-glow);
+  --shadow-neon-cyan: 0 0 15px var(--accent-cyan-glow);
+  --shadow-neon-pink: 0 0 15px var(--accent-pink-glow);
   
   /* Micro-Interaction Transforms */
-  --pressed-transform: scale(0.98);
-  --pressed-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --pressed-transform: translateY(1px);
+  --pressed-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 
-  --hover-transform: translateY(-4px) scale(1.01);
-  --hover-shadow: 0 14px 32px -4px rgba(124, 58, 237, 0.3), 0 0 15px rgba(6, 182, 212, 0.2);
+  --hover-transform: translateY(-2px);
+  --hover-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.2);
 
-  /* Typography */
-  --font-family-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-display: 'Space Grotesk', var(--font-family-sans);
+  /* Typography — Inter & Plus Jakarta Sans */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
 
   /* Transitions */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-spring: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Layout Spacing */
-  --header-height: 72px;
+  --header-height: 64px;
   --sidebar-width: 280px;
 }
 
-/* Dark Mode Tokens Override - Deep Cyberpunk Neon Glass */
+/* Dark Mode Tokens Override — High-End Obsidian Glass */
 [data-theme="dark"] {
-  --bg-main: #060713;
-  --bg-card: rgba(18, 20, 38, 0.72);
-  --bg-alt: rgba(26, 29, 54, 0.65);
-  --bg-dark-surface: #04050C;
+  --bg-main: #05050A;
+  --bg-card: rgba(13, 15, 23, 0.85);
+  --bg-alt: rgba(21, 24, 38, 0.75);
+  --bg-dark-surface: #020204;
 
   --color-black: #F8FAFC;
-  --color-white: #060713;
-  --color-border: rgba(139, 92, 246, 0.3);
+  --color-white: #05050A;
+  --color-border: rgba(99, 102, 241, 0.25);
   --color-muted: #94A3B8;
-  --shadow-color: rgba(0, 0, 0, 0.6);
+  --shadow-color: rgba(0, 0, 0, 0.9);
 
-  --border-main: 1.5px solid var(--color-border);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+  --border-main: 1px solid var(--color-border);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
   
-  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 18px rgba(139, 92, 246, 0.2);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(6, 182, 212, 0.25);
-  --shadow-xl: 0 24px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(236, 72, 153, 0.3);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.85);
+  --shadow-xl: 0 24px 50px rgba(0, 0, 0, 0.95);
 
-  --primary-light: rgba(139, 92, 246, 0.22);
-  --secondary-light: rgba(250, 204, 21, 0.2);
-  --accent-cyan-light: rgba(6, 182, 212, 0.2);
-  --accent-pink-light: rgba(236, 72, 153, 0.2);
-  --accent-emerald-light: rgba(16, 185, 129, 0.2);
-  --accent-coral-light: rgba(244, 63, 94, 0.2);
-  --accent-orange-light: rgba(249, 115, 22, 0.2);
-  --accent-blue-light: rgba(59, 130, 246, 0.2);
-  --accent-gray-light: rgba(30, 41, 59, 0.7);
+  --primary-light: rgba(99, 102, 241, 0.2);
+  --secondary-light: rgba(14, 165, 233, 0.18);
+  --accent-cyan-light: rgba(14, 165, 233, 0.18);
+  --accent-pink-light: rgba(217, 70, 239, 0.18);
+  --accent-emerald-light: rgba(16, 185, 129, 0.18);
+  --accent-coral-light: rgba(239, 68, 68, 0.18);
+  --accent-orange-light: rgba(249, 115, 22, 0.18);
+  --accent-blue-light: rgba(59, 130, 246, 0.18);
+  --accent-gray-light: rgba(30, 41, 59, 0.75);
 
   --accent-gray: #94A3B8;
 }

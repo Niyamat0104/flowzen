@@ -1,5 +1,5 @@
 /* FlowZen DOM Renderer for Kanban Board View, Quick Stats, Insights Sidebar & Assignees */
-import { boardState, saveTask, deleteTask, saveColumn, deleteColumn } from './board-state.js';
+import { boardState, saveTask, deleteTask, saveColumn, deleteColumn, addTeamMemberToBoard, updateMemberRole, removeTeamMember } from './board-state.js';
 import { filterTasks, sortTasks } from './filters-sort.js';
 import { formatDate, isOverdue, getTaskAgeDays } from './date-utils.js';
 import { analyzeFlowZenIntelligence } from './flowzen-intelligence.js';
@@ -7,24 +7,146 @@ import { openModal, closeModal, escapeHTML, showToast } from './ui-utils.js';
 
 let activeEditTaskId = null;
 
+export function getDoneColumns(columns) {
+  if (!columns || columns.length === 0) return [];
+  const explicitDone = columns.filter(c => c.isDoneColumn || c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed') || c.title.toLowerCase().includes('finish'));
+  if (explicitDone.length > 0) return explicitDone;
+  return [columns[columns.length - 1]];
+}
+
+function getMemberInitial(name) {
+  if (!name || name === 'Unassigned') return 'U';
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
+export function populateAssigneeDropdowns() {
+  const team = (boardState.boardData && Array.isArray(boardState.boardData.team))
+    ? boardState.boardData.team
+    : [];
+
+  // Toolbar Filter Dropdown (#filter-assignee-select)
+  const filterSelect = document.getElementById('filter-assignee-select');
+  if (filterSelect) {
+    const currentVal = boardState.filterState.assignee || 'all';
+    filterSelect.innerHTML = `
+      <option value="all">All Assignees</option>
+      ${team.map(m => `<option value="${escapeHTML(m.name)}">${escapeHTML(m.name)}</option>`).join('')}
+    `;
+    filterSelect.value = currentVal;
+    if (!filterSelect.value) filterSelect.value = 'all';
+  }
+
+  // Task Edit Modal Dropdown (#task-assignee-select)
+  const taskAssigneeSelect = document.getElementById('task-assignee-select');
+  if (taskAssigneeSelect) {
+    const currentVal = taskAssigneeSelect.value;
+    taskAssigneeSelect.innerHTML = `
+      <option value="Unassigned">Unassigned</option>
+      ${team.map(m => `<option value="${escapeHTML(m.name)}">${escapeHTML(m.name)} (${m.role})</option>`).join('')}
+    `;
+    if (currentVal && Array.from(taskAssigneeSelect.options).some(o => o.value === currentVal)) {
+      taskAssigneeSelect.value = currentVal;
+    }
+  }
+}
+
+export function renderTeamManagementModal() {
+  const container = document.getElementById('manage-team-list-container');
+  if (!container || !boardState.boardData) return;
+
+  const board = boardState.boardData;
+  const team = Array.isArray(board.team) ? board.team : [];
+
+  container.innerHTML = team.map(m => {
+    const isOwner = m.role === 'Owner' || m.id === board.ownerId;
+    const initial = getMemberInitial(m.name);
+    return `
+      <div class="team-member-item flex items-center justify-between gap-3" style="padding: 0.65rem 0.85rem; background: var(--bg-card); border: 1px solid var(--color-border); border-radius: 0px !important;">
+        <div class="flex items-center gap-3" style="flex: 1; min-width: 0;">
+          <span class="avatar-pill" style="background: ${m.color || 'var(--primary)'}; color: #FFF; width: 32px; height: 32px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; border-radius: 0px !important;">
+            ${initial}
+          </span>
+          <div style="flex: 1; min-width: 0; overflow: hidden;">
+            <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+              ${escapeHTML(m.name)}
+              ${isOwner ? '<span class="badge badge-primary" style="font-size: 0.68rem; padding: 2px 6px; margin-left: 6px; border-radius: 0px !important;">Owner</span>' : ''}
+            </div>
+            ${m.email ? `<div style="font-size: 0.75rem; color: var(--text-tertiary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${escapeHTML(m.email)}</div>` : ''}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          ${isOwner ? `
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary); padding: 0.2rem 0.5rem;">Owner</span>
+          ` : `
+            <select class="select team-member-role-select" data-member-id="${m.id}" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.78rem;">
+              <option value="Member" ${m.role === 'Member' ? 'selected' : ''}>Member</option>
+              <option value="Viewer" ${m.role === 'Viewer' ? 'selected' : ''}>Viewer</option>
+            </select>
+            <button type="button" class="btn btn-sm btn-icon remove-team-member-btn" data-member-id="${m.id}" title="Remove Member" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--accent-coral); display: inline-flex; align-items: center; justify-content: center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.team-member-role-select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const mId = e.target.getAttribute('data-member-id');
+      const newRole = e.target.value;
+      updateMemberRole(mId, newRole);
+      renderTeamManagementModal();
+      populateAssigneeDropdowns();
+      showToast("Role updated", "info");
+    });
+  });
+
+  container.querySelectorAll('.remove-team-member-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mId = btn.getAttribute('data-member-id');
+      const target = team.find(m => m.id === mId);
+      const name = target ? target.name : 'this member';
+      if (confirm(`Are you sure you want to remove ${name} from the team?`)) {
+        removeTeamMember(mId);
+        renderTeamManagementModal();
+        populateAssigneeDropdowns();
+        renderBoardView();
+        showToast("Team member removed", "info");
+      }
+    });
+  });
+}
+
+export function openTeamManagementModal() {
+  renderTeamManagementModal();
+  openModal('manage-team-modal');
+}
+
 export function renderBoardView() {
   const board = boardState.boardData;
   if (!board) return;
 
-  // 1. Update Board Title Header
+  // 1. Populate Assignee Dropdowns
+  populateAssigneeDropdowns();
+
+  // 2. Update Board Title Header
   const titleEl = document.getElementById('board-title');
   if (titleEl) titleEl.innerText = board.title;
 
-  // 2. Run FlowZen Intelligence Analysis
+  // 3. Run FlowZen Intelligence Analysis
   const intelligence = analyzeFlowZenIntelligence(boardState.tasks, boardState.columns);
 
-  // 3. Render Board Quick Stats Bar (27 Tasks • 12 Done • 3 Overdue • 2 Blocked)
+  // 4. Render Board Quick Stats Bar
   renderQuickStatsBar(boardState.tasks, boardState.columns);
 
-  // 4. Render 🤖 FlowZen Intelligence Recommendation Banner
+  // 5. Render FlowZen Intelligence Recommendation Banner
   renderFlowZenIntelligenceWidget(intelligence);
 
-  // 5. Render Columns & Task Cards in Left Viewport
+  // 6. Render Columns & Task Cards in Left Viewport
   const viewport = document.getElementById('kanban-viewport');
   if (!viewport) return;
 
@@ -45,30 +167,30 @@ export function renderBoardView() {
         <div class="kanban-column-header ${isWipExceeded || bottleneckAlert ? 'wip-alert' : ''}">
           <div class="column-title">
             <span>${escapeHTML(column.title)}</span>
-            <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}">
+            <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}" style="border-radius: 0px !important;">
               ${taskCount}${column.wipLimit ? ` / ${column.wipLimit} WIP` : ''}
             </span>
           </div>
           <div class="flex items-center gap-1">
             <button class="btn btn-sm btn-icon add-task-col-btn" title="Add task to ${escapeHTML(column.title)}" data-column-id="${column.id}">
-              ➕
+              +
             </button>
             <button class="btn btn-sm btn-icon edit-col-btn" title="Edit column options" data-column-id="${column.id}">
-              ⚙️
+              Options
             </button>
           </div>
         </div>
 
         ${bottleneckAlert ? `
-          <div style="background-color: var(--accent-coral); color: #FFF; font-weight: 800; font-size: 0.78rem; padding: 0.35rem 0.75rem; border-bottom: 2px solid #000;">
-            ⚠️ Bottleneck: ${escapeHTML(bottleneckAlert.reason)}
+          <div style="background-color: var(--accent-coral); color: #FFF; font-weight: 700; font-size: 0.78rem; padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--color-border);">
+            Bottleneck: ${escapeHTML(bottleneckAlert.reason)}
           </div>
         ` : ''}
 
         <div class="kanban-column-body" data-column-id="${column.id}">
           ${colTasks.length === 0 ? `
-            <div style="text-align: center; color: var(--accent-gray); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 2px dashed var(--color-border); border-radius: var(--radius-sm);">
-              Drop tasks here or click ➕
+            <div style="text-align: center; color: var(--text-tertiary); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 1px dashed var(--color-border); border-radius: 0px !important;">
+              Drop tasks here or click +
             </div>
           ` : colTasks.map(task => {
             const taskIntel = intelligence.analyzedTasks.find(a => a.task.id === task.id);
@@ -79,14 +201,14 @@ export function renderBoardView() {
     `;
   }).join('');
 
-  // 6. Render Right-Side INSIGHTS Panel
+  // 7. Render Right-Side INSIGHTS Panel
   renderInsightsSidebar(boardState.tasks, boardState.columns, intelligence);
 
   attachBoardEvents();
 }
 
 /**
- * Renders Board Quick Stats Bar (matching user mockup: XX Tasks, XX Done, X Overdue, X Blocked)
+ * Renders Board Quick Stats Bar (XX Tasks, XX Done, X Overdue, X Blocked)
  */
 function renderQuickStatsBar(tasks, columns) {
   const container = document.getElementById('board-stats-bar-container');
@@ -94,7 +216,7 @@ function renderQuickStatsBar(tasks, columns) {
 
   const total = tasks.length;
   
-  const doneCols = columns.filter(c => c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed'));
+  const doneCols = getDoneColumns(columns);
   const doneColIds = doneCols.map(c => c.id);
   const doneCount = tasks.filter(t => doneColIds.includes(t.columnId)).length;
 
@@ -110,17 +232,17 @@ function renderQuickStatsBar(tasks, columns) {
   }).length;
 
   container.innerHTML = `
-    <div class="stat-pill stat-pill-total" title="Total active board tasks">
-      📊 <strong>${total} Tasks</strong>
+    <div class="stat-pill stat-pill-total" title="Total active board tasks" style="border-radius: 0px !important;">
+      <strong>${total} Tasks</strong>
     </div>
-    <div class="stat-pill stat-pill-done" title="Completed tasks">
-      🎉 <strong>${doneCount} Done</strong>
+    <div class="stat-pill stat-pill-done" title="Completed tasks" style="border-radius: 0px !important;">
+      <strong>${doneCount} Done</strong>
     </div>
-    <div class="stat-pill stat-pill-overdue" title="Overdue tasks requiring immediate attention">
-      ⚠️ <strong>${overdueCount} Overdue</strong>
+    <div class="stat-pill stat-pill-overdue" title="Overdue tasks requiring immediate attention" style="border-radius: 0px !important;">
+      <strong>${overdueCount} Overdue</strong>
     </div>
-    <div class="stat-pill stat-pill-blocked" title="Tasks blocked by dependencies">
-      🔒 <strong>${blockedCount} Blocked</strong>
+    <div class="stat-pill stat-pill-blocked" title="Tasks blocked by dependencies" style="border-radius: 0px !important;">
+      <strong>${blockedCount} Blocked</strong>
     </div>
   `;
 }
@@ -133,6 +255,10 @@ function renderTaskCard(task, intel) {
   const parentTaskTitle = intel ? intel.parentTaskTitle : null;
   const predictedEffort = intel ? intel.predictedEffort : (task.estimatedHours || 4);
   const blockedDownstream = intel ? intel.blockedDownstreamCount : 0;
+
+  const doneCols = getDoneColumns(boardState.columns);
+  const doneColIds = doneCols.map(c => c.id);
+  const isTaskDone = doneColIds.includes(task.columnId);
 
   const riskBadgeClass = {
     Critical: 'badge-urgent',
@@ -150,78 +276,96 @@ function renderTaskCard(task, intel) {
     subtaskSummary = `${doneCount}/${totalCount}`;
   }
 
+  const initial = getMemberInitial(task.assignee);
+
+  let memberColor = 'var(--bg-alt)';
+  let memberTextColor = 'var(--text-primary)';
+  if (boardState.boardData && Array.isArray(boardState.boardData.team)) {
+    const member = boardState.boardData.team.find(m => m.name === task.assignee || m.id === task.assignee);
+    if (member && member.color) {
+      memberColor = member.color;
+      memberTextColor = '#FFFFFF';
+    }
+  }
+
   return `
-    <div class="task-card ${isBlocked ? 'is-blocked' : ''}" draggable="true" data-task-id="${task.id}">
+    <div class="task-card ${isBlocked ? 'is-blocked' : ''} ${isTaskDone ? 'is-done-card' : ''}" draggable="true" data-task-id="${task.id}" style="border-radius: 0px !important; ${isTaskDone ? 'border-left: 3px solid var(--accent-emerald); opacity: 0.9;' : ''}">
       <div class="task-card-header">
-        <div class="task-card-title">${escapeHTML(task.title)}</div>
+        <div class="task-card-title" style="${isTaskDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">${escapeHTML(task.title)}</div>
         <div class="flex items-center gap-1">
-          <span class="badge ${riskBadgeClass}" title="Risk Score: ${riskScore}/100">
+          <span class="badge ${riskBadgeClass}" title="Risk Score: ${riskScore}/100" style="border-radius: 0px !important;">
             Risk: ${riskScore}/100
           </span>
-          <span class="badge badge-${task.priority || 'medium'}">${task.priority || 'med'}</span>
+          <span class="badge badge-${task.priority || 'medium'}" style="border-radius: 0px !important;">${task.priority || 'med'}</span>
         </div>
       </div>
 
       ${isBlocked && parentTaskTitle ? `
         <div style="margin-bottom: 0.5rem;">
-          <span class="badge badge-blocked">🔒 BLOCKED BY ${escapeHTML(parentTaskTitle.substring(0, 16))}...</span>
+          <span class="badge badge-blocked" style="border-radius: 0px !important;">BLOCKED BY ${escapeHTML(parentTaskTitle.substring(0, 16))}...</span>
         </div>
       ` : ''}
 
       ${blockedDownstream > 0 ? `
         <div style="margin-bottom: 0.5rem;">
-          <span class="badge badge-medium" style="font-size: 0.72rem;">⚡ Blocks ${blockedDownstream} downstream task${blockedDownstream > 1 ? 's' : ''}</span>
+          <span class="badge badge-medium" style="font-size: 0.72rem; border-radius: 0px !important;">Blocks ${blockedDownstream} downstream task${blockedDownstream > 1 ? 's' : ''}</span>
         </div>
       ` : ''}
 
       <!-- Assignee & Effort Row -->
-      <div class="flex items-center justify-between" style="font-size: 0.78rem; font-weight: 700; margin-bottom: 0.45rem; color: var(--accent-gray);">
-        <span class="badge badge-label" style="font-size: 0.7rem; padding: 0.15rem 0.45rem;">
-          👤 ${escapeHTML(task.assignee || 'Unassigned')}
-        </span>
-        <span>⏱️ Est: ${task.estimatedHours || 4}h → Pred: ${predictedEffort}h</span>
+      <div class="flex items-center justify-between" style="font-size: 0.78rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-secondary);">
+        <div class="flex items-center gap-1.5">
+          <span class="avatar-pill" style="width: 20px; height: 20px; font-size: 0.65rem; border-radius: 0px !important; display: inline-flex; align-items: center; justify-content: center; background: ${memberColor}; border: 1px solid var(--color-border); font-weight: 700; color: ${memberTextColor};">${initial}</span>
+          <span>${escapeHTML(task.assignee || 'Unassigned')}</span>
+        </div>
+        <span>Est: ${task.estimatedHours || 4}h &bull; Pred: ${predictedEffort}h</span>
       </div>
 
       ${task.description ? `
-        <p style="font-size: 0.82rem; color: var(--accent-gray); margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
           ${escapeHTML(task.description)}
         </p>
       ` : ''}
 
       ${intel && intel.riskReasons && intel.riskReasons.length > 0 ? `
-        <div style="background: var(--bg-alt); color: var(--color-black); padding: 0.4rem 0.6rem; border: 1.5px solid var(--color-border); border-radius: 6px; margin-bottom: 0.6rem; font-size: 0.75rem; font-weight: 600;">
-          <div style="font-weight: 800; font-size: 0.72rem; text-transform: uppercase; margin-bottom: 2px;">FlowZen Insight:</div>
+        <div style="background: var(--bg-alt); color: var(--text-primary); padding: 0.4rem 0.6rem; border: 1px solid var(--color-border); border-radius: 0px !important; margin-bottom: 0.6rem; font-size: 0.75rem; font-weight: 500;">
+          <div style="font-weight: 700; font-size: 0.72rem; text-transform: uppercase; margin-bottom: 2px; color: var(--text-tertiary);">FlowZen Insight:</div>
           ${intel.riskReasons.slice(0, 2).map(r => `<div>• ${escapeHTML(r)}</div>`).join('')}
         </div>
       ` : ''}
 
       ${subtaskSummary ? `
         <div style="margin-bottom: 0.5rem;">
-          <div class="flex items-center justify-between" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 2px;">
+          <div class="flex items-center justify-between" style="font-size: 0.75rem; font-weight: 600; margin-bottom: 2px;">
             <span>Subtasks</span>
             <span>${subtaskSummary}</span>
           </div>
-          <div class="progress-container">
-            <div class="progress-fill" style="width: ${subtaskPct}%;"></div>
+          <div class="progress-container" style="border-radius: 0px !important;">
+            <div class="progress-fill" style="width: ${subtaskPct}%; border-radius: 0px !important;"></div>
           </div>
         </div>
       ` : ''}
 
       <div class="task-card-footer">
         <span class="task-due-date ${isTaskOverdue ? 'overdue' : ''}">
-          📅 ${task.dueDate ? formatDate(task.dueDate) : 'No due date'}
-          ${isTaskOverdue ? ' ⚠️' : ''}
+          ${task.dueDate ? formatDate(task.dueDate) : 'No due date'}
+          ${isTaskOverdue ? ' (Overdue)' : ''}
         </span>
-        <button class="btn btn-sm btn-outline edit-task-btn" data-task-id="${task.id}" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
-          ✏️ Edit
-        </button>
+        <div class="flex items-center gap-1">
+          <button type="button" class="btn btn-sm ${isTaskDone ? 'btn-outline mark-done-btn' : 'btn-primary mark-done-btn'}" data-task-id="${task.id}" style="padding: 0.18rem 0.45rem; font-size: 0.72rem; ${isTaskDone ? 'border-color: var(--accent-emerald); color: var(--accent-emerald);' : ''}">
+            ${isTaskDone ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 3px; vertical-align: text-bottom;"><path d="M20 6 9 17l-5-5"/></svg>Completed' : 'Complete'}
+          </button>
+          <button type="button" class="btn btn-sm btn-outline edit-task-btn" data-task-id="${task.id}" style="padding: 0.18rem 0.4rem; font-size: 0.72rem;">
+            Edit
+          </button>
+        </div>
       </div>
     </div>
   `;
 }
 
 /**
- * Renders Right-Side INSIGHTS Sidebar Panel matching exact ASCII layout mockup
+ * Renders Floating Draggable INSIGHTS Panel
  */
 function renderInsightsSidebar(tasks, columns, intelligence) {
   const sidebar = document.getElementById('insights-sidebar-container');
@@ -251,55 +395,157 @@ function renderInsightsSidebar(tasks, columns, intelligence) {
   const completionPct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
 
   sidebar.innerHTML = `
-    <div class="insights-panel">
-      <div class="insights-panel-header">
-        📊 INSIGHTS
+    <div class="insights-drag-handle" id="insights-drag-handle">
+      <div class="flex items-center gap-2">
+        <span style="font-size: 0.8rem; opacity: 0.6; cursor: move;">⋮⋮</span>
+        <span>INSIGHTS</span>
       </div>
+      <div class="flex items-center gap-1.5">
+        <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 500;">(Drag header)</span>
+        <button type="button" class="btn btn-sm btn-icon" id="close-insights-btn" style="padding: 0.1rem 0.35rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center;" title="Close Panel">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
 
+    <div class="insights-body">
       <!-- Bottlenecks Card -->
-      <div class="insight-card">
+      <div class="insight-card" style="border-radius: 0px !important;">
         <div class="insight-card-title" style="color: var(--accent-coral);">
-          ⚠️ Bottleneck
+          Bottleneck
         </div>
-        <div style="font-size: 0.85rem; font-weight: 700;">
+        <div style="font-size: 0.85rem; font-weight: 600;">
           ${bottlenecks.length > 0 ? escapeHTML(bottlenecks[0].reason) : 'No bottlenecks detected across workflow stages.'}
         </div>
       </div>
 
       <!-- Blocked Tasks Card -->
-      <div class="insight-card">
+      <div class="insight-card" style="border-radius: 0px !important;">
         <div class="insight-card-title" style="color: var(--secondary-hover);">
-          🔒 Blocked Tasks
+          Blocked Tasks
         </div>
-        <div style="font-size: 0.85rem; font-weight: 700;">
+        <div style="font-size: 0.85rem; font-weight: 600;">
           <strong>${blockedTasks.length} task${blockedTasks.length !== 1 ? 's' : ''}</strong> waiting on dependencies.
         </div>
       </div>
 
       <!-- Aging Tasks Card -->
-      <div class="insight-card">
+      <div class="insight-card" style="border-radius: 0px !important;">
         <div class="insight-card-title" style="color: var(--accent-orange);">
-          ⏰ Aging Tasks (> 5 days)
+          Aging Tasks (> 5 days)
         </div>
-        <div style="font-size: 0.85rem; font-weight: 700;">
+        <div style="font-size: 0.85rem; font-weight: 600;">
           <strong>${agingTasks.length} task${agingTasks.length !== 1 ? 's' : ''}</strong> sitting > 5 days incomplete.
         </div>
       </div>
 
       <!-- Completion Card -->
-      <div class="insight-card">
+      <div class="insight-card" style="border-radius: 0px !important;">
         <div class="insight-card-title" style="color: var(--accent-emerald);">
-          📈 Completion Rate
+          Completion Rate
         </div>
-        <div style="font-size: 1.6rem; font-weight: 900; margin: 0.2rem 0;">
+        <div style="font-size: 1.6rem; font-weight: 800; margin: 0.2rem 0; font-family: var(--font-heading);">
           ${completionPct}%
         </div>
-        <div class="progress-container">
-          <div class="progress-fill" style="width: ${completionPct}%;"></div>
+        <div class="progress-container" style="border-radius: 0px !important;">
+          <div class="progress-fill" style="width: ${completionPct}%; border-radius: 0px !important;"></div>
         </div>
       </div>
     </div>
   `;
+
+  const closeBtn = document.getElementById('close-insights-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+    });
+  }
+
+  const handle = document.getElementById('insights-drag-handle');
+  if (handle) {
+    makeDraggable(sidebar, handle);
+  }
+}
+
+function makeDraggable(elmnt, handle) {
+  if (elmnt.dataset.dragInitialized) return;
+  elmnt.dataset.dragInitialized = "true";
+
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+  handle.addEventListener('mousedown', dragMouseDown);
+  handle.addEventListener('touchstart', dragTouchStart, { passive: false });
+
+  function dragMouseDown(e) {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.addEventListener('mouseup', closeDragElement);
+    document.addEventListener('mousemove', elementDrag);
+  }
+
+  function elementDrag(e) {
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+
+    let newTop = elmnt.offsetTop - pos2;
+    let newLeft = elmnt.offsetLeft - pos1;
+
+    const maxLeft = window.innerWidth - elmnt.offsetWidth;
+    const maxTop = window.innerHeight - elmnt.offsetHeight;
+
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(50, Math.min(newTop, maxTop));
+
+    elmnt.style.top = newTop + "px";
+    elmnt.style.left = newLeft + "px";
+    elmnt.style.right = "auto";
+  }
+
+  function closeDragElement() {
+    document.removeEventListener('mouseup', closeDragElement);
+    document.removeEventListener('mousemove', elementDrag);
+  }
+
+  function dragTouchStart(e) {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    const touch = e.touches[0];
+    pos3 = touch.clientX;
+    pos4 = touch.clientY;
+    document.addEventListener('touchend', closeTouchDrag);
+    document.addEventListener('touchmove', touchDrag, { passive: false });
+  }
+
+  function touchDrag(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    pos1 = pos3 - touch.clientX;
+    pos2 = pos4 - touch.clientY;
+    pos3 = touch.clientX;
+    pos4 = touch.clientY;
+
+    let newTop = elmnt.offsetTop - pos2;
+    let newLeft = elmnt.offsetLeft - pos1;
+
+    const maxLeft = window.innerWidth - elmnt.offsetWidth;
+    const maxTop = window.innerHeight - elmnt.offsetHeight;
+
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(50, Math.min(newTop, maxTop));
+
+    elmnt.style.top = newTop + "px";
+    elmnt.style.left = newLeft + "px";
+    elmnt.style.right = "auto";
+  }
+
+  function closeTouchDrag() {
+    document.removeEventListener('touchend', closeTouchDrag);
+    document.removeEventListener('touchmove', touchDrag);
+  }
 }
 
 function renderFlowZenIntelligenceWidget(intelligence) {
@@ -308,11 +554,11 @@ function renderFlowZenIntelligenceWidget(intelligence) {
 
   if (intelligence.coldStart) {
     container.innerHTML = `
-      <div class="recommendation-banner" style="background: var(--primary-light);">
+      <div class="recommendation-banner" style="background: var(--bg-card); border-radius: 0px !important;">
         <div class="flex items-center gap-3">
-          <span class="recommendation-badge" style="background: var(--primary); color: #FFF;">🤖 FLOWZEN INTELLIGENCE</span>
-          <span style="font-weight: 700; font-size: 0.92rem;">
-            FlowZen is learning your workflow. Predictions will become more accurate as you complete more tasks!
+          <span class="recommendation-badge" style="background: var(--color-border); color: var(--text-primary); border-radius: 0px !important;">FLOWZEN INTELLIGENCE</span>
+          <span style="font-weight: 500; font-size: 0.9rem; color: var(--text-secondary);">
+            FlowZen is learning your workflow. Predictions will become more accurate as you complete more tasks.
           </span>
         </div>
       </div>
@@ -327,36 +573,36 @@ function renderFlowZenIntelligenceWidget(intelligence) {
   }
 
   container.innerHTML = `
-    <div class="recommendation-banner">
+    <div class="recommendation-banner" style="border-radius: 0px !important;">
       <div style="display: flex; flex-direction: column; gap: 0.4rem; width: 100%;">
-        <div class="flex items-center justify-between" style="border-bottom: 2px solid var(--color-border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div class="flex items-center justify-between" style="border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
           <div class="flex items-center gap-2">
-            <span class="recommendation-badge">🔥 NEXT RECOMMENDED</span>
-            <strong style="font-size: 1.1rem; text-transform: uppercase;">${escapeHTML(rec.task.title)}</strong>
+            <span class="recommendation-badge" style="border-radius: 0px !important;">NEXT RECOMMENDED</span>
+            <strong style="font-size: 1.05rem; font-family: var(--font-heading);">${escapeHTML(rec.task.title)}</strong>
           </div>
-          <span class="badge badge-urgent" style="font-size: 0.85rem;">
+          <span class="badge badge-urgent" style="font-size: 0.85rem; border-radius: 0px !important;">
             Recommendation: ${rec.recScore}/100
           </span>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: center; margin-top: 0.25rem;">
           <div>
-            <div style="font-size: 0.88rem; font-weight: 800;">
+            <div style="font-size: 0.88rem; font-weight: 600;">
               High priority • ${rec.task.dueDate ? 'Due ' + formatDate(rec.task.dueDate) : 'No due date'} • ${rec.estimatedHours}h est
             </div>
-            <div style="font-size: 0.8rem; opacity: 0.85; margin-top: 2px;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">
               Assignee: <strong>${escapeHTML(rec.task.assignee || 'Unassigned')}</strong> • Pred: <strong>${rec.predictedEffort}h</strong> (Conf: ${rec.confidencePct}%)
             </div>
           </div>
 
-          <div style="font-size: 0.82rem; font-weight: 700; background: rgba(0,0,0,0.12); padding: 0.5rem; border-radius: 6px; border: 1.5px solid var(--color-border);">
-            <div style="font-weight: 800; margin-bottom: 2px;">Why start this task now?</div>
+          <div style="font-size: 0.82rem; font-weight: 500; background: var(--bg-alt); padding: 0.5rem; border-radius: 0px !important; border: 1px solid var(--color-border);">
+            <div style="font-weight: 700; margin-bottom: 2px;">Why start this task now?</div>
             ${rec.recReasons.map(r => `<div>• ${escapeHTML(r)}</div>`).join('')}
           </div>
 
           <div style="text-align: right;">
             <button class="btn btn-sm btn-primary focus-rec-task-btn" data-task-id="${rec.task.id}">
-              🎯 Start Task Now
+              Start Task Now
             </button>
           </div>
         </div>
@@ -388,6 +634,31 @@ function attachBoardEvents() {
     });
   });
 
+  document.querySelectorAll('.mark-done-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const taskId = btn.getAttribute('data-task-id');
+      const task = boardState.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      const doneCols = getDoneColumns(boardState.columns);
+      const doneColIds = doneCols.map(c => c.id);
+      const isCurrentlyDone = doneColIds.includes(task.columnId);
+
+      if (isCurrentlyDone) {
+        const firstCol = boardState.columns[0];
+        task.columnId = firstCol.id;
+        await saveTask(task);
+        showToast(`Task reopened and moved to "${firstCol.title}"`, 'info');
+      } else {
+        const targetCol = doneCols[0];
+        task.columnId = targetCol.id;
+        await saveTask(task);
+        showToast(`Task completed and moved to "${targetCol.title}"`, 'success');
+      }
+    });
+  });
+
   document.querySelectorAll('.task-card').forEach(card => {
     card.addEventListener('click', (e) => {
       if (!e.target.closest('button')) {
@@ -411,13 +682,18 @@ export function openTaskEditModal(taskId = null, defaultColumnId = null) {
   const task = taskId ? boardState.tasks.find(t => t.id === taskId) : null;
 
   const modalTitle = document.getElementById('task-modal-title');
-  if (modalTitle) modalTitle.innerText = task ? '✏️ Edit Task' : '➕ Create New Task';
+  if (modalTitle) modalTitle.innerText = task ? 'Edit Task' : 'Create New Task';
 
   document.getElementById('task-title-input').value = task ? task.title : '';
   document.getElementById('task-desc-input').value = task ? (task.description || '') : '';
   document.getElementById('task-priority-select').value = task ? task.priority : 'medium';
   document.getElementById('task-category-select').value = task ? (task.category || 'Backend') : 'Backend';
-  document.getElementById('task-assignee-select').value = task ? (task.assignee || 'Alex Rivera') : 'Alex Rivera';
+  
+  populateAssigneeDropdowns();
+  if (task && task.assignee) {
+    document.getElementById('task-assignee-select').value = task.assignee;
+  }
+
   document.getElementById('task-est-hours-input').value = task ? (task.estimatedHours || 4) : 4;
   document.getElementById('task-due-date-input').value = task ? (task.dueDate || '') : '';
   document.getElementById('task-labels-input').value = task ? (task.labels ? task.labels.join(', ') : '') : '';
@@ -446,6 +722,26 @@ export function openTaskEditModal(taskId = null, defaultColumnId = null) {
   const deleteBtn = document.getElementById('delete-task-modal-btn');
   if (deleteBtn) deleteBtn.style.display = task ? 'inline-flex' : 'none';
 
+  const quickCompleteBtn = document.getElementById('quick-complete-task-btn');
+  if (quickCompleteBtn) {
+    const doneCols = getDoneColumns(boardState.columns);
+    const doneColIds = doneCols.map(c => c.id);
+    const isCurrentlyDone = task ? doneColIds.includes(task.columnId) : false;
+
+    quickCompleteBtn.innerHTML = isCurrentlyDone ? 'Completed (Reopen)' : 'Complete Task';
+    quickCompleteBtn.style.color = isCurrentlyDone ? 'var(--accent-emerald)' : '';
+    quickCompleteBtn.style.borderColor = isCurrentlyDone ? 'var(--accent-emerald)' : '';
+
+    quickCompleteBtn.onclick = async () => {
+      if (isCurrentlyDone) {
+        colSelect.value = boardState.columns[0].id;
+      } else {
+        colSelect.value = doneCols[0].id;
+      }
+      document.getElementById('task-edit-form').requestSubmit();
+    };
+  }
+
   openModal('task-edit-modal');
 }
 
@@ -458,12 +754,14 @@ function renderSubtasksManager(subtasks = []) {
 
   const renderList = () => {
     listEl.innerHTML = activeSubtasks.map((sub, idx) => `
-      <div class="flex items-center justify-between gap-2" style="padding: 0.35rem 0.5rem; background: var(--bg-alt); color: var(--color-black); border: 1.5px solid var(--color-border); border-radius: 4px; margin-bottom: 0.35rem;">
+      <div class="flex items-center justify-between gap-2" style="padding: 0.35rem 0.5rem; background: var(--bg-alt); color: var(--text-primary); border: 1px solid var(--color-border); border-radius: 0px !important; margin-bottom: 0.35rem;">
         <label class="checkbox-custom">
           <input type="checkbox" data-sub-idx="${idx}" ${sub.done ? 'checked' : ''}>
           <span style="${sub.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${escapeHTML(sub.text)}</span>
         </label>
-        <button type="button" class="btn btn-sm btn-icon remove-sub-btn" data-sub-idx="${idx}" style="padding: 0.1rem 0.3rem;">✕</button>
+        <button type="button" class="btn btn-sm btn-icon remove-sub-btn" data-sub-idx="${idx}" style="padding: 0.1rem 0.3rem; display: inline-flex; align-items: center; justify-content: center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
     `).join('');
 
@@ -502,6 +800,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const addMemberForm = document.getElementById('add-team-member-form');
+  if (addMemberForm) {
+    addMemberForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('new-member-name');
+      const emailInput = document.getElementById('new-member-email');
+      const roleSelect = document.getElementById('new-member-role');
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const role = roleSelect ? roleSelect.value : 'Member';
+
+      if (name) {
+        addTeamMemberToBoard(name, email, role);
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+        if (roleSelect) roleSelect.value = 'Member';
+        renderTeamManagementModal();
+        populateAssigneeDropdowns();
+        renderBoardView();
+        showToast(`Added ${name} to board team`, "success");
+      }
+    });
+  }
+
   const taskForm = document.getElementById('task-edit-form');
   if (taskForm) {
     taskForm.addEventListener('submit', async (e) => {
@@ -532,7 +855,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       await saveTask(taskPayload);
       closeModal('task-edit-modal');
-      showToast(activeEditTaskId ? "Task updated!" : "Task created!", "success");
+      showToast(activeEditTaskId ? "Task updated" : "Task created", "success");
     });
   }
 
@@ -552,10 +875,15 @@ export function openColumnOptionsModal(columnId = null) {
   const column = columnId ? boardState.columns.find(c => c.id === columnId) : null;
 
   const modalTitle = document.querySelector('#column-options-modal .modal-title');
-  if (modalTitle) modalTitle.innerText = column ? '⚙️ Column Options & WIP Limit' : '➕ Create New Column';
+  if (modalTitle) modalTitle.innerText = column ? 'Column Options & WIP Limit' : 'Create New Column';
 
   document.getElementById('col-title-input').value = column ? column.title : '';
   document.getElementById('col-wip-input').value = column && column.wipLimit !== null ? column.wipLimit : '';
+  
+  const isDoneChk = document.getElementById('col-is-done-checkbox');
+  if (isDoneChk) {
+    isDoneChk.checked = column ? (column.isDoneColumn || column.title.toLowerCase().includes('done') || column.title.toLowerCase().includes('completed')) : false;
+  }
 
   const deleteColBtn = document.getElementById('delete-col-modal-btn');
   if (deleteColBtn) {
@@ -574,6 +902,7 @@ export function openColumnOptionsModal(columnId = null) {
     const title = document.getElementById('col-title-input').value.trim();
     const wipRaw = document.getElementById('col-wip-input').value.trim();
     const wipLimit = wipRaw !== '' ? parseInt(wipRaw) : null;
+    const isDoneColumn = document.getElementById('col-is-done-checkbox').checked;
 
     if (!title) {
       showToast("Column title is required", "error");
@@ -581,13 +910,16 @@ export function openColumnOptionsModal(columnId = null) {
     }
 
     const payload = column
-      ? { ...column, title, wipLimit }
-      : { title, position: boardState.columns.length, wipLimit };
+      ? { ...column, title, wipLimit, isDoneColumn }
+      : { title, position: boardState.columns.length, wipLimit, isDoneColumn };
 
     await saveColumn(payload);
     closeModal('column-options-modal');
-    showToast(column ? "Column options saved" : "Column created successfully!", "success");
+    showToast(column ? "Column options saved" : "Column created successfully", "success");
   };
 
   openModal('column-options-modal');
 }
+
+
+
