@@ -71,7 +71,11 @@ function loadBoardFromStorage(boardId) {
     { id: 'col_done', title: 'DONE', position: 3, wipLimit: null }
   ];
 
-  // Default Sample Tasks matching user mockup
+  const user = getCurrentUser();
+  const loggedInId = user ? (user.id || user.uid) : 'usr_owner';
+  const currentUserName = user ? (user.name || user.displayName || (user.email ? user.email.split('@')[0] : 'Board Owner')) : 'Board Owner';
+
+  // Default Sample Tasks
   const sampleTasks = [
     {
       id: 'task_101',
@@ -80,7 +84,7 @@ function loadBoardFromStorage(boardId) {
       description: 'Implement pure client-side session engine and passwordless authentication flow',
       priority: 'high',
       category: 'Backend',
-      assignee: 'Priya Sharma',
+      assignee: currentUserName,
       estimatedHours: 1,
       dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
       labels: ['Backend', 'Security'],
@@ -100,7 +104,7 @@ function loadBoardFromStorage(boardId) {
       description: 'Update login modal UI with 1-click demo access and sleek obsidian cards',
       priority: 'urgent',
       category: 'Frontend',
-      assignee: 'Alex Rivera',
+      assignee: currentUserName,
       estimatedHours: 4,
       dueDate: new Date(Date.now() + 172800000).toISOString().split('T')[0],
       labels: ['UI', 'Auth'],
@@ -119,7 +123,7 @@ function loadBoardFromStorage(boardId) {
       description: 'Verify drag-and-drop validation, dependency blocking, and BroadcastChannel sync',
       priority: 'medium',
       category: 'DevOps',
-      assignee: 'Aman Verma',
+      assignee: currentUserName,
       estimatedHours: 3,
       dueDate: new Date(Date.now() + 259200000).toISOString().split('T')[0],
       labels: ['Testing'],
@@ -137,14 +141,14 @@ function loadBoardFromStorage(boardId) {
       description: 'Optimize local storage caching and historical learning query performance',
       priority: 'medium',
       category: 'Backend',
-      assignee: 'Alex Rivera',
+      assignee: currentUserName,
       estimatedHours: 5,
       dueDate: new Date(Date.now() + 432000000).toISOString().split('T')[0],
       labels: ['Backend'],
       subtasks: [],
       dependsOnTaskId: null,
       position: 0,
-      createdAt: new Date(Date.now() - 518400000).toISOString() // Aging task (>5 days)
+      createdAt: new Date(Date.now() - 518400000).toISOString()
     },
     {
       id: 'task_105',
@@ -153,7 +157,7 @@ function loadBoardFromStorage(boardId) {
       description: 'Create sticky executive navigation with dark mode toggle and profile badge',
       priority: 'low',
       category: 'Frontend',
-      assignee: 'Priya Sharma',
+      assignee: currentUserName,
       estimatedHours: 2,
       actualHours: 2.2,
       dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
@@ -172,8 +176,8 @@ function loadBoardFromStorage(boardId) {
     id: boardId,
     title: "FlowZen Workspace",
     description: "Intelligent real-time collaborative Kanban board with predictive task risk scoring",
-    ownerId: "usr_demo_123",
-    memberIds: ["usr_demo_123", "usr_priya", "usr_aman"]
+    ownerId: loggedInId,
+    memberIds: [loggedInId]
   };
 
   try {
@@ -193,16 +197,24 @@ function loadBoardFromStorage(boardId) {
     boardState.columns = sampleCols;
   }
 
+  const LEGACY_FAKE_NAMES = ['Priya Sharma', 'Alex Rivera', 'Aman Verma', 'Workspace Owner', 'usr_priya', 'usr_aman'];
+
   try {
     const storedTasks = localStorage.getItem(taskKey);
     const rawTasks = storedTasks ? JSON.parse(storedTasks) : (boardId.startsWith('board_demo_') ? sampleTasks : []);
-    boardState.tasks = Array.isArray(rawTasks) ? rawTasks.map(t => ({
-      ...t,
-      title: typeof t.title === 'string' ? t.title.replace(/<[^>]*>/g, '').trim() : '',
-      description: typeof t.description === 'string' ? t.description.replace(/<[^>]*>/g, '').trim() : '',
-      assignee: typeof t.assignee === 'string' ? t.assignee.replace(/<[^>]*>/g, '').trim() : 'Unassigned'
-    })) : [];
-    if (!storedTasks) localStorage.setItem(taskKey, JSON.stringify(boardState.tasks));
+    boardState.tasks = Array.isArray(rawTasks) ? rawTasks.map(t => {
+      let assignee = typeof t.assignee === 'string' ? t.assignee.replace(/<[^>]*>/g, '').trim() : 'Unassigned';
+      if (LEGACY_FAKE_NAMES.includes(assignee)) {
+        assignee = currentUserName;
+      }
+      return {
+        ...t,
+        assignee,
+        title: typeof t.title === 'string' ? t.title.replace(/<[^>]*>/g, '').trim() : '',
+        description: typeof t.description === 'string' ? t.description.replace(/<[^>]*>/g, '').trim() : ''
+      };
+    }) : [];
+    localStorage.setItem(taskKey, JSON.stringify(boardState.tasks));
   } catch (e) {
     boardState.tasks = [];
   }

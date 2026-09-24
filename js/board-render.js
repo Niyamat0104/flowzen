@@ -4,6 +4,8 @@ import { filterTasks, sortTasks } from './filters-sort.js';
 import { formatDate, isOverdue, getTaskAgeDays } from './date-utils.js';
 import { analyzeFlowZenIntelligence } from './flowzen-intelligence.js';
 import { openModal, closeModal, escapeHTML, showToast } from './ui-utils.js';
+import { renderTimelineView } from './timeline-render.js';
+import { renderCalendarView, setCalendarMonth } from './calendar-render.js';
 
 let activeEditTaskId = null;
 
@@ -146,60 +148,86 @@ export function renderBoardView() {
   // 5. Render FlowZen Intelligence Recommendation Banner
   renderFlowZenIntelligenceWidget(intelligence);
 
-  // 6. Render Columns & Task Cards in Left Viewport
-  const viewport = document.getElementById('kanban-viewport');
-  if (!viewport) return;
-
+  const activeView = boardState.activeView || 'kanban';
   const filtered = filterTasks(boardState.tasks, boardState.filterState);
 
-  viewport.innerHTML = boardState.columns.map(column => {
-    const colTasks = sortTasks(
-      filtered.filter(t => t.columnId === column.id),
-      boardState.filterState.sortBy
-    );
+  const kanbanViewport = document.getElementById('kanban-viewport');
+  const timelineViewport = document.getElementById('timeline-viewport');
+  const calendarViewport = document.getElementById('calendar-viewport');
 
-    const taskCount = colTasks.length;
-    const isWipExceeded = column.wipLimit !== null && column.wipLimit > 0 && taskCount > column.wipLimit;
-    const bottleneckAlert = intelligence.bottlenecks.find(b => b.columnId === column.id);
+  // Update view switcher tab buttons active state
+  document.querySelectorAll('.view-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-view') === activeView);
+  });
 
-    return `
-      <div class="kanban-column ${isWipExceeded || bottleneckAlert ? 'wip-exceeded' : ''}" data-column-id="${column.id}">
-        <div class="kanban-column-header ${isWipExceeded || bottleneckAlert ? 'wip-alert' : ''}">
-          <div class="column-title">
-            <span>${escapeHTML(column.title)}</span>
-            <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}" style="border-radius: 0px !important;">
-              ${taskCount}${column.wipLimit ? ` / ${column.wipLimit} WIP` : ''}
-            </span>
-          </div>
-          <div class="flex items-center gap-1">
-            <button class="btn btn-sm btn-icon add-task-col-btn" title="Add task to ${escapeHTML(column.title)}" data-column-id="${column.id}">
-              +
-            </button>
-            <button class="btn btn-sm btn-icon edit-col-btn" title="Edit column options" data-column-id="${column.id}">
-              Options
-            </button>
-          </div>
-        </div>
+  if (activeView === 'kanban') {
+    if (kanbanViewport) kanbanViewport.style.display = 'flex';
+    if (timelineViewport) timelineViewport.style.display = 'none';
+    if (calendarViewport) calendarViewport.style.display = 'none';
 
-        ${bottleneckAlert ? `
-          <div style="background-color: var(--accent-coral); color: #FFF; font-weight: 700; font-size: 0.78rem; padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--color-border);">
-            Bottleneck: ${escapeHTML(bottleneckAlert.reason)}
-          </div>
-        ` : ''}
+    if (kanbanViewport) {
+      kanbanViewport.innerHTML = boardState.columns.map(column => {
+        const colTasks = sortTasks(
+          filtered.filter(t => t.columnId === column.id),
+          boardState.filterState.sortBy
+        );
 
-        <div class="kanban-column-body" data-column-id="${column.id}">
-          ${colTasks.length === 0 ? `
-            <div style="text-align: center; color: var(--text-tertiary); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 1px dashed var(--color-border); border-radius: 0px !important;">
-              Drop tasks here or click +
+        const taskCount = colTasks.length;
+        const isWipExceeded = column.wipLimit !== null && column.wipLimit > 0 && taskCount > column.wipLimit;
+        const bottleneckAlert = intelligence.bottlenecks.find(b => b.columnId === column.id);
+
+        return `
+          <div class="kanban-column ${isWipExceeded || bottleneckAlert ? 'wip-exceeded' : ''}" data-column-id="${column.id}">
+            <div class="kanban-column-header ${isWipExceeded || bottleneckAlert ? 'wip-alert' : ''}">
+              <div class="column-title">
+                <span>${escapeHTML(column.title)}</span>
+                <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}" style="border-radius: 0px !important;">
+                  ${taskCount}${column.wipLimit ? ` / ${column.wipLimit} WIP` : ''}
+                </span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="btn btn-sm btn-icon add-task-col-btn" title="Add task to ${escapeHTML(column.title)}" data-column-id="${column.id}">
+                  +
+                </button>
+                <button class="btn btn-sm btn-icon edit-col-btn" title="Edit column options" data-column-id="${column.id}">
+                  Options
+                </button>
+              </div>
             </div>
-          ` : colTasks.map(task => {
-            const taskIntel = intelligence.analyzedTasks.find(a => a.task.id === task.id);
-            return renderTaskCard(task, taskIntel);
-          }).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
+
+            ${bottleneckAlert ? `
+              <div style="background-color: var(--accent-coral); color: #FFF; font-weight: 700; font-size: 0.78rem; padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--color-border);">
+                Bottleneck: ${escapeHTML(bottleneckAlert.reason)}
+              </div>
+            ` : ''}
+
+            <div class="kanban-column-body" data-column-id="${column.id}">
+              ${colTasks.length === 0 ? `
+                <div style="text-align: center; color: var(--text-tertiary); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 1px dashed var(--color-border); border-radius: 0px !important;">
+                  Drop tasks here or click +
+                </div>
+              ` : colTasks.map(task => {
+                const taskIntel = intelligence.analyzedTasks.find(a => a.task.id === task.id);
+                return renderTaskCard(task, taskIntel);
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  } else if (activeView === 'timeline') {
+    if (kanbanViewport) kanbanViewport.style.display = 'none';
+    if (timelineViewport) timelineViewport.style.display = 'flex';
+    if (calendarViewport) calendarViewport.style.display = 'none';
+
+    renderTimelineView(filtered, boardState.columns, intelligence);
+  } else if (activeView === 'calendar') {
+    if (kanbanViewport) kanbanViewport.style.display = 'none';
+    if (timelineViewport) timelineViewport.style.display = 'none';
+    if (calendarViewport) calendarViewport.style.display = 'flex';
+
+    renderCalendarView(filtered, boardState.columns, intelligence);
+  }
 
   // 7. Render Right-Side INSIGHTS Panel
   renderInsightsSidebar(boardState.tasks, boardState.columns, intelligence);
@@ -289,73 +317,56 @@ function renderTaskCard(task, intel) {
   }
 
   return `
-    <div class="task-card ${isBlocked ? 'is-blocked' : ''} ${isTaskDone ? 'is-done-card' : ''}" draggable="true" data-task-id="${task.id}" style="border-radius: 0px !important; ${isTaskDone ? 'border-left: 3px solid var(--accent-emerald); opacity: 0.9;' : ''}">
-      <div class="task-card-header">
+    <div class="task-card ${isBlocked ? 'is-blocked' : ''} ${isTaskDone ? 'is-done-card' : ''}" draggable="true" data-task-id="${task.id}" style="${isTaskDone ? 'border-left: 3px solid var(--accent-emerald); opacity: 0.88;' : ''}">
+      <div class="task-card-header" style="margin-bottom: 0.4rem;">
         <div class="task-card-title" style="${isTaskDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">${escapeHTML(task.title)}</div>
-        <div class="flex items-center gap-1">
-          <span class="badge ${riskBadgeClass}" title="Risk Score: ${riskScore}/100" style="border-radius: 0px !important;">
-            Risk: ${riskScore}/100
-          </span>
-          <span class="badge badge-${task.priority || 'medium'}" style="border-radius: 0px !important;">${task.priority || 'med'}</span>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <span class="badge badge-${task.priority || 'medium'}">${task.priority || 'med'}</span>
+          ${riskScore > 40 ? `<span class="badge ${riskBadgeClass}" title="FlowZen Risk Score: ${riskScore}/100">Risk ${riskScore}</span>` : ''}
         </div>
       </div>
 
       ${isBlocked && parentTaskTitle ? `
-        <div style="margin-bottom: 0.5rem;">
-          <span class="badge badge-blocked" style="border-radius: 0px !important;">BLOCKED BY ${escapeHTML(parentTaskTitle.substring(0, 16))}...</span>
+        <div style="margin-bottom: 0.4rem;">
+          <span class="badge badge-blocked" style="font-size: 0.7rem;">Blocked: ${escapeHTML(parentTaskTitle.substring(0, 20))}...</span>
         </div>
       ` : ''}
 
       ${blockedDownstream > 0 ? `
-        <div style="margin-bottom: 0.5rem;">
-          <span class="badge badge-medium" style="font-size: 0.72rem; border-radius: 0px !important;">Blocks ${blockedDownstream} downstream task${blockedDownstream > 1 ? 's' : ''}</span>
+        <div style="margin-bottom: 0.4rem;">
+          <span class="badge badge-medium" style="font-size: 0.7rem;">Blocks ${blockedDownstream} task${blockedDownstream > 1 ? 's' : ''}</span>
         </div>
       ` : ''}
 
-      <!-- Assignee & Effort Row -->
-      <div class="flex items-center justify-between" style="font-size: 0.78rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-secondary);">
-        <div class="flex items-center gap-1.5">
-          <span class="avatar-pill" style="width: 20px; height: 20px; font-size: 0.65rem; border-radius: 0px !important; display: inline-flex; align-items: center; justify-content: center; background: ${memberColor}; border: 1px solid var(--color-border); font-weight: 700; color: ${memberTextColor};">${initial}</span>
-          <span>${escapeHTML(task.assignee || 'Unassigned')}</span>
-        </div>
-        <span>Est: ${task.estimatedHours || 4}h &bull; Pred: ${predictedEffort}h</span>
-      </div>
-
       ${task.description ? `
-        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.45rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
           ${escapeHTML(task.description)}
         </p>
       ` : ''}
 
-      ${intel && intel.riskReasons && intel.riskReasons.length > 0 ? `
-        <div style="background: var(--bg-alt); color: var(--text-primary); padding: 0.4rem 0.6rem; border: 1px solid var(--color-border); border-radius: 0px !important; margin-bottom: 0.6rem; font-size: 0.75rem; font-weight: 500;">
-          <div style="font-weight: 700; font-size: 0.72rem; text-transform: uppercase; margin-bottom: 2px; color: var(--text-tertiary);">FlowZen Insight:</div>
-          ${intel.riskReasons.slice(0, 2).map(r => `<div>• ${escapeHTML(r)}</div>`).join('')}
+      <!-- Assignee & Subtask Pill Row -->
+      <div class="flex items-center justify-between gap-1" style="font-size: 0.75rem; margin-bottom: 0.45rem; color: var(--text-secondary);">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="avatar-pill" style="width: 20px; height: 20px; font-size: 0.62rem; flex-shrink: 0; border-radius: var(--radius-pill) !important; display: inline-flex; align-items: center; justify-content: center; background: ${memberColor}; border: 1px solid var(--color-border); font-weight: 700; color: ${memberTextColor};">${initial}</span>
+          <span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">${escapeHTML(task.assignee || 'Unassigned')}</span>
         </div>
-      ` : ''}
-
-      ${subtaskSummary ? `
-        <div style="margin-bottom: 0.5rem;">
-          <div class="flex items-center justify-between" style="font-size: 0.75rem; font-weight: 600; margin-bottom: 2px;">
-            <span>Subtasks</span>
-            <span>${subtaskSummary}</span>
-          </div>
-          <div class="progress-container" style="border-radius: 0px !important;">
-            <div class="progress-fill" style="width: ${subtaskPct}%; border-radius: 0px !important;"></div>
-          </div>
+        
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          ${subtaskSummary ? `<span style="font-size: 0.72rem; font-weight: 600; background: var(--bg-alt); border: 1px solid var(--color-border); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);">${subtaskSummary} subtasks</span>` : ''}
+          <span style="font-size: 0.72rem; opacity: 0.8;">Est: ${task.estimatedHours || 4}h</span>
         </div>
-      ` : ''}
+      </div>
 
-      <div class="task-card-footer">
-        <span class="task-due-date ${isTaskOverdue ? 'overdue' : ''}">
+      <div class="task-card-footer" style="margin-top: 0.45rem; padding-top: 0.4rem;">
+        <span class="task-due-date ${isTaskOverdue ? 'overdue' : ''}" style="font-size: 0.74rem;">
           ${task.dueDate ? formatDate(task.dueDate) : 'No due date'}
           ${isTaskOverdue ? ' (Overdue)' : ''}
         </span>
         <div class="flex items-center gap-1">
-          <button type="button" class="btn btn-sm ${isTaskDone ? 'btn-outline mark-done-btn' : 'btn-primary mark-done-btn'}" data-task-id="${task.id}" style="padding: 0.18rem 0.45rem; font-size: 0.72rem; ${isTaskDone ? 'border-color: var(--accent-emerald); color: var(--accent-emerald);' : ''}">
-            ${isTaskDone ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 3px; vertical-align: text-bottom;"><path d="M20 6 9 17l-5-5"/></svg>Completed' : 'Complete'}
+          <button type="button" class="btn btn-sm ${isTaskDone ? 'btn-outline mark-done-btn' : 'btn-primary mark-done-btn'}" data-task-id="${task.id}" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; ${isTaskDone ? 'border-color: var(--accent-emerald); color: var(--accent-emerald);' : ''}">
+            ${isTaskDone ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px; vertical-align: text-bottom;"><path d="M20 6 9 17l-5-5"/></svg>Done' : 'Complete'}
           </button>
-          <button type="button" class="btn btn-sm btn-outline edit-task-btn" data-task-id="${task.id}" style="padding: 0.18rem 0.4rem; font-size: 0.72rem;">
+          <button type="button" class="btn btn-sm btn-outline edit-task-btn" data-task-id="${task.id}" style="padding: 0.15rem 0.35rem; font-size: 0.7rem;">
             Edit
           </button>
         </div>
@@ -674,6 +685,46 @@ function attachBoardEvents() {
       const colId = btn.getAttribute('data-column-id');
       openColumnOptionsModal(colId);
     });
+  });
+
+  // Multi-View Switcher Tabs Listener
+  document.querySelectorAll('.view-tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      const view = btn.getAttribute('data-view');
+      boardState.activeView = view;
+      renderBoardView();
+    };
+  });
+
+  // Calendar Navigation Listeners
+  const prevCalBtn = document.getElementById('cal-prev-month-btn');
+  if (prevCalBtn) prevCalBtn.onclick = () => { setCalendarMonth(-1); renderBoardView(); };
+
+  const todayCalBtn = document.getElementById('cal-today-btn');
+  if (todayCalBtn) todayCalBtn.onclick = () => { setCalendarMonth(0); renderBoardView(); };
+
+  const nextCalBtn = document.getElementById('cal-next-month-btn');
+  if (nextCalBtn) nextCalBtn.onclick = () => { setCalendarMonth(1); renderBoardView(); };
+
+  // Calendar Cell Click -> Create Task with target Date
+  document.querySelectorAll('.calendar-day-cell').forEach(cell => {
+    cell.onclick = (e) => {
+      if (!e.target.closest('.calendar-task-pill')) {
+        const targetDate = cell.getAttribute('data-date');
+        openTaskEditModal(null, null);
+        const dueInput = document.getElementById('task-due-date-input');
+        if (dueInput && targetDate) dueInput.value = targetDate;
+      }
+    };
+  });
+
+  // Timeline Bar & Calendar Task Pill Click -> Open Edit Task Modal
+  document.querySelectorAll('.timeline-bar, .calendar-task-pill').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      const taskId = el.getAttribute('data-task-id');
+      if (taskId) openTaskEditModal(taskId);
+    };
   });
 }
 

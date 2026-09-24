@@ -653,7 +653,7 @@
 .navbar {
   min-height: var(--header-height);
   width: 100%;
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 0 auto;
   border-radius: 0px !important;
   background: var(--bg-card);
   backdrop-filter: var(--glass-backdrop);

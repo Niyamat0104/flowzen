@@ -39,25 +39,9 @@ const INITIAL_DEMO_BOARDS = [
         role: "Owner",
         addedAt: new Date().toISOString(),
         color: MEMBER_AVATAR_COLORS[0]
-      },
-      {
-        id: "usr_priya",
-        name: "Priya Sharma",
-        email: "priya.sharma@flowzen.io",
-        role: "Member",
-        addedAt: new Date().toISOString(),
-        color: MEMBER_AVATAR_COLORS[1]
-      },
-      {
-        id: "usr_aman",
-        name: "Aman Verma",
-        email: "aman.verma@flowzen.io",
-        role: "Member",
-        addedAt: new Date().toISOString(),
-        color: MEMBER_AVATAR_COLORS[2]
       }
     ],
-    memberIds: ["usr_owner", "usr_priya", "usr_aman"],
+    memberIds: ["usr_owner"],
     createdAt: new Date().toISOString()
   },
   {
@@ -107,21 +91,18 @@ export async function createBoard(title, description = "", projectType = "Softwa
     color: MEMBER_AVATAR_COLORS[0]
   });
 
-  // 2. Additional optional team member rows
+  // 2. Additional optional team member rows added by user
   if (Array.isArray(rawTeamMembers)) {
-    rawTeamMembers.forEach((raw) => {
-      const cleanName = (raw.name || "").trim();
-      if (cleanName) {
-        const idx = team.length;
-        team.push({
-          id: "member_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
-          name: cleanName,
-          email: (raw.email || "").trim() || null,
-          role: raw.role || "Member",
-          addedAt: now,
-          color: MEMBER_AVATAR_COLORS[idx % MEMBER_AVATAR_COLORS.length]
-        });
-      }
+    rawTeamMembers.forEach((m, idx) => {
+      if (!m.name || !m.name.trim()) return;
+      team.push({
+        id: generateId("member"),
+        name: m.name.trim(),
+        email: m.email ? m.email.trim() : null,
+        role: m.role || "Member",
+        addedAt: now,
+        color: MEMBER_AVATAR_COLORS[(idx + 1) % MEMBER_AVATAR_COLORS.length]
+      });
     });
   }
 
@@ -130,8 +111,8 @@ export async function createBoard(title, description = "", projectType = "Softwa
   const newBoard = {
     id: boardId,
     title: title.trim(),
-    description: description.trim(),
-    projectType: projectType || "Software Development",
+    description: description ? description.trim() : "",
+    projectType,
     targetDeadline: targetDeadline || null,
     ownerId: userId,
     team,
@@ -139,19 +120,32 @@ export async function createBoard(title, description = "", projectType = "Softwa
     createdAt: now
   };
 
-  const existingBoards = getStoredBoards();
-  existingBoards.push(newBoard);
-  saveStoredBoards(existingBoards);
+  const boards = getStoredBoards();
+  boards.unshift(newBoard);
+  saveStoredBoards(boards);
 
-  // Initialize board metadata & columns
-  localStorage.setItem(`flowzen_board_${boardId}`, JSON.stringify(newBoard));
-  localStorage.setItem(`flowzen_cols_${boardId}`, JSON.stringify(DEFAULT_COLUMNS));
-  localStorage.setItem(`flowzen_tasks_${boardId}`, JSON.stringify([]));
-
-  logActivity(boardId, `created workspace board "${newBoard.title}"`, 'info');
-
-  showToast("Board created successfully!", "success");
+  logActivity(boardId, `Created project board "${newBoard.title}" (${projectType}) with ${team.length} team members`);
+  showToast(`Board "${newBoard.title}" created successfully!`, "success");
   return newBoard;
+}
+
+export function getBoardById(boardId) {
+  const boards = getStoredBoards();
+  const board = boards.find(b => b.id === boardId);
+  return board ? sanitizeBoardData(board) : null;
+}
+
+export function saveBoardMetadata(updatedBoard) {
+  const boards = getStoredBoards();
+  const index = boards.findIndex(b => b.id === updatedBoard.id);
+  const sanitized = sanitizeBoardData(updatedBoard);
+  if (index !== -1) {
+    boards[index] = sanitized;
+  } else {
+    boards.unshift(sanitized);
+  }
+  saveStoredBoards(boards);
+  return sanitized;
 }
 
 export function fetchUserBoards(callback) {
@@ -176,6 +170,7 @@ export function deleteBoard(boardId) {
   let boards = getStoredBoards();
   boards = boards.filter(b => b.id !== boardId);
   saveStoredBoards(boards);
+
   localStorage.removeItem(`flowzen_board_${boardId}`);
   localStorage.removeItem(`flowzen_cols_${boardId}`);
   localStorage.removeItem(`flowzen_tasks_${boardId}`);
@@ -193,7 +188,21 @@ export function sanitizeBoardData(board) {
   let ownerId = board.ownerId;
   let team = Array.isArray(board.team) && board.team.length > 0 ? board.team : null;
 
-  if (!team) {
+  // Filter out any legacy fake demo team members
+  const DEMO_FAKE_IDS = ['usr_priya', 'usr_aman'];
+  const DEMO_FAKE_NAMES = ['Priya Sharma', 'Aman Verma', 'Alex Rivera', 'Elena Rostova'];
+
+  if (team) {
+    team = team.filter(m => {
+      if (m.role === 'Owner') return true;
+      if (DEMO_FAKE_IDS.includes(m.id) || DEMO_FAKE_NAMES.includes(m.name)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  if (!team || team.length === 0) {
     team = [
       {
         id: loggedInId || ownerId || 'usr_owner',
@@ -202,22 +211,6 @@ export function sanitizeBoardData(board) {
         role: 'Owner',
         addedAt: board.createdAt || new Date().toISOString(),
         color: MEMBER_AVATAR_COLORS[0]
-      },
-      {
-        id: 'usr_priya',
-        name: 'Priya Sharma',
-        email: 'priya.sharma@flowzen.io',
-        role: 'Member',
-        addedAt: board.createdAt || new Date().toISOString(),
-        color: MEMBER_AVATAR_COLORS[1]
-      },
-      {
-        id: 'usr_aman',
-        name: 'Aman Verma',
-        email: 'aman.verma@flowzen.io',
-        role: 'Member',
-        addedAt: board.createdAt || new Date().toISOString(),
-        color: MEMBER_AVATAR_COLORS[2]
       }
     ];
     ownerId = team[0].id;

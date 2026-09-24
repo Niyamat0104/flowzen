@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/board.css">
+  <link rel="stylesheet" href="css/views.css">
   <link rel="stylesheet" href="css/responsive.css">
   <style>
     /* Intelligence Side Drawer Styling */
@@ -120,6 +121,22 @@
 
       <!-- Filters & Sort Controls -->
       <div class="board-toolbar">
+        <!-- Multi-View Switcher Dock -->
+        <div class="view-switcher-dock" id="view-switcher-dock">
+          <button class="view-tab-btn active" data-view="kanban" title="Kanban Board View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+            Kanban
+          </button>
+          <button class="view-tab-btn" data-view="timeline" title="Timeline / Gantt Chart View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14h8"/><path d="M11 9h8"/><path d="M7 4h5"/></svg>
+            Timeline
+          </button>
+          <button class="view-tab-btn" data-view="calendar" title="Monthly Calendar View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            Calendar
+          </button>
+        </div>
+
         <div class="search-box">
           <input type="text" class="input" id="search-input" placeholder="Search tasks or assignees...">
         </div>
@@ -168,6 +185,16 @@
       <!-- Main Kanban Viewport -->
       <div class="kanban-viewport" id="kanban-viewport">
         <!-- Columns rendered dynamically -->
+      </div>
+
+      <!-- Timeline / Gantt Viewport -->
+      <div class="timeline-viewport" id="timeline-viewport" style="display: none;">
+        <!-- Timeline rendered dynamically -->
+      </div>
+
+      <!-- Monthly Calendar Viewport -->
+      <div class="calendar-viewport" id="calendar-viewport" style="display: none;">
+        <!-- Calendar rendered dynamically -->
       </div>
 
     </div>
@@ -630,6 +657,3 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
   </script>
 </body>
 </html>
-
-
-

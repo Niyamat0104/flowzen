@@ -55,32 +55,52 @@
   --glass-border-dark: 1px solid rgba(255, 255, 255, 0.1);
   --border-main: 1px solid var(--color-border);
   
-  /* EXPLICIT SHARP CORNERS (0px) */
-  --radius-xs: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-pill: 0px;
+  /* MODERN ELEGANT ROUNDED CORNERS */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
 
   /* Executive Minimalist Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 8px 20px -4px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.18);
-  --shadow-xl: 0 24px 48px -8px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 20px 32px -6px rgba(0, 0, 0, 0.16);
   --shadow-neon-primary: 0 0 15px var(--primary-glow);
   --shadow-neon-cyan: 0 0 15px var(--accent-cyan-glow);
   --shadow-neon-pink: 0 0 15px var(--accent-pink-glow);
   
   /* Micro-Interaction Transforms */
   --pressed-transform: translateY(1px);
-  --pressed-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --pressed-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   --hover-transform: translateY(-2px);
-  --hover-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.2);
+  --hover-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.12);
 
-  /* Typography — Inter & Plus Jakarta Sans */
+  /* Typography Hierarchy — Inter & Plus Jakarta Sans */
   --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-heading: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
   --font-family-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Roboto Mono', monospace;
+
+  --font-size-xs: 0.7rem;     /* 11px - Badges, Pills */
+  --font-size-sm: 0.78rem;    /* 12px - Meta values, Subtitles, Dates */
+  --font-size-base: 0.85rem;  /* 14px - Body text, Card descriptions */
+  --font-size-md: 0.95rem;    /* 15px - Task Titles, Column Headers */
+  --font-size-lg: 1.15rem;    /* 18px - Section Titles, Modal Headers */
+  --font-size-xl: 1.4rem;     /* 22px - Page/Board Main Title */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-heading: -0.015em;
+  --letter-spacing-caps: 0.05em;
 
   /* Transitions */
   --transition-fast: 0.15s ease;
@@ -94,24 +114,24 @@
 
 /* Dark Mode Tokens Override — High-End Obsidian Glass */
 [data-theme="dark"] {
-  --bg-main: #05050A;
-  --bg-card: rgba(13, 15, 23, 0.85);
-  --bg-alt: rgba(21, 24, 38, 0.75);
-  --bg-dark-surface: #020204;
+  --bg-main: #090B10;
+  --bg-card: rgba(18, 22, 34, 0.9);
+  --bg-alt: rgba(26, 31, 48, 0.8);
+  --bg-dark-surface: #040508;
 
   --color-black: #F8FAFC;
-  --color-white: #05050A;
-  --color-border: rgba(99, 102, 241, 0.25);
+  --color-white: #090B10;
+  --color-border: rgba(255, 255, 255, 0.1);
   --color-muted: #94A3B8;
-  --shadow-color: rgba(0, 0, 0, 0.9);
+  --shadow-color: rgba(0, 0, 0, 0.6);
 
   --border-main: 1px solid var(--color-border);
   --glass-border: 1px solid rgba(255, 255, 255, 0.08);
   
-  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.85);
-  --shadow-xl: 0 24px 50px rgba(0, 0, 0, 0.95);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.75);
 
   --primary-light: rgba(99, 102, 241, 0.2);
   --secondary-light: rgba(14, 165, 233, 0.18);
