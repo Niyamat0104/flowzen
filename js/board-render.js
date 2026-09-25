@@ -11,7 +11,17 @@ let activeEditTaskId = null;
 
 export function getDoneColumns(columns) {
   if (!columns || columns.length === 0) return [];
-  const explicitDone = columns.filter(c => c.isDoneColumn || c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed') || c.title.toLowerCase().includes('finish'));
+  const explicitDone = columns.filter(c => 
+    c.isDoneColumn || 
+    (c.title && (
+      c.title.toLowerCase().includes('done') || 
+      c.title.toLowerCase().includes('completed') || 
+      c.title.toLowerCase().includes('finish') ||
+      c.title.toLowerCase().includes('shipped') ||
+      c.title.toLowerCase().includes('closed') ||
+      c.title.toLowerCase().includes('hlo')
+    ))
+  );
   if (explicitDone.length > 0) return explicitDone;
   return [columns[columns.length - 1]];
 }

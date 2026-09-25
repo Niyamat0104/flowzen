@@ -18,9 +18,18 @@ export function analyzeFlowZenIntelligence(tasks = [], columns = []) {
     };
   }
 
-  const doneColIds = columns
-    .filter(col => col.title.toLowerCase().includes('done') || col.title.toLowerCase().includes('completed'))
-    .map(col => col.id);
+  const explicitDone = columns.filter(col => 
+    col.isDoneColumn || 
+    (col.title && (
+      col.title.toLowerCase().includes('done') || 
+      col.title.toLowerCase().includes('completed') || 
+      col.title.toLowerCase().includes('finish') ||
+      col.title.toLowerCase().includes('shipped') ||
+      col.title.toLowerCase().includes('closed') ||
+      col.title.toLowerCase().includes('hlo')
+    ))
+  );
+  const doneColIds = explicitDone.length > 0 ? explicitDone.map(col => col.id) : (columns.length > 0 ? [columns[columns.length - 1].id] : []);
 
   const activeTasks = tasks.filter(t => !doneColIds.includes(t.columnId));
   const history = getTaskHistory();
@@ -31,9 +40,12 @@ export function analyzeFlowZenIntelligence(tasks = [], columns = []) {
 
   const downstreamCounts = new Map();
   tasks.forEach(t => {
-    if (t.dependsOnTaskId) {
+    if (t.dependsOnTaskId && !doneColIds.includes(t.columnId)) {
       const parentId = t.dependsOnTaskId;
-      downstreamCounts.set(parentId, (downstreamCounts.get(parentId) || 0) + 1);
+      const parent = taskMap.get(parentId);
+      if (parent && !doneColIds.includes(parent.columnId)) {
+        downstreamCounts.set(parentId, (downstreamCounts.get(parentId) || 0) + 1);
+      }
     }
   });
 
@@ -49,7 +61,7 @@ export function analyzeFlowZenIntelligence(tasks = [], columns = []) {
     else if (catStats.count >= 5) confidencePct = 80;
     else if (catStats.count >= 2) confidencePct = 60;
 
-    const blockedDownstreamCount = downstreamCounts.get(task.id) || 0;
+    const blockedDownstreamCount = doneColIds.includes(task.columnId) ? 0 : (downstreamCounts.get(task.id) || 0);
 
     let isBlocked = false;
     let parentTaskTitle = null;

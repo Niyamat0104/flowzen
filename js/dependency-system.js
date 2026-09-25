@@ -8,6 +8,23 @@ import { showToast } from './ui-utils.js';
  * @param {Array} columns - Board columns
  * @returns {Object} { isBlocked: boolean, parentTask: Object|null }
  */
+export function getDoneColumnIds(columns) {
+  if (!columns || !Array.isArray(columns) || columns.length === 0) return [];
+  const explicitDone = columns.filter(col => 
+    col.isDoneColumn || 
+    (col.title && (
+      col.title.toLowerCase().includes('done') || 
+      col.title.toLowerCase().includes('completed') || 
+      col.title.toLowerCase().includes('finish') ||
+      col.title.toLowerCase().includes('shipped') ||
+      col.title.toLowerCase().includes('closed') ||
+      col.title.toLowerCase().includes('hlo')
+    ))
+  );
+  if (explicitDone.length > 0) return explicitDone.map(col => col.id);
+  return [columns[columns.length - 1].id];
+}
+
 export function checkTaskDependency(task, allTasks, columns) {
   if (!task.dependsOnTaskId) {
     return { isBlocked: false, parentTask: null };
@@ -18,11 +35,8 @@ export function checkTaskDependency(task, allTasks, columns) {
     return { isBlocked: false, parentTask: null };
   }
 
-  // Find done columns
-  const doneColIds = columns
-    .filter(col => col.title.toLowerCase().includes('done') || col.title.toLowerCase().includes('completed'))
-    .map(col => col.id);
-
+  // Find done columns accurately
+  const doneColIds = getDoneColumnIds(columns);
   const isParentDone = doneColIds.includes(parentTask.columnId);
 
   return {
@@ -36,7 +50,8 @@ export function checkTaskDependency(task, allTasks, columns) {
  * @returns {boolean} true if allowed, false if blocked
  */
 export function validateColumnMove(task, targetColumn, allTasks, columns) {
-  const isTargetDone = targetColumn.title.toLowerCase().includes('done') || targetColumn.title.toLowerCase().includes('completed');
+  const doneColIds = getDoneColumnIds(columns);
+  const isTargetDone = doneColIds.includes(targetColumn.id);
   
   if (!isTargetDone) return true; // Moving to non-Done column is allowed
 
