@@ -56,13 +56,16 @@
             <h1
               style="
                 font-size: 2.2rem;
-                text-transform: uppercase;
-                letter-spacing: -0.02em;
+                font-weight: 800;
+                font-family: var(--font-family-heading);
+                letter-spacing: -0.025em;
+                color: var(--color-black);
+                margin-bottom: 0.35rem;
               "
             >
               FLOWZEN WORKSPACES
             </h1>
-            <p style="color: var(--accent-gray); font-size: 1rem">
+            <p style="color: var(--color-muted); font-size: 0.95rem; font-family: var(--font-family-body);">
               Select a workspace board or initialize a new real-time board.
             </p>
           </div>
@@ -88,7 +91,7 @@
 
     <!-- Modal: Create Board Modal -->
     <div class="modal-backdrop" id="create-board-modal">
-      <div class="modal" style="border-radius: 0px !important; max-width: 650px;">
+      <div class="modal" style="max-width: 650px;">
         <div class="modal-header">
           <h3 class="modal-title">CREATE FLOWZEN BOARD</h3>
           <button class="modal-close" data-close-modal aria-label="Close">
@@ -343,8 +346,8 @@
           if (!boards || boards.length === 0) {
             grid.innerHTML = `
             <div class="card card-yellow text-center" style="grid-column: 1 / -1; padding: 3.5rem 1.5rem;">
-              <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">No Boards Created Yet</h3>
-              <p style="margin-bottom: 1.5rem;">Click "Create New Board" above to start your first Kanban board.</p>
+              <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: var(--font-family-heading);">No Boards Created Yet</h3>
+              <p style="margin-bottom: 1.5rem; color: var(--color-muted);">Click "Create New Board" above to start your first Kanban board.</p>
             </div>
           `;
             return;
@@ -352,44 +355,61 @@
 
           grid.innerHTML = boards
             .map(
-              (board) => `
-          <div class="card card-interactive board-card-item" data-board-id="${board.id}" style="display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; border-radius: 0px !important;">
+              (board) => {
+                const category = board.projectType || "Software Development";
+                let badgeClass = "badge-medium";
+                if (category === "Marketing Campaign") badgeClass = "badge-urgent";
+                else if (category === "Product Design") badgeClass = "badge-low";
+                else if (category === "Research") badgeClass = "badge-high";
+
+                const deadlineFormatted = board.targetDeadline 
+                  ? `📅 ${board.targetDeadline}`
+                  : `📅 Continuous`;
+
+                const members = Array.isArray(board.team) && board.team.length > 0 
+                  ? board.team 
+                  : (board.memberIds || [board.ownerId]);
+
+                return `
+          <div class="board-card-item" data-board-id="${board.id}">
             <div>
-              <div class="flex items-center justify-between" style="margin-bottom: 0.85rem;">
-                <span class="badge badge-medium">FLOWZEN BOARD</span>
+              <div class="board-card-header">
+                <span class="badge ${badgeClass}">${escapeHTML(category)}</span>
                 <div class="flex items-center gap-2">
-                  <span style="font-size: 0.72rem; font-weight: 700; opacity: 0.7;">ID: ${escapeHTML(board.id)}</span>
+                  <span style="font-size: 0.76rem; font-weight: 600; color: var(--color-muted);" title="Target Deadline">${escapeHTML(deadlineFormatted)}</span>
                   ${board.id !== 'board_demo_1' && board.id !== 'board_demo_2' ? `
-                    <button type="button" class="btn btn-sm btn-icon delete-board-btn" data-board-id="${board.id}" title="Delete Board" style="padding: 0.15rem 0.4rem; font-size: 0.75rem;">Delete</button>
+                    <button type="button" class="btn btn-sm btn-icon delete-board-btn" data-board-id="${board.id}" title="Delete Board" style="padding: 0.2rem 0.45rem; font-size: 0.72rem; color: var(--accent-coral);">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
                   ` : ''}
                 </div>
               </div>
               
-              <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 800;">${escapeHTML(board.title)}</h3>
-              <p style="font-size: 0.9rem; color: var(--accent-gray); margin-bottom: 1.5rem; line-height: 1.4;">
-                ${escapeHTML(board.description || "No description provided")}
+              <h3 class="board-card-title">${escapeHTML(board.title)}</h3>
+              <p class="board-card-desc">
+                ${escapeHTML(board.description || "No workspace description provided")}
               </p>
             </div>
 
-            <div style="border-top: 1px solid var(--color-border); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between;">
+            <div class="board-card-footer">
               <div class="board-members-avatars">
-                ${(board.memberIds || [board.ownerId])
-                  .filter(Boolean)
-                  .slice(0, 3)
+                ${members
+                  .slice(0, 4)
                   .map(
                     (m) => `
-                  <div class="avatar-pill" title="Workspace Member">${getMemberInitial(m)}</div>
+                  <div class="avatar-pill" title="${typeof m === 'object' ? (m.name || 'Member') : 'Member'}">${getMemberInitial(m)}</div>
                 `,
                   )
                   .join("")}
               </div>
 
-              <a href="board.html?id=${board.id}" class="btn btn-sm btn-primary" style="display: inline-flex; align-items: center; gap: 4px;">
+              <a href="board.html?id=${board.id}" class="btn btn-sm btn-primary" style="display: inline-flex; align-items: center; gap: 6px;">
                 Open Board <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
             </div>
           </div>
-        `,
+        `;
+              }
             )
             .join("");
 

@@ -75,15 +75,15 @@ export function renderTeamManagementModal() {
     const isOwner = m.role === 'Owner' || m.id === board.ownerId;
     const initial = getMemberInitial(m.name);
     return `
-      <div class="team-member-item flex items-center justify-between gap-3" style="padding: 0.65rem 0.85rem; background: var(--bg-card); border: 1px solid var(--color-border); border-radius: 0px !important;">
+      <div class="team-member-item flex items-center justify-between gap-3" style="padding: 0.65rem 0.85rem; background: var(--bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
         <div class="flex items-center gap-3" style="flex: 1; min-width: 0;">
-          <span class="avatar-pill" style="background: ${m.color || 'var(--primary)'}; color: #FFF; width: 32px; height: 32px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; border-radius: 0px !important;">
+          <span class="avatar-pill" style="background: ${m.color || 'var(--primary)'}; color: #FFF; width: 32px; height: 32px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; border-radius: 50% !important;">
             ${initial}
           </span>
           <div style="flex: 1; min-width: 0; overflow: hidden;">
             <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
               ${escapeHTML(m.name)}
-              ${isOwner ? '<span class="badge badge-primary" style="font-size: 0.68rem; padding: 2px 6px; margin-left: 6px; border-radius: 0px !important;">Owner</span>' : ''}
+              ${isOwner ? '<span class="badge badge-primary" style="font-size: 0.68rem; padding: 2px 6px; margin-left: 6px;">Owner</span>' : ''}
             </div>
             ${m.email ? `<div style="font-size: 0.75rem; color: var(--text-tertiary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${escapeHTML(m.email)}</div>` : ''}
           </div>
@@ -191,7 +191,7 @@ export function renderBoardView() {
             <div class="kanban-column-header ${isWipExceeded || bottleneckAlert ? 'wip-alert' : ''}">
               <div class="column-title">
                 <span>${escapeHTML(column.title)}</span>
-                <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}" style="border-radius: 0px !important;">
+                <span class="badge ${isWipExceeded ? 'column-wip-badge exceeded' : 'column-wip-badge'}">
                   ${taskCount}${column.wipLimit ? ` / ${column.wipLimit} WIP` : ''}
                 </span>
               </div>
@@ -213,7 +213,7 @@ export function renderBoardView() {
 
             <div class="kanban-column-body" data-column-id="${column.id}">
               ${colTasks.length === 0 ? `
-                <div style="text-align: center; color: var(--text-tertiary); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 1px dashed var(--color-border); border-radius: 0px !important;">
+                <div style="text-align: center; color: var(--text-tertiary); padding: 1.5rem 0.5rem; font-size: 0.85rem; border: 1px dashed var(--color-border); border-radius: var(--radius-md);">
                   Drop tasks here or click +
                 </div>
               ` : colTasks.map(task => {
@@ -270,16 +270,16 @@ function renderQuickStatsBar(tasks, columns) {
   }).length;
 
   container.innerHTML = `
-    <div class="stat-pill stat-pill-total" title="Total active board tasks" style="border-radius: 0px !important;">
+    <div class="stat-pill stat-pill-total" title="Total active board tasks">
       <strong>${total} Tasks</strong>
     </div>
-    <div class="stat-pill stat-pill-done" title="Completed tasks" style="border-radius: 0px !important;">
+    <div class="stat-pill stat-pill-done" title="Completed tasks">
       <strong>${doneCount} Done</strong>
     </div>
-    <div class="stat-pill stat-pill-overdue" title="Overdue tasks requiring immediate attention" style="border-radius: 0px !important;">
+    <div class="stat-pill stat-pill-overdue" title="Overdue tasks requiring immediate attention">
       <strong>${overdueCount} Overdue</strong>
     </div>
-    <div class="stat-pill stat-pill-blocked" title="Tasks blocked by dependencies" style="border-radius: 0px !important;">
+    <div class="stat-pill stat-pill-blocked" title="Tasks blocked by dependencies">
       <strong>${blockedCount} Blocked</strong>
     </div>
   `;
