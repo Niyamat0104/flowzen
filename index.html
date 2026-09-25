@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/board.css" />
+    <link rel="stylesheet" href="css/live-kanban-showcase.css" />
     <link rel="stylesheet" href="css/responsive.css" />
   </head>
   <body>
@@ -287,13 +288,8 @@
             </div>
           </div>
 
-          <!-- Main Team Kanban Illustration Image -->
-          <img
-            src="assets/flowzen_team_kanban.jpg"
-            alt="FlowZen Team Workspace Collaboration"
-            class="apple-glass-panel"
-            style="width: 100%; max-width: 920px; display: block; margin: 0 auto; box-shadow: 0 25px 70px rgba(0,0,0,0.65);"
-          />
+          <!-- LIVE ANIMATED INTERACTIVE KANBAN BOARD SHOWCASE -->
+          <div id="live-kanban-showcase-container"></div>
 
           <!-- Floating Feature Box 3: Bottom Left -->
           <div class="floating-feature-box float-pos-bottom-left">
@@ -792,6 +788,7 @@
         showToast,
         openUserProfileModal,
       } from "./js/ui-utils.js";
+      import { initLiveKanbanShowcase } from "./js/live-kanban-showcase.js";
 
       let isSignUpMode = false;
       let cardDeckIndex = 0;
@@ -799,6 +796,7 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
+        initLiveKanbanShowcase();
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
