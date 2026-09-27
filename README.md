@@ -2,7 +2,8 @@
 
 > **Web Fundamentals Project 2026 Deliverable & Project Proposal Document**  
 > **Tech Stack:** Pure Vanilla HTML5 • Vanilla CSS3 • Modern ES6+ Vanilla JavaScript (ES Modules)  
-> **Repository:** [https://github.com/niyamat/taskflow](https://github.com/niyamat/taskflow)
+> **Repository:** [https://github.com/Niyamat0104/flowzen](https://github.com/Niyamat0104/flowzen)  
+> **Live Site:** [https://niyamat0104.github.io/flowzen/](https://niyamat0104.github.io/flowzen/)
 
 ---
 
@@ -163,13 +164,13 @@ Since FlowZen is built using **pure static HTML, CSS, and Vanilla JavaScript**, 
    git commit -m "Deploy project to GitHub Pages"
    git push origin main
    ```
-2. Open your repository on GitHub (`https://github.com/niyamat/taskflow`).
+2. Open your repository on GitHub (`https://github.com/Niyamat0104/flowzen`).
 3. Click on the **Settings** tab at the top of your repository.
 4. On the left sidebar under *Code and automation*, click **Pages**.
 5. Under **Build and deployment** $\rightarrow$ **Source**, select **Deploy from a branch**.
 6. Under **Branch**, select `main` branch and `/ (root)` folder, then click **Save**.
 7. Wait 1–2 minutes. Your live deployed website URL will appear at:
-   `https://niyamat.github.io/taskflow/`
+   `https://niyamat0104.github.io/flowzen/`
 
 ---
 
@@ -178,18 +179,18 @@ Since FlowZen is built using **pure static HTML, CSS, and Vanilla JavaScript**, 
 #### Option 2: Vercel (Instant One-Click Deploy)
 1. Sign up for free at [vercel.com](https://vercel.com).
 2. Click **Add New** $\rightarrow$ **Project**.
-3. Import your `taskflow` GitHub repository.
+3. Import your `flowzen` GitHub repository.
 4. Leave framework preset as **Other** (Static HTML) and click **Deploy**.
-5. Your app will be live at `https://taskflow.vercel.app`.
+5. Your app will be live at `https://flowzen.vercel.app`.
 
 #### Option 3: Netlify (Drag-and-Drop or Git Deploy)
 1. Sign up for free at [netlify.com](https://netlify.com).
-2. Drag and drop your `taskflow` project folder directly into the Netlify Deploy box, or connect your GitHub repository.
-3. Your app will be live at `https://taskflow.netlify.app`.
+2. Drag and drop your `flowzen` project folder directly into the Netlify Deploy box, or connect your GitHub repository.
+3. Your app will be live at `https://flowzen.netlify.app`.
 
 #### Option 4: Cloudflare Pages
 1. Sign up for free at [pages.cloudflare.com](https://pages.cloudflare.com).
-2. Connect your GitHub account and select your `taskflow` repository.
+2. Connect your GitHub account and select your `flowzen` repository.
 3. Set build output folder to `/` (root) and click **Save and Deploy**.
 
 ---
@@ -204,8 +205,8 @@ Since FlowZen is built using **pure static HTML, CSS, and Vanilla JavaScript**, 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/niyamat/taskflow.git
-   cd taskflow
+   git clone https://github.com/Niyamat0104/flowzen.git
+   cd flowzen
    ```
 
 2. **Start a local HTTP server**:
