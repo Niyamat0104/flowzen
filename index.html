@@ -55,10 +55,95 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header style="padding: 4.5rem 1.5rem 2rem 1.5rem; text-align: center;">
-      <div class="container" style="max-width: 1100px">
-        <!-- Sequential Typewriter Letter Animation Title (Variable Character Styling) -->
+    <!-- Hero Section (Zoho Sprints Style Floating Parallax Showcase) -->
+    <header class="hero-showcase-container" id="hero-header-section">
+      <!-- Left Floating Kanban Card (In Progress Stage) -->
+      <div class="hero-floating-card hero-float-left" id="parallax-card-left">
+        <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
+          <span class="hero-card-stage-pill stage-pill-yellow">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #854D0E;"></span>
+            In Progress
+          </span>
+          <span style="font-size: 0.65rem; font-weight: 800; opacity: 0.8;">WIP: 2/4</span>
+        </div>
+
+        <div class="hero-wip-indicator-bar">
+          <span>Min Capacity</span>
+          <span>Max Capacity</span>
+        </div>
+        <div class="hero-wip-line">
+          <div class="hero-wip-line-fill" style="width: 65%; background: linear-gradient(90deg, #EAB308, #EF4444);"></div>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(12px); border-radius: var(--radius-md); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+          <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
+            <span style="font-size: 0.7rem; font-weight: 800; color: #854D0E;">#FLOW-108</span>
+            <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--secondary);">ER</div>
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 800; line-height: 1.35; color: #0F172A; margin-bottom: 0.4rem;">
+            Responsive design check & CSS tokens
+          </div>
+          <div class="flex items-center justify-between" style="font-size: 0.68rem; font-weight: 700; color: #64748B;">
+            <span style="display: inline-flex; align-items: center; gap: 4px; color: #D97706;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Est: 4h
+            </span>
+            <span style="color: #10B981;">● Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Floating Kanban Card (To Do 9 Stage) -->
+      <div class="hero-floating-card hero-float-right" id="parallax-card-right">
+        <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
+          <span class="hero-card-stage-pill stage-pill-purple">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #831843;"></span>
+            To do (9)
+          </span>
+          <span style="font-size: 0.65rem; font-weight: 800; opacity: 0.9;">Priority: High</span>
+        </div>
+
+        <div class="hero-wip-indicator-bar">
+          <span>Min Capacity</span>
+          <span>Max Capacity</span>
+        </div>
+        <div class="hero-wip-line">
+          <div class="hero-wip-line-fill" style="width: 85%; background: linear-gradient(90deg, #EC4899, #8B5CF6);"></div>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px); border-radius: var(--radius-md); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
+            <span style="font-size: 0.7rem; font-weight: 800; color: #F0ABFC;">#FLOW-104</span>
+            <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--primary);">AV</div>
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 800; line-height: 1.35; color: #FFFFFF; margin-bottom: 0.4rem;">
+            Usability testing & auth flow engine
+          </div>
+          <div class="flex items-center justify-between" style="font-size: 0.68rem; font-weight: 700; color: #E2E8F0;">
+            <span style="display: inline-flex; align-items: center; gap: 4px; color: #F472B6;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg> Start !!
+            </span>
+            <span style="color: #6EE7B7;">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Floating Kanban Card (Done Stage) -->
+      <div class="hero-floating-card hero-float-bottom-right" id="parallax-card-bottom">
+        <div class="flex items-center justify-between" style="margin-bottom: 0.45rem;">
+          <span class="hero-card-stage-pill stage-pill-green">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 5 12"/></svg>
+            Done
+          </span>
+          <span style="font-size: 0.65rem; font-weight: 800; opacity: 0.9;">100% Complete</span>
+        </div>
+        <div style="font-size: 0.8rem; font-weight: 800; line-height: 1.35; color: #064E3B;">
+          #FLOW-120 Risk Scoring Matrix
+        </div>
+      </div>
+
+      <!-- Center Hero Headline Content -->
+      <div class="hero-center-content text-center">
+        <!-- Sequential Typewriter Letter Animation Title -->
         <h1 class="flowzen-animated-title-container" id="typewriter-title">
           <span class="flowzen-single-letter letter-f">F</span>
           <span class="flowzen-single-letter letter-l">L</span>
@@ -69,14 +154,18 @@
           <span class="flowzen-single-letter letter-n">N</span>
         </h1>
 
-        <!-- Significantly Smaller Subtitle -->
+        <!-- Significantly Smaller Subtitle Statement -->
         <h2 class="hero-subtitle-small">
           EXECUTIVE KANBAN & INTELLIGENT WORKFLOW ENGINE
         </h2>
 
+        <p style="font-size: 1.1rem; color: var(--color-muted); max-width: 640px; margin: 0 auto 2.2rem auto; line-height: 1.6; font-weight: 500;">
+          The easiest agile project management software for dynamic teams. Empower your projects with intelligent workflow scoring, multi-view boards, and real-time state synchronization.
+        </p>
+
         <div
           class="flex items-center justify-center gap-4"
-          style="flex-wrap: wrap; margin-bottom: 2rem"
+          style="flex-wrap: wrap; margin-bottom: 1.5rem"
         >
           <button class="btn btn-lg hero-btn-glass-primary" id="hero-launch-btn" style="font-size: 1.05rem; padding: 0.95rem 2.4rem; display: inline-flex; align-items: center; gap: 6px;">
             Launch Workspace <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -797,6 +886,26 @@
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
         initLiveKanbanShowcase();
+
+        // Zoho Sprints Style Hero Floating Cards Scroll Parallax Engine
+        const cardLeft = document.getElementById("parallax-card-left");
+        const cardRight = document.getElementById("parallax-card-right");
+        const cardBottom = document.getElementById("parallax-card-bottom");
+
+        window.addEventListener("scroll", () => {
+          const scrollY = window.scrollY;
+          if (scrollY < 900) {
+            if (cardLeft) {
+              cardLeft.style.transform = `translateY(${scrollY * 0.18}px) rotate(${-4 + scrollY * 0.015}deg)`;
+            }
+            if (cardRight) {
+              cardRight.style.transform = `translateY(${scrollY * -0.16}px) rotate(${5 - scrollY * 0.015}deg)`;
+            }
+            if (cardBottom) {
+              cardBottom.style.transform = `translateY(${scrollY * 0.12}px) rotate(${-2 + scrollY * 0.01}deg)`;
+            }
+          }
+        }, { passive: true });
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
