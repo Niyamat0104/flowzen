@@ -931,34 +931,44 @@
         initTheme();
         initLiveKanbanShowcase();
 
-        // Zoho Sprints Style Hero Floating Cards Scroll Parallax Engine
+        // Zoho Sprints Style Hero Floating Cards Scroll Parallax & Convergence Engine
         const cardLeft = document.getElementById("parallax-card-left");
         const cardRight = document.getElementById("parallax-card-right");
         const cardBottom = document.getElementById("parallax-card-bottom");
 
-        window.addEventListener("scroll", () => {
+        let ticking = false;
+
+        function updateHeroCardMotion() {
           const scrollY = window.scrollY;
           if (scrollY < 1200) {
-            // Scroll Convergence & Vertical Motion:
-            // Scroll DOWN -> move inward closer to center (Left +moveX, Right -moveX)
-            // Scroll UP -> move back outward farther apart
-            const convergenceProgress = Math.min(scrollY / 500, 1);
-            const moveX = convergenceProgress * 95; // Smooth inward convergence motion (px)
-            const translateYLeft = scrollY * 0.38;
-            const translateYRight = scrollY * 0.32;
+            // Scroll Convergence (Inward when scrolling DOWN, Outward when scrolling UP)
+            const moveX = Math.min(scrollY * 0.38, 175); // Up to 175px inward convergence
+            const translateYLeft = scrollY * 0.36;
+            const translateYRight = scrollY * 0.30;
             const translateYBottom = scrollY * 0.22;
 
             if (cardLeft) {
-              cardLeft.style.transform = `translate(${moveX}px, ${translateYLeft}px) rotate(0deg)`;
+              cardLeft.style.transform = `translate3d(${moveX}px, ${translateYLeft}px, 0) rotate(0deg)`;
             }
             if (cardRight) {
-              cardRight.style.transform = `translate(${-moveX}px, ${translateYRight}px) rotate(0deg)`;
+              cardRight.style.transform = `translate3d(${-moveX}px, ${translateYRight}px, 0) rotate(0deg)`;
             }
             if (cardBottom) {
-              cardBottom.style.transform = `translate(${-moveX * 0.5}px, ${translateYBottom}px) rotate(0deg)`;
+              cardBottom.style.transform = `translate3d(${-moveX * 0.5}px, ${translateYBottom}px, 0) rotate(0deg)`;
             }
           }
+          ticking = false;
+        }
+
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateHeroCardMotion);
+            ticking = true;
+          }
         }, { passive: true });
+
+        // Initial trigger on load
+        updateHeroCardMotion();
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {

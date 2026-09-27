@@ -182,9 +182,20 @@ function loadBoardFromStorage(boardId) {
 
   try {
     const storedMeta = localStorage.getItem(metaKey);
-    const rawMeta = storedMeta ? JSON.parse(storedMeta) : defaultMeta;
+    let rawMeta = storedMeta ? JSON.parse(storedMeta) : null;
+    if (!rawMeta) {
+      const rawAll = localStorage.getItem('flowzen_all_boards');
+      if (rawAll) {
+        const allBoards = JSON.parse(rawAll);
+        if (Array.isArray(allBoards)) {
+          const found = allBoards.find(b => b.id === boardId);
+          if (found) rawMeta = found;
+        }
+      }
+    }
+    if (!rawMeta) rawMeta = defaultMeta;
     boardState.boardData = sanitizeBoardData(rawMeta);
-    if (!storedMeta) localStorage.setItem(metaKey, JSON.stringify(boardState.boardData));
+    localStorage.setItem(metaKey, JSON.stringify(boardState.boardData));
   } catch (e) {
     boardState.boardData = sanitizeBoardData(defaultMeta);
   }

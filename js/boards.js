@@ -123,6 +123,9 @@ export async function createBoard(title, description = "", projectType = "Softwa
   const boards = getStoredBoards();
   boards.unshift(newBoard);
   saveStoredBoards(boards);
+  
+  // Persist individual board metadata key so board.html loads complete team
+  localStorage.setItem(`flowzen_board_${boardId}`, JSON.stringify(newBoard));
 
   logActivity(boardId, `Created project board "${newBoard.title}" (${projectType}) with ${team.length} team members`);
   showToast(`Board "${newBoard.title}" created successfully!`, "success");
@@ -188,18 +191,10 @@ export function sanitizeBoardData(board) {
   let ownerId = board.ownerId;
   let team = Array.isArray(board.team) && board.team.length > 0 ? board.team : null;
 
-  // Filter out any legacy fake demo team members
-  const DEMO_FAKE_IDS = ['usr_priya', 'usr_aman'];
-  const DEMO_FAKE_NAMES = ['Priya Sharma', 'Aman Verma', 'Alex Rivera', 'Elena Rostova'];
-
-  if (team) {
-    team = team.filter(m => {
-      if (m.role === 'Owner') return true;
-      if (DEMO_FAKE_IDS.includes(m.id) || DEMO_FAKE_NAMES.includes(m.name)) {
-        return false;
-      }
-      return true;
-    });
+  // Filter out legacy fake demo team members only for demo boards
+  if (team && (board.id === 'board_demo_1' || board.id === 'board_demo_2')) {
+    const DEMO_FAKE_NAMES = ['Priya Sharma', 'Aman Verma', 'Alex Rivera', 'Elena Rostova'];
+    team = team.filter(m => m.role === 'Owner' || !DEMO_FAKE_NAMES.includes(m.name));
   }
 
   if (!team || team.length === 0) {
