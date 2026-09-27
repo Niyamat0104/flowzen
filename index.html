@@ -57,16 +57,42 @@
 
     <!-- Hero Section (Zoho Sprints Style Floating Parallax Showcase) -->
     <header class="hero-showcase-container" id="hero-header-section">
-      <!-- Animated Dashed Connector Line Tracks Overlay (Zoho Sprints Style) -->
-      <svg class="hero-svg-connector-overlay" viewBox="0 0 1200 600" fill="none">
-        <!-- Left Yellow Dashed Curve Line Track -->
-        <path d="M 80 160 C 180 320, 260 420, 340 490" stroke="#EAB308" stroke-width="2.5" stroke-linecap="round" class="moving-dash-path" />
-        <!-- Right Purple Dashed Curve Line Track -->
-        <path d="M 1120 160 C 1000 320, 920 420, 840 500" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" class="moving-dash-path" />
+      <!-- Animated Dashed Connector Line Tracks Overlay (Wraps around cards, Zoho Sprints Style) -->
+      <svg class="hero-svg-connector-overlay" viewBox="0 0 1400 600" fill="none">
+        <!-- Left Yellow Card Decorative Dashed Arc (Wraps around left card) -->
+        <path d="M 30 60 C -10 240, 160 360, 310 320" stroke="#EAB308" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
+        <!-- Right Purple Card Decorative Dashed Arc (Wraps around right card) -->
+        <path d="M 1370 60 C 1410 240, 1240 360, 1090 320" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
+        <!-- Bottom Green Card Decorative Dashed Arc -->
+        <path d="M 1040 440 C 1180 460, 1360 510, 1260 590" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
       </svg>
 
-      <!-- Left Floating Kanban Card (In Progress Stage - Sharp Corners) -->
+      <!-- Left Floating Kanban Card (In Progress Stage - Distant, 100% Straight, Sharp Corners) -->
       <div class="hero-floating-card hero-float-left" id="parallax-card-left">
+        <!-- Attached Moving Stopwatch Clock Widget (Zoho Sprints Style) -->
+        <div class="hero-moving-clock-widget" title="Live Sprint Timer">
+          <div class="stopwatch-top-crown"></div>
+          <div class="stopwatch-ring"></div>
+          <svg class="stopwatch-dial-svg" viewBox="0 0 60 60">
+            <!-- White Clock Dial -->
+            <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#334155" stroke-width="3.5" />
+            <!-- Hour & Minute Ticks -->
+            <line x1="30" y1="8" x2="30" y2="13" stroke="#475569" stroke-width="2.5"/>
+            <line x1="30" y1="47" x2="30" y2="52" stroke="#475569" stroke-width="2.5"/>
+            <line x1="8" y1="30" x2="13" y2="30" stroke="#475569" stroke-width="2.5"/>
+            <line x1="47" y1="30" x2="52" y2="30" stroke="#475569" stroke-width="2.5"/>
+            
+            <!-- Hour Hand -->
+            <line x1="30" y1="30" x2="30" y2="18" stroke="#1E293B" stroke-width="3" stroke-linecap="round"/>
+            <!-- Fast Continuous Rotating Minute Hand -->
+            <line x1="30" y1="30" x2="43" y2="30" stroke="#EF4444" stroke-width="3" stroke-linecap="round" class="clock-minute-hand"/>
+            <!-- Pivot Center Pin -->
+            <circle cx="30" cy="30" r="3.5" fill="#EF4444" />
+          </svg>
+          <!-- Radiating Green Motion Lines -->
+          <div class="clock-motion-rays"></div>
+        </div>
+
         <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
           <span class="hero-card-stage-pill stage-pill-yellow">
             <span style="width: 6px; height: 6px; border-radius: 50%; background: #854D0E;"></span>
@@ -100,7 +126,7 @@
         </div>
       </div>
 
-      <!-- Right Floating Kanban Card (To Do 9 Stage - Sharp Corners) -->
+      <!-- Right Floating Kanban Card (To Do 9 Stage - Distant, 100% Straight, Sharp Corners) -->
       <div class="hero-floating-card hero-float-right" id="parallax-card-right">
         <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
           <span class="hero-card-stage-pill stage-pill-purple">
@@ -135,7 +161,7 @@
         </div>
       </div>
 
-      <!-- Bottom Floating Kanban Card (Done Stage) -->
+      <!-- Bottom Floating Kanban Card (Done Stage - Sharp Corners) -->
       <div class="hero-floating-card hero-float-bottom-right" id="parallax-card-bottom">
         <div class="flex items-center justify-between" style="margin-bottom: 0.45rem;">
           <span class="hero-card-stage-pill stage-pill-green">
@@ -902,20 +928,24 @@
 
         window.addEventListener("scroll", () => {
           const scrollY = window.scrollY;
-          if (scrollY < 1100) {
-            // Zoho Sprints Style Vertical Parallax Motion (100% Straight, Distant Cards)
-            const translateYLeft = scrollY * 0.42;
-            const translateYRight = scrollY * 0.35;
-            const translateYBottom = scrollY * 0.25;
+          if (scrollY < 1200) {
+            // Scroll Convergence & Vertical Motion:
+            // Scroll DOWN -> move inward closer to center (Left +moveX, Right -moveX)
+            // Scroll UP -> move back outward farther apart
+            const convergenceProgress = Math.min(scrollY / 500, 1);
+            const moveX = convergenceProgress * 140; // Inward horizontal translation distance (px)
+            const translateYLeft = scrollY * 0.38;
+            const translateYRight = scrollY * 0.32;
+            const translateYBottom = scrollY * 0.22;
 
             if (cardLeft) {
-              cardLeft.style.transform = `translateY(${translateYLeft}px) rotate(0deg)`;
+              cardLeft.style.transform = `translate(${moveX}px, ${translateYLeft}px) rotate(0deg)`;
             }
             if (cardRight) {
-              cardRight.style.transform = `translateY(${translateYRight}px) rotate(0deg)`;
+              cardRight.style.transform = `translate(${-moveX}px, ${translateYRight}px) rotate(0deg)`;
             }
             if (cardBottom) {
-              cardBottom.style.transform = `translateY(${translateYBottom}px) rotate(0deg)`;
+              cardBottom.style.transform = `translate(${-moveX * 0.5}px, ${translateYBottom}px) rotate(0deg)`;
             }
           }
         }, { passive: true });

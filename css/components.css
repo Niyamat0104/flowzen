@@ -1154,9 +1154,9 @@
 .hero-showcase-container {
   position: relative;
   width: 100%;
-  max-width: 1380px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 3.5rem 1rem 4rem 1rem;
+  padding: 4rem 1rem 5rem 1rem;
 }
 
 .hero-center-content {
@@ -1169,30 +1169,30 @@
 .hero-floating-card {
   position: absolute;
   z-index: 10;
-  width: 270px;
+  width: 275px;
   border-radius: 4px !important;
   padding: 1.1rem;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2), 0 0 25px rgba(99, 102, 241, 0.12);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid rgba(255, 255, 255, 0.4);
-  transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+  transition: box-shadow 0.25s ease;
   user-select: none;
   pointer-events: auto;
   will-change: transform;
-  transform: rotate(0deg);
+  transform: rotate(0deg) !important; /* 100% Straight, No Tilt */
 }
 
 .hero-floating-card:hover {
-  transform: scale(1.05) translateY(-5px) !important;
+  transform: scale(1.05) translateY(-5px) rotate(0deg) !important;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), 0 0 45px var(--primary-glow);
   z-index: 25;
 }
 
-/* Left Floating Card - Crisp Sharp Yellow Column (In Progress) */
+/* Left Floating Card - Crisp Sharp Yellow Column (Distant from FLOWZEN Title) */
 .hero-float-left {
-  top: 6%;
-  left: -80px;
+  top: 5%;
+  left: -140px; /* Distant horizontal positioning */
   background: #FACC15;
   color: #0F172A;
   border-color: #EAB308 !important;
@@ -1204,10 +1204,10 @@
   color: #F8FAFC;
 }
 
-/* Right Floating Card - Crisp Sharp Purple/Violet Column (To Do 9) */
+/* Right Floating Card - Crisp Sharp Purple/Violet Column (Distant from FLOWZEN Title) */
 .hero-float-right {
   top: 4%;
-  right: -80px;
+  right: -140px; /* Distant horizontal positioning */
   background: #E0E7FF;
   color: #1E1B4B;
   border-color: #818CF8 !important;
@@ -1222,7 +1222,7 @@
 /* Bottom Floating Card - Crisp Sharp Green Column (Done) */
 .hero-float-bottom-right {
   bottom: -40px;
-  right: 0px;
+  right: -50px;
   width: 240px;
   background: #4ADE80;
   color: #064E3B;
@@ -1233,6 +1233,80 @@
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.85), rgba(4, 120, 87, 0.95));
   border: 2px solid #34D399 !important;
   color: #F8FAFC;
+}
+
+/* ATTACHED MOVING STOPWATCH CLOCK WIDGET (ZOHO SPRINTS STYLE) */
+.hero-moving-clock-widget {
+  position: absolute;
+  bottom: -28px;
+  right: -24px;
+  width: 58px;
+  height: 58px;
+  z-index: 30;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+  animation: clockFloatBob 3s ease-in-out infinite alternate;
+}
+
+@keyframes clockFloatBob {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-6px) scale(1.04); }
+}
+
+.stopwatch-top-crown {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 6px;
+  background: #475569;
+  border-radius: 2px 2px 0 0;
+  z-index: 2;
+}
+
+.stopwatch-ring {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 10px;
+  border: 2.5px solid #475569;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.stopwatch-dial-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.clock-minute-hand {
+  transform-origin: 30px 30px;
+  animation: spinClockHand 3.2s linear infinite;
+}
+
+@keyframes spinClockHand {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.clock-motion-rays {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  width: 18px;
+  height: 18px;
+  border-top: 2.5px dashed #84CC16;
+  border-right: 2.5px dashed #84CC16;
+  border-radius: 50%;
+  animation: pulseRays 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulseRays {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 1; }
 }
 
 /* MOVING DASHED CONNECTOR LINE ANIMATIONS */
