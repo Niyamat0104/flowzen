@@ -1169,16 +1169,17 @@
 .hero-floating-card {
   position: absolute;
   z-index: 10;
-  width: 280px;
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25), 0 0 30px rgba(99, 102, 241, 0.15);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  width: 270px;
+  border-radius: 4px !important;
+  padding: 1.1rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2), 0 0 25px rgba(99, 102, 241, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
   user-select: none;
   pointer-events: auto;
+  will-change: transform;
 }
 
 .hero-floating-card:hover {
@@ -1187,66 +1188,75 @@
   z-index: 25;
 }
 
-/* Left Floating Card - Vibrant Yellow/Cyan Theme (In Progress) */
+/* Left Floating Card - Crisp Sharp Yellow Column (In Progress) */
 .hero-float-left {
   top: 5%;
-  left: -25px;
-  background: linear-gradient(135deg, rgba(254, 240, 138, 0.95), rgba(253, 224, 71, 0.9));
+  left: -20px;
+  background: #FACC15;
   color: #0F172A;
-  transform: rotate(-4deg);
-  animation: floatBobbingLeft 5s ease-in-out infinite alternate;
+  transform: rotate(-3deg);
+  border-color: #EAB308 !important;
 }
 
 [data-theme="dark"] .hero-float-left {
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(202, 138, 4, 0.18));
-  border: 1px solid rgba(250, 204, 21, 0.4);
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.85), rgba(202, 138, 4, 0.95));
+  border: 2px solid #EAB308 !important;
   color: #F8FAFC;
 }
 
-/* Right Floating Card - Vibrant Purple/Pink Theme (To Do 9) */
+/* Right Floating Card - Crisp Sharp Purple/Violet Column (To Do 9) */
 .hero-float-right {
   top: 4%;
-  right: -25px;
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.95), rgba(217, 70, 239, 0.9));
-  color: #FFFFFF;
-  transform: rotate(5deg);
-  animation: floatBobbingRight 5.5s ease-in-out infinite alternate;
+  right: -20px;
+  background: #E0E7FF;
+  color: #1E1B4B;
+  transform: rotate(4deg);
+  border-color: #818CF8 !important;
 }
 
 [data-theme="dark"] .hero-float-right {
-  background: linear-gradient(135deg, rgba(217, 70, 239, 0.25), rgba(168, 85, 247, 0.18));
-  border: 1px solid rgba(217, 70, 239, 0.4);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.85), rgba(126, 34, 206, 0.95));
+  border: 2px solid #C084FC !important;
   color: #F8FAFC;
 }
 
-/* Bottom Floating Card - Emerald Theme (Done) */
+/* Bottom Floating Card - Crisp Sharp Green Column (Done) */
 .hero-float-bottom-right {
   bottom: -20px;
-  right: 8%;
-  width: 250px;
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.95), rgba(16, 185, 129, 0.9));
+  right: 6%;
+  width: 240px;
+  background: #4ADE80;
   color: #064E3B;
   transform: rotate(-2deg);
-  animation: floatBobbingBottom 4.8s ease-in-out infinite alternate;
+  border-color: #22C55E !important;
 }
 
 [data-theme="dark"] .hero-float-bottom-right {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.18));
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.85), rgba(4, 120, 87, 0.95));
+  border: 2px solid #34D399 !important;
   color: #F8FAFC;
 }
 
-/* Bobbing Animations */
-@keyframes floatBobbingLeft {
-  0% { transform: translateY(0px) rotate(-4deg); }
-  50% { transform: translateY(-14px) rotate(-2deg); }
-  100% { transform: translateY(0px) rotate(-4deg); }
+/* MOVING DASHED CONNECTOR LINE ANIMATIONS */
+.moving-dash-path {
+  stroke-dasharray: 8 6;
+  animation: moveDashTrack 1.2s linear infinite;
 }
 
-@keyframes floatBobbingRight {
-  0% { transform: translateY(0px) rotate(5deg); }
-  50% { transform: translateY(-16px) rotate(3deg); }
-  100% { transform: translateY(0px) rotate(5deg); }
+@keyframes moveDashTrack {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -28; }
+}
+
+.hero-svg-connector-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
 }
 
 @keyframes floatBobbingBottom {

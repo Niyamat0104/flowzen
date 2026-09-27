@@ -57,7 +57,15 @@
 
     <!-- Hero Section (Zoho Sprints Style Floating Parallax Showcase) -->
     <header class="hero-showcase-container" id="hero-header-section">
-      <!-- Left Floating Kanban Card (In Progress Stage) -->
+      <!-- Animated Dashed Connector Line Tracks Overlay (Zoho Sprints Style) -->
+      <svg class="hero-svg-connector-overlay" viewBox="0 0 1200 600" fill="none">
+        <!-- Left Yellow Dashed Curve Line Track -->
+        <path d="M 80 160 C 180 320, 260 420, 340 490" stroke="#EAB308" stroke-width="2.5" stroke-linecap="round" class="moving-dash-path" />
+        <!-- Right Purple Dashed Curve Line Track -->
+        <path d="M 1120 160 C 1000 320, 920 420, 840 500" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" class="moving-dash-path" />
+      </svg>
+
+      <!-- Left Floating Kanban Card (In Progress Stage - Sharp Corners) -->
       <div class="hero-floating-card hero-float-left" id="parallax-card-left">
         <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
           <span class="hero-card-stage-pill stage-pill-yellow">
@@ -68,16 +76,16 @@
         </div>
 
         <div class="hero-wip-indicator-bar">
-          <span>Min Capacity</span>
-          <span>Max Capacity</span>
+          <span>Min</span>
+          <span>Max</span>
         </div>
         <div class="hero-wip-line">
           <div class="hero-wip-line-fill" style="width: 65%; background: linear-gradient(90deg, #EAB308, #EF4444);"></div>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(12px); border-radius: var(--radius-md); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 2px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
-            <span style="font-size: 0.7rem; font-weight: 800; color: #854D0E;">#FLOW-108</span>
+            <span style="font-size: 0.7rem; font-weight: 800; color: #854D0E;">#ZS-29</span>
             <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--secondary);">ER</div>
           </div>
           <div style="font-size: 0.85rem; font-weight: 800; line-height: 1.35; color: #0F172A; margin-bottom: 0.4rem;">
@@ -92,7 +100,7 @@
         </div>
       </div>
 
-      <!-- Right Floating Kanban Card (To Do 9 Stage) -->
+      <!-- Right Floating Kanban Card (To Do 9 Stage - Sharp Corners) -->
       <div class="hero-floating-card hero-float-right" id="parallax-card-right">
         <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
           <span class="hero-card-stage-pill stage-pill-purple">
@@ -103,26 +111,26 @@
         </div>
 
         <div class="hero-wip-indicator-bar">
-          <span>Min Capacity</span>
-          <span>Max Capacity</span>
+          <span>Min</span>
+          <span>Max</span>
         </div>
         <div class="hero-wip-line">
           <div class="hero-wip-line-fill" style="width: 85%; background: linear-gradient(90deg, #EC4899, #8B5CF6);"></div>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px); border-radius: var(--radius-md); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 2px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
           <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
-            <span style="font-size: 0.7rem; font-weight: 800; color: #F0ABFC;">#FLOW-104</span>
+            <span style="font-size: 0.7rem; font-weight: 800; color: #831843;">#ZS-1</span>
             <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--primary);">AV</div>
           </div>
-          <div style="font-size: 0.85rem; font-weight: 800; line-height: 1.35; color: #FFFFFF; margin-bottom: 0.4rem;">
+          <div style="font-size: 0.85rem; font-weight: 800; line-height: 1.35; color: #0F172A; margin-bottom: 0.4rem;">
             Usability testing & auth flow engine
           </div>
-          <div class="flex items-center justify-between" style="font-size: 0.68rem; font-weight: 700; color: #E2E8F0;">
-            <span style="display: inline-flex; align-items: center; gap: 4px; color: #F472B6;">
+          <div class="flex items-center justify-between" style="font-size: 0.68rem; font-weight: 700; color: #475569;">
+            <span style="display: inline-flex; align-items: center; gap: 4px; color: #BE185D;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg> Start !!
             </span>
-            <span style="color: #6EE7B7;">Ready</span>
+            <span style="color: #059669;">Ready</span>
           </div>
         </div>
       </div>
@@ -894,15 +902,27 @@
 
         window.addEventListener("scroll", () => {
           const scrollY = window.scrollY;
-          if (scrollY < 900) {
+          if (scrollY < 1000) {
+            // Convergence: left card slides right (+X) and down (+Y)
+            // right card slides left (-X) and down (+Y), bringing them closer to center!
+            const translateXLeft = Math.min(scrollY * 0.28, 90);
+            const translateYLeft = scrollY * 0.18;
+            const rotateLeft = -3 + Math.min(scrollY * 0.015, 5);
+
+            const translateXRight = -Math.min(scrollY * 0.28, 90);
+            const translateYRight = scrollY * 0.15;
+            const rotateRight = 4 - Math.min(scrollY * 0.015, 5);
+
+            const translateYBottom = scrollY * 0.12;
+
             if (cardLeft) {
-              cardLeft.style.transform = `translateY(${scrollY * 0.18}px) rotate(${-4 + scrollY * 0.015}deg)`;
+              cardLeft.style.transform = `translate(${translateXLeft}px, ${translateYLeft}px) rotate(${rotateLeft}deg)`;
             }
             if (cardRight) {
-              cardRight.style.transform = `translateY(${scrollY * -0.16}px) rotate(${5 - scrollY * 0.015}deg)`;
+              cardRight.style.transform = `translate(${translateXRight}px, ${translateYRight}px) rotate(${rotateRight}deg)`;
             }
             if (cardBottom) {
-              cardBottom.style.transform = `translateY(${scrollY * 0.12}px) rotate(${-2 + scrollY * 0.01}deg)`;
+              cardBottom.style.transform = `translateY(${translateYBottom}px) rotate(-2deg)`;
             }
           }
         }, { passive: true });
