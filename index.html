@@ -59,37 +59,47 @@
     <header class="hero-showcase-container" id="hero-header-section">
       <!-- Animated Dashed Connector Line Tracks Overlay (Wraps around cards, Zoho Sprints Style) -->
       <svg class="hero-svg-connector-overlay" viewBox="0 0 1400 600" fill="none">
-        <!-- Left Yellow Card Decorative Dashed Arc (Wraps around left card) -->
-        <path d="M 30 60 C -10 240, 160 360, 310 320" stroke="#EAB308" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
-        <!-- Right Purple Card Decorative Dashed Arc (Wraps around right card) -->
-        <path d="M 1370 60 C 1410 240, 1240 360, 1090 320" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
+        <!-- Left Yellow Card Decorative Dashed Arc -->
+        <path d="M 80 80 C 40 240, 220 340, 360 300" stroke="#EAB308" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
+        <!-- Right Purple Card Decorative Dashed Arc -->
+        <path d="M 1320 80 C 1360 240, 1180 340, 1040 300" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
         <!-- Bottom Green Card Decorative Dashed Arc -->
-        <path d="M 1040 440 C 1180 460, 1360 510, 1260 590" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
+        <path d="M 980 440 C 1120 460, 1300 510, 1200 590" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="moving-dash-path" />
       </svg>
 
-      <!-- Left Floating Kanban Card (In Progress Stage - Distant, 100% Straight, Sharp Corners) -->
+      <!-- Left Floating Kanban Card (In Progress Stage - Sharp, Sleek, 100% Straight) -->
       <div class="hero-floating-card hero-float-left" id="parallax-card-left">
-        <!-- Attached Moving Stopwatch Clock Widget (Zoho Sprints Style) -->
+        <!-- Attached Moving Stopwatch Clock Widget (Sleek & Elegant Executive Style) -->
         <div class="hero-moving-clock-widget" title="Live Sprint Timer">
           <div class="stopwatch-top-crown"></div>
           <div class="stopwatch-ring"></div>
           <svg class="stopwatch-dial-svg" viewBox="0 0 60 60">
-            <!-- White Clock Dial -->
-            <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#334155" stroke-width="3.5" />
-            <!-- Hour & Minute Ticks -->
-            <line x1="30" y1="8" x2="30" y2="13" stroke="#475569" stroke-width="2.5"/>
-            <line x1="30" y1="47" x2="30" y2="52" stroke="#475569" stroke-width="2.5"/>
-            <line x1="8" y1="30" x2="13" y2="30" stroke="#475569" stroke-width="2.5"/>
-            <line x1="47" y1="30" x2="52" y2="30" stroke="#475569" stroke-width="2.5"/>
-            
-            <!-- Hour Hand -->
-            <line x1="30" y1="30" x2="30" y2="18" stroke="#1E293B" stroke-width="3" stroke-linecap="round"/>
-            <!-- Fast Continuous Rotating Minute Hand -->
-            <line x1="30" y1="30" x2="43" y2="30" stroke="#EF4444" stroke-width="3" stroke-linecap="round" class="clock-minute-hand"/>
-            <!-- Pivot Center Pin -->
-            <circle cx="30" cy="30" r="3.5" fill="#EF4444" />
+            <defs>
+              <radialGradient id="clockDialGrad" cx="35%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#1E293B" />
+                <stop offset="100%" stop-color="#0F172A" />
+              </radialGradient>
+            </defs>
+            <!-- Dark Glass Metallic Clock Dial -->
+            <circle cx="30" cy="30" r="26" fill="url(#clockDialGrad)" stroke="#E2E8F0" stroke-width="2.5" />
+            <!-- 12 Fine Precision Tick Marks -->
+            <line x1="30" y1="7" x2="30" y2="11" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+            <line x1="30" y1="49" x2="30" y2="53" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7" y1="30" x2="11" y2="30" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+            <line x1="49" y1="30" x2="53" y2="30" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+            <line x1="14" y1="14" x2="17" y2="17" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="43" y1="43" x2="46" y2="46" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="43" y1="14" x2="46" y2="17" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="14" y1="43" x2="17" y2="46" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Sleek Silver Hour Hand -->
+            <line x1="30" y1="30" x2="30" y2="17" stroke="#F8FAFC" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Fast Spinning Crimson Needle Minute Hand -->
+            <line x1="30" y1="30" x2="44" y2="30" stroke="#FF4757" stroke-width="2" stroke-linecap="round" class="clock-minute-hand"/>
+            <!-- Center Jewel Pin -->
+            <circle cx="30" cy="30" r="3" fill="#FF4757" stroke="#F8FAFC" stroke-width="1" />
           </svg>
-          <!-- Radiating Green Motion Lines -->
+          <!-- Radiating Elegant Motion Lines -->
           <div class="clock-motion-rays"></div>
         </div>
 
@@ -98,7 +108,7 @@
             <span style="width: 6px; height: 6px; border-radius: 50%; background: #854D0E;"></span>
             In Progress
           </span>
-          <span style="font-size: 0.65rem; font-weight: 800; opacity: 0.8;">WIP: 2/4</span>
+          <span style="font-size: 0.65rem; font-weight: 800; opacity: 0.85;">WIP: 2/4</span>
         </div>
 
         <div class="hero-wip-indicator-bar">
@@ -109,7 +119,7 @@
           <div class="hero-wip-line-fill" style="width: 65%; background: linear-gradient(90deg, #EAB308, #EF4444);"></div>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 2px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <div style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border-radius: 0px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.12); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
           <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
             <span style="font-size: 0.7rem; font-weight: 800; color: #854D0E;">#ZS-29</span>
             <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--secondary);">ER</div>
@@ -126,7 +136,7 @@
         </div>
       </div>
 
-      <!-- Right Floating Kanban Card (To Do 9 Stage - Distant, 100% Straight, Sharp Corners) -->
+      <!-- Right Floating Kanban Card (To Do 9 Stage - Sharp, Sleek, 100% Straight) -->
       <div class="hero-floating-card hero-float-right" id="parallax-card-right">
         <div class="flex items-center justify-between" style="margin-bottom: 0.65rem;">
           <span class="hero-card-stage-pill stage-pill-purple">
@@ -144,7 +154,7 @@
           <div class="hero-wip-line-fill" style="width: 85%; background: linear-gradient(90deg, #EC4899, #8B5CF6);"></div>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 2px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 0px; padding: 0.75rem; border: 1px solid rgba(0, 0, 0, 0.12); box-shadow: 0 4px 14px rgba(0,0,0,0.12);">
           <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
             <span style="font-size: 0.7rem; font-weight: 800; color: #831843;">#ZS-1</span>
             <div class="avatar-pill" style="width: 24px; height: 24px; font-size: 0.65rem; background: var(--primary);">AV</div>
@@ -933,7 +943,7 @@
             // Scroll DOWN -> move inward closer to center (Left +moveX, Right -moveX)
             // Scroll UP -> move back outward farther apart
             const convergenceProgress = Math.min(scrollY / 500, 1);
-            const moveX = convergenceProgress * 140; // Inward horizontal translation distance (px)
+            const moveX = convergenceProgress * 95; // Smooth inward convergence motion (px)
             const translateYLeft = scrollY * 0.38;
             const translateYRight = scrollY * 0.32;
             const translateYBottom = scrollY * 0.22;

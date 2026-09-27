@@ -1170,12 +1170,12 @@
   position: absolute;
   z-index: 10;
   width: 275px;
-  border-radius: 4px !important;
-  padding: 1.1rem;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2), 0 0 25px rgba(99, 102, 241, 0.12);
+  border-radius: 0px !important; /* 100% Sharp Executive Corners */
+  padding: 1.15rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 0 20px rgba(99, 102, 241, 0.15);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   transition: box-shadow 0.25s ease;
   user-select: none;
   pointer-events: auto;
@@ -1184,37 +1184,37 @@
 }
 
 .hero-floating-card:hover {
-  transform: scale(1.05) translateY(-5px) rotate(0deg) !important;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), 0 0 45px var(--primary-glow);
+  transform: scale(1.04) translateY(-4px) rotate(0deg) !important;
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
   z-index: 25;
 }
 
-/* Left Floating Card - Crisp Sharp Yellow Column (Distant from FLOWZEN Title) */
+/* Left Floating Card - Crisp Sharp Yellow Column (Slightly Closer to FLOWZEN Title) */
 .hero-float-left {
   top: 5%;
-  left: -140px; /* Distant horizontal positioning */
+  left: -20px; /* Perfectly positioned closer to title without viewport cutoff */
   background: #FACC15;
   color: #0F172A;
-  border-color: #EAB308 !important;
+  border: 2px solid #EAB308 !important;
 }
 
 [data-theme="dark"] .hero-float-left {
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.85), rgba(202, 138, 4, 0.95));
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(202, 138, 4, 0.98));
   border: 2px solid #EAB308 !important;
   color: #F8FAFC;
 }
 
-/* Right Floating Card - Crisp Sharp Purple/Violet Column (Distant from FLOWZEN Title) */
+/* Right Floating Card - Crisp Sharp Purple/Violet Column (Slightly Closer to FLOWZEN Title) */
 .hero-float-right {
   top: 4%;
-  right: -140px; /* Distant horizontal positioning */
+  right: -20px; /* Perfectly positioned closer to title without viewport cutoff */
   background: #E0E7FF;
   color: #1E1B4B;
-  border-color: #818CF8 !important;
+  border: 2px solid #818CF8 !important;
 }
 
 [data-theme="dark"] .hero-float-right {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.85), rgba(126, 34, 206, 0.95));
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(126, 34, 206, 0.98));
   border: 2px solid #C084FC !important;
   color: #F8FAFC;
 }
@@ -1222,56 +1222,56 @@
 /* Bottom Floating Card - Crisp Sharp Green Column (Done) */
 .hero-float-bottom-right {
   bottom: -40px;
-  right: -50px;
+  right: 20px;
   width: 240px;
   background: #4ADE80;
   color: #064E3B;
-  border-color: #22C55E !important;
+  border: 2px solid #22C55E !important;
 }
 
 [data-theme="dark"] .hero-float-bottom-right {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.85), rgba(4, 120, 87, 0.95));
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(4, 120, 87, 0.98));
   border: 2px solid #34D399 !important;
   color: #F8FAFC;
 }
 
-/* ATTACHED MOVING STOPWATCH CLOCK WIDGET (ZOHO SPRINTS STYLE) */
+/* ATTACHED MOVING STOPWATCH CLOCK WIDGET (SLEEK & ELEGANT EXECUTIVE STYLE) */
 .hero-moving-clock-widget {
   position: absolute;
-  bottom: -28px;
-  right: -24px;
-  width: 58px;
-  height: 58px;
+  bottom: -24px;
+  right: -22px;
+  width: 56px;
+  height: 56px;
   z-index: 30;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
-  animation: clockFloatBob 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
+  animation: clockFloatBob 3.5s ease-in-out infinite alternate;
 }
 
 @keyframes clockFloatBob {
   0% { transform: translateY(0px) scale(1); }
-  100% { transform: translateY(-6px) scale(1.04); }
+  100% { transform: translateY(-5px) scale(1.03); }
 }
 
 .stopwatch-top-crown {
   position: absolute;
-  top: -5px;
+  top: -4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 10px;
-  height: 6px;
-  background: #475569;
-  border-radius: 2px 2px 0 0;
+  width: 9px;
+  height: 5px;
+  background: linear-gradient(180deg, #94A3B8, #475569);
+  border-radius: 1px 1px 0 0;
   z-index: 2;
 }
 
 .stopwatch-ring {
   position: absolute;
-  top: -11px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 10px;
-  border: 2.5px solid #475569;
+  width: 13px;
+  height: 9px;
+  border: 2px solid #94A3B8;
   border-radius: 50%;
   z-index: 1;
 }
@@ -1284,7 +1284,7 @@
 
 .clock-minute-hand {
   transform-origin: 30px 30px;
-  animation: spinClockHand 3.2s linear infinite;
+  animation: spinClockHand 2.8s linear infinite;
 }
 
 @keyframes spinClockHand {
@@ -1294,12 +1294,12 @@
 
 .clock-motion-rays {
   position: absolute;
-  top: -8px;
-  right: -10px;
-  width: 18px;
-  height: 18px;
-  border-top: 2.5px dashed #84CC16;
-  border-right: 2.5px dashed #84CC16;
+  top: -6px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-top: 2px dashed #38BDF8;
+  border-right: 2px dashed #38BDF8;
   border-radius: 50%;
   animation: pulseRays 1.6s ease-in-out infinite alternate;
 }
