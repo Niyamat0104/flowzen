@@ -902,27 +902,20 @@
 
         window.addEventListener("scroll", () => {
           const scrollY = window.scrollY;
-          if (scrollY < 1000) {
-            // Convergence: left card slides right (+X) and down (+Y)
-            // right card slides left (-X) and down (+Y), bringing them closer to center!
-            const translateXLeft = Math.min(scrollY * 0.28, 90);
-            const translateYLeft = scrollY * 0.18;
-            const rotateLeft = -3 + Math.min(scrollY * 0.015, 5);
-
-            const translateXRight = -Math.min(scrollY * 0.28, 90);
-            const translateYRight = scrollY * 0.15;
-            const rotateRight = 4 - Math.min(scrollY * 0.015, 5);
-
-            const translateYBottom = scrollY * 0.12;
+          if (scrollY < 1100) {
+            // Zoho Sprints Style Vertical Parallax Motion (100% Straight, Distant Cards)
+            const translateYLeft = scrollY * 0.42;
+            const translateYRight = scrollY * 0.35;
+            const translateYBottom = scrollY * 0.25;
 
             if (cardLeft) {
-              cardLeft.style.transform = `translate(${translateXLeft}px, ${translateYLeft}px) rotate(${rotateLeft}deg)`;
+              cardLeft.style.transform = `translateY(${translateYLeft}px) rotate(0deg)`;
             }
             if (cardRight) {
-              cardRight.style.transform = `translate(${translateXRight}px, ${translateYRight}px) rotate(${rotateRight}deg)`;
+              cardRight.style.transform = `translateY(${translateYRight}px) rotate(0deg)`;
             }
             if (cardBottom) {
-              cardBottom.style.transform = `translateY(${translateYBottom}px) rotate(-2deg)`;
+              cardBottom.style.transform = `translateY(${translateYBottom}px) rotate(0deg)`;
             }
           }
         }, { passive: true });

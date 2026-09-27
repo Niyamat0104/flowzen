@@ -1150,11 +1150,11 @@
   gap: 0.75rem;
 }
 
-/* 13. ZOHO SPRINTS STYLE FLOATING HERO KANBAN CARDS & PARALLAX ANIMATION */
+/* 13. ZOHO SPRINTS STYLE FLOATING HERO KANBAN CARDS & SCROLL ANIMATION */
 .hero-showcase-container {
   position: relative;
   width: 100%;
-  max-width: 1250px;
+  max-width: 1380px;
   margin: 0 auto;
   padding: 3.5rem 1rem 4rem 1rem;
 }
@@ -1162,7 +1162,7 @@
 .hero-center-content {
   position: relative;
   z-index: 5;
-  max-width: 820px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
@@ -1176,25 +1176,25 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid rgba(255, 255, 255, 0.4);
-  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+  transition: transform 0.15s ease-out, box-shadow 0.25s ease;
   user-select: none;
   pointer-events: auto;
   will-change: transform;
+  transform: rotate(0deg);
 }
 
 .hero-floating-card:hover {
-  transform: scale(1.06) rotate(0deg) !important;
+  transform: scale(1.05) translateY(-5px) !important;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), 0 0 45px var(--primary-glow);
   z-index: 25;
 }
 
 /* Left Floating Card - Crisp Sharp Yellow Column (In Progress) */
 .hero-float-left {
-  top: 5%;
-  left: -20px;
+  top: 6%;
+  left: -80px;
   background: #FACC15;
   color: #0F172A;
-  transform: rotate(-3deg);
   border-color: #EAB308 !important;
 }
 
@@ -1207,10 +1207,9 @@
 /* Right Floating Card - Crisp Sharp Purple/Violet Column (To Do 9) */
 .hero-float-right {
   top: 4%;
-  right: -20px;
+  right: -80px;
   background: #E0E7FF;
   color: #1E1B4B;
-  transform: rotate(4deg);
   border-color: #818CF8 !important;
 }
 
@@ -1222,12 +1221,11 @@
 
 /* Bottom Floating Card - Crisp Sharp Green Column (Done) */
 .hero-float-bottom-right {
-  bottom: -20px;
-  right: 6%;
+  bottom: -40px;
+  right: 0px;
   width: 240px;
   background: #4ADE80;
   color: #064E3B;
-  transform: rotate(-2deg);
   border-color: #22C55E !important;
 }
 
