@@ -1180,19 +1180,17 @@
   user-select: none;
   pointer-events: auto;
   will-change: transform;
-  transform: rotate(0deg) !important; /* 100% Straight, No Tilt */
 }
 
 .hero-floating-card:hover {
-  transform: scale(1.04) translateY(-4px) rotate(0deg) !important;
   box-shadow: 0 25px 55px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
   z-index: 25;
 }
 
-/* Left Floating Card - Crisp Sharp Yellow Column (Slightly Closer to FLOWZEN Title) */
+/* Left Floating Card - Crisp Sharp Yellow Column (Distant Starting Position at Rest) */
 .hero-float-left {
   top: 5%;
-  left: -20px; /* Perfectly positioned closer to title without viewport cutoff */
+  left: 30px; /* Wide distant starting position */
   background: #FACC15;
   color: #0F172A;
   border: 2px solid #EAB308 !important;
@@ -1204,10 +1202,10 @@
   color: #F8FAFC;
 }
 
-/* Right Floating Card - Crisp Sharp Purple/Violet Column (Slightly Closer to FLOWZEN Title) */
+/* Right Floating Card - Crisp Sharp Purple/Violet Column (Distant Starting Position at Rest) */
 .hero-float-right {
   top: 4%;
-  right: -20px; /* Perfectly positioned closer to title without viewport cutoff */
+  right: 30px; /* Wide distant starting position */
   background: #E0E7FF;
   color: #1E1B4B;
   border: 2px solid #818CF8 !important;

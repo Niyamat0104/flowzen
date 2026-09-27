@@ -936,39 +936,52 @@
         const cardRight = document.getElementById("parallax-card-right");
         const cardBottom = document.getElementById("parallax-card-bottom");
 
-        let ticking = false;
-
         function updateHeroCardMotion() {
-          const scrollY = window.scrollY;
-          if (scrollY < 1200) {
-            // Scroll Convergence (Inward when scrolling DOWN, Outward when scrolling UP)
-            const moveX = Math.min(scrollY * 0.38, 175); // Up to 175px inward convergence
-            const translateYLeft = scrollY * 0.36;
-            const translateYRight = scrollY * 0.30;
+          const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+
+          if (scrollY < 1400) {
+            // Convergence motion:
+            // Scroll DOWN (scrollY increases): moveX grows from 0 up to +185px (cards slide INWARD closer together)
+            // Scroll UP (scrollY decreases back to 0): moveX shrinks back to 0 (cards slide OUTWARD farther apart)
+            const maxInwardDistance = 185;
+            const progress = Math.min(scrollY / 450, 1);
+            const moveX = progress * maxInwardDistance;
+            const translateYLeft = scrollY * 0.38;
+            const translateYRight = scrollY * 0.32;
             const translateYBottom = scrollY * 0.22;
 
             if (cardLeft) {
-              cardLeft.style.transform = `translate3d(${moveX}px, ${translateYLeft}px, 0) rotate(0deg)`;
+              cardLeft.style.setProperty("transform", `translate3d(${moveX}px, ${translateYLeft}px, 0) rotate(0deg)`, "important");
             }
             if (cardRight) {
-              cardRight.style.transform = `translate3d(${-moveX}px, ${translateYRight}px, 0) rotate(0deg)`;
+              cardRight.style.setProperty("transform", `translate3d(${-moveX}px, ${translateYRight}px, 0) rotate(0deg)`, "important");
             }
             if (cardBottom) {
-              cardBottom.style.transform = `translate3d(${-moveX * 0.5}px, ${translateYBottom}px, 0) rotate(0deg)`;
+              cardBottom.style.setProperty("transform", `translate3d(${-moveX * 0.5}px, ${translateYBottom}px, 0) rotate(0deg)`, "important");
             }
           }
-          ticking = false;
         }
 
-        window.addEventListener("scroll", () => {
-          if (!ticking) {
-            window.requestAnimationFrame(updateHeroCardMotion);
-            ticking = true;
+        let isTicking = false;
+        function onScrollHandler() {
+          if (!isTicking) {
+            window.requestAnimationFrame(() => {
+              updateHeroCardMotion();
+              isTicking = false;
+            });
+            isTicking = true;
           }
-        }, { passive: true });
+        }
+
+        window.addEventListener("scroll", onScrollHandler, { passive: true });
+        window.addEventListener("resize", onScrollHandler, { passive: true });
+        window.addEventListener("wheel", onScrollHandler, { passive: true });
+        window.addEventListener("touchmove", onScrollHandler, { passive: true });
 
         // Initial trigger on load
         updateHeroCardMotion();
+        setTimeout(updateHeroCardMotion, 100);
+        setTimeout(updateHeroCardMotion, 400);
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
