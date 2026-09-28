@@ -77,6 +77,7 @@ taskflow/
     ├── dependency-system.js     # Task dependency tracker & auto-unblocking logic
     ├── analytics.js             # Workflow metrics, completion gauges, & chart drawer
     ├── activity-log.js          # Persistent live activity log feed
+    ├── export-engine.js         # JSON Backup/Restore, CSV Spreadsheet Export & Executive PDF Generator
     ├── filters-sort.js          # Task search, category/priority filter, & sorter
     ├── live-kanban-showcase.js  # Real-time animated card-pasting controller
     ├── theme.js                 # Executive Dark & Light theme switcher

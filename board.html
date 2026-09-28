@@ -96,6 +96,9 @@
       <button class="btn btn-sm btn-outline" id="manage-team-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team
       </button>
+      <button class="btn btn-sm btn-outline" id="export-reports-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export & Reports
+      </button>
       <button class="btn btn-sm btn-outline" id="add-column-top-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add Column
       </button>
@@ -480,6 +483,73 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
     </div>
   </div>
 
+  <!-- Modal: Export & Executive Reports Hub -->
+  <div class="modal-backdrop" id="export-modal">
+    <div class="modal" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">EXPORT & EXECUTIVE REPORTS</h3>
+        <button class="modal-close" data-close-modal aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--color-muted); margin-bottom: 1.5rem;">
+          Generate printable PDF executive reports, export task data to Excel/CSV spreadsheets, or download an offline JSON backup.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Action 1: Printable PDF Sprint Report -->
+          <div class="card flex items-center justify-between gap-3" style="padding: 1.1rem; background: var(--bg-alt);">
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-black); margin-bottom: 0.2rem;">
+                📄 Printable PDF Executive Report
+              </div>
+              <div style="font-size: 0.8rem; color: var(--color-muted);">
+                Generate a printable PDF summary report highlighting sprint completion, risk matrix, and team workload tables.
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" id="export-pdf-report-btn" style="white-space: nowrap;">
+              Generate PDF 🖨️
+            </button>
+          </div>
+
+          <!-- Action 2: CSV Excel Spreadsheet -->
+          <div class="card flex items-center justify-between gap-3" style="padding: 1.1rem; background: var(--bg-alt);">
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-black); margin-bottom: 0.2rem;">
+                📊 Excel / CSV Spreadsheet Export
+              </div>
+              <div style="font-size: 0.8rem; color: var(--color-muted);">
+                Export all tasks into a formatted .csv file compatible with Microsoft Excel or Google Sheets.
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary" id="export-csv-sheet-btn" style="white-space: nowrap;">
+              Export CSV 📊
+            </button>
+          </div>
+
+          <!-- Action 3: JSON Offline Backup -->
+          <div class="card flex items-center justify-between gap-3" style="padding: 1.1rem; background: var(--bg-alt);">
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-black); margin-bottom: 0.2rem;">
+                📥 JSON Offline Backup
+              </div>
+              <div style="font-size: 0.8rem; color: var(--color-muted);">
+                Download a complete offline backup file containing board metadata, columns, tasks, and activity logs.
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline" id="export-json-backup-btn" style="white-space: nowrap;">
+              Export JSON 📥
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JS Modules Core App Initialization -->
   <script type="module">
     import { initAuth, getCurrentUser, logoutUser, updateUserProfile } from './js/auth.js';
@@ -491,6 +561,7 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
     import { queryBoardIntelligence } from './js/flowzen-intelligence.js';
     import { initTheme } from './js/theme.js';
     import { openModal, closeModal, showToast, openUserProfileModal } from './js/ui-utils.js';
+    import { exportBoardToJSON, exportBoardToCSV, generatePDFReport } from './js/export-engine.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
@@ -562,6 +633,28 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
 
       document.getElementById('top-new-task-btn').addEventListener('click', () => {
         openTaskEditModal();
+      });
+
+      const exportReportsBtn = document.getElementById('export-reports-btn');
+      if (exportReportsBtn) {
+        exportReportsBtn.addEventListener('click', () => {
+          openModal('export-modal');
+        });
+      }
+
+      document.getElementById('export-pdf-report-btn').addEventListener('click', () => {
+        generatePDFReport(boardId);
+        closeModal('export-modal');
+      });
+
+      document.getElementById('export-csv-sheet-btn').addEventListener('click', () => {
+        exportBoardToCSV(boardId);
+        closeModal('export-modal');
+      });
+
+      document.getElementById('export-json-backup-btn').addEventListener('click', () => {
+        exportBoardToJSON(boardId);
+        closeModal('export-modal');
       });
 
       document.getElementById('add-column-top-btn').addEventListener('click', () => {
