@@ -6,7 +6,7 @@ import { analyzeFlowZenIntelligence } from './flowzen-intelligence.js';
 import { openModal, closeModal, escapeHTML, showToast } from './ui-utils.js';
 import { renderTimelineView } from './timeline-render.js';
 import { renderCalendarView, setCalendarMonth } from './calendar-render.js';
-import { initTimerService, isTaskTimerRunning, getActiveTimerSeconds, formatSecondsToHHMMSS, toggleTaskTimer } from './timer-service.js';
+import { initTimerService, isTaskTimerRunning, getActiveTimerSeconds, formatSecondsToHHMMSS, toggleTaskTimer, pauseTaskTimer } from './timer-service.js';
 
 let activeEditTaskId = null;
 
@@ -367,7 +367,9 @@ function renderTaskCard(task, intel) {
         
         <div class="flex items-center gap-1.5 flex-shrink-0">
           ${subtaskSummary ? `<span style="font-size: 0.72rem; font-weight: 600; background: var(--bg-alt); border: 1px solid var(--color-border); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);">${subtaskSummary} subtasks</span>` : ''}
-          <span style="font-size: 0.72rem; opacity: 0.8;">Est: ${task.estimatedHours || 4}h</span>
+          <span style="font-size: 0.72rem; font-weight: 600; background: ${(task.actualHours || 0) > (task.estimatedHours || 4) ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-alt)'}; color: ${(task.actualHours || 0) > (task.estimatedHours || 4) ? 'var(--accent-coral)' : 'var(--text-secondary)'}; border: 1px solid var(--color-border); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm);" title="${task.actualHours || 0}h logged of ${task.estimatedHours || 4}h estimated">
+            ⏱ ${task.actualHours ? `${task.actualHours.toFixed(1)}h / ` : ''}${task.estimatedHours || 4}h
+          </span>
         </div>
       </div>
 
@@ -687,6 +689,9 @@ function attachBoardEvents() {
         await saveTask(task);
         showToast(`Task reopened and moved to "${firstCol.title}"`, 'info');
       } else {
+        if (isTaskTimerRunning(taskId)) {
+          pauseTaskTimer(taskId);
+        }
         const targetCol = doneCols[0];
         task.columnId = targetCol.id;
         await saveTask(task);
@@ -779,14 +784,15 @@ export function openTaskEditModal(taskId = null, defaultColumnId = null) {
   const modalTimerBtn = document.getElementById('modal-timer-toggle-btn');
   const modalTimerDisplay = document.getElementById('modal-live-timer-display');
   if (modalTimerBtn) {
+    modalTimerBtn.setAttribute('data-task-id', task ? task.id : '');
     if (task) {
       modalTimerBtn.style.display = 'inline-flex';
       const running = isTaskTimerRunning(task.id);
       modalTimerBtn.innerHTML = running ? '⏸ Pause Stopwatch' : '▶ Start Stopwatch';
       modalTimerBtn.className = `btn btn-sm ${running ? 'btn-danger timer-running' : 'btn-primary'}`;
       if (modalTimerDisplay) {
-        modalTimerDisplay.style.display = running ? 'inline' : 'none';
-        modalTimerDisplay.innerText = running ? formatSecondsToHHMMSS(getActiveTimerSeconds()) : '';
+        modalTimerDisplay.style.display = 'block';
+        modalTimerDisplay.innerText = running ? `⏱ Active: ${formatSecondsToHHMMSS(getActiveTimerSeconds())}` : `⏱ Tracked: ${task.actualHours || 0}h / ${task.estimatedHours || 4}h`;
       }
       modalTimerBtn.onclick = () => {
         toggleTaskTimer(task.id);
@@ -797,6 +803,20 @@ export function openTaskEditModal(taskId = null, defaultColumnId = null) {
       if (modalTimerDisplay) modalTimerDisplay.style.display = 'none';
     }
   }
+
+  document.querySelectorAll('.quick-add-hours-btn').forEach(btn => {
+    btn.onclick = () => {
+      const hours = parseFloat(btn.getAttribute('data-hours'));
+      const input = document.getElementById('task-actual-hours-input');
+      if (!input) return;
+      if (hours === 0) {
+        input.value = 0;
+      } else {
+        const cur = parseFloat(input.value) || 0;
+        input.value = (Math.round((cur + hours) * 100) / 100);
+      }
+    };
+  });
 
   const colSelect = document.getElementById('task-column-select');
   colSelect.innerHTML = boardState.columns.map(col => `

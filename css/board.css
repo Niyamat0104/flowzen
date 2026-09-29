@@ -299,6 +299,17 @@
   100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.85); }
 }
 
+@keyframes floatWidgetGlow {
+  0% { transform: translateY(0px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 10px rgba(16, 185, 129, 0.3); }
+  100% { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.6); }
+}
+
+@keyframes pulseDot {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
+}
+
 /* Recommendation Banner Widget */
 .recommendation-banner {
   background: var(--bg-card);
