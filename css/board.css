@@ -284,6 +284,21 @@
   border-color: var(--accent-coral);
 }
 
+/* Live Task Stopwatch Timer Button Styles */
+.task-timer-btn.timer-running {
+  background: linear-gradient(135deg, #10B981, #059669) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5) !important;
+  animation: pulseTimerGlow 1.8s ease-in-out infinite alternate;
+  font-weight: 700 !important;
+}
+
+@keyframes pulseTimerGlow {
+  0% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.4); }
+  100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.85); }
+}
+
 /* Recommendation Banner Widget */
 .recommendation-banner {
   background: var(--bg-card);

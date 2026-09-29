@@ -6,6 +6,7 @@ import { analyzeFlowZenIntelligence } from './flowzen-intelligence.js';
 import { openModal, closeModal, escapeHTML, showToast } from './ui-utils.js';
 import { renderTimelineView } from './timeline-render.js';
 import { renderCalendarView, setCalendarMonth } from './calendar-render.js';
+import { initTimerService, isTaskTimerRunning, getActiveTimerSeconds, formatSecondsToHHMMSS, toggleTaskTimer } from './timer-service.js';
 
 let activeEditTaskId = null;
 
@@ -141,6 +142,9 @@ export function openTeamManagementModal() {
 export function renderBoardView() {
   const board = boardState.boardData;
   if (!board) return;
+
+  // Initialize Stopwatch & Timer Service
+  initTimerService();
 
   // 1. Populate Assignee Dropdowns
   populateAssigneeDropdowns();
@@ -373,6 +377,9 @@ function renderTaskCard(task, intel) {
           ${isTaskOverdue ? ' (Overdue)' : ''}
         </span>
         <div class="flex items-center gap-1">
+          <button type="button" class="btn btn-sm ${isTaskTimerRunning(task.id) ? 'btn-danger timer-running' : 'btn-outline'} task-timer-btn" data-task-id="${task.id}" title="${isTaskTimerRunning(task.id) ? 'Pause Timer' : 'Start Timer'}" style="padding: 0.15rem 0.4rem; font-size: 0.7rem;">
+            ${isTaskTimerRunning(task.id) ? '⏸ Pause' : '▶ Start'} <span class="card-timer-ticker" data-timer-task-id="${task.id}" style="font-weight: 700; font-family: var(--font-mono, monospace); font-size: 0.68rem; margin-left: 2px;">${isTaskTimerRunning(task.id) ? formatSecondsToHHMMSS(getActiveTimerSeconds()) : (task.actualHours ? task.actualHours.toFixed(1) + 'h' : '')}</span>
+          </button>
           <button type="button" class="btn btn-sm ${isTaskDone ? 'btn-outline mark-done-btn' : 'btn-primary mark-done-btn'}" data-task-id="${task.id}" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; ${isTaskDone ? 'border-color: var(--accent-emerald); color: var(--accent-emerald);' : ''}">
             ${isTaskDone ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px; vertical-align: text-bottom;"><path d="M20 6 9 17l-5-5"/></svg>Done' : 'Complete'}
           </button>
@@ -640,6 +647,14 @@ function renderFlowZenIntelligenceWidget(intelligence) {
 }
 
 function attachBoardEvents() {
+  document.querySelectorAll('.task-timer-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const taskId = btn.getAttribute('data-task-id');
+      toggleTaskTimer(taskId);
+    });
+  });
+
   document.querySelectorAll('.add-task-col-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const colId = btn.getAttribute('data-column-id');
@@ -756,8 +771,32 @@ export function openTaskEditModal(taskId = null, defaultColumnId = null) {
   }
 
   document.getElementById('task-est-hours-input').value = task ? (task.estimatedHours || 4) : 4;
+  const actualInput = document.getElementById('task-actual-hours-input');
+  if (actualInput) actualInput.value = task ? (task.actualHours || 0) : 0;
   document.getElementById('task-due-date-input').value = task ? (task.dueDate || '') : '';
   document.getElementById('task-labels-input').value = task ? (task.labels ? task.labels.join(', ') : '') : '';
+
+  const modalTimerBtn = document.getElementById('modal-timer-toggle-btn');
+  const modalTimerDisplay = document.getElementById('modal-live-timer-display');
+  if (modalTimerBtn) {
+    if (task) {
+      modalTimerBtn.style.display = 'inline-flex';
+      const running = isTaskTimerRunning(task.id);
+      modalTimerBtn.innerHTML = running ? '⏸ Pause Stopwatch' : '▶ Start Stopwatch';
+      modalTimerBtn.className = `btn btn-sm ${running ? 'btn-danger timer-running' : 'btn-primary'}`;
+      if (modalTimerDisplay) {
+        modalTimerDisplay.style.display = running ? 'inline' : 'none';
+        modalTimerDisplay.innerText = running ? formatSecondsToHHMMSS(getActiveTimerSeconds()) : '';
+      }
+      modalTimerBtn.onclick = () => {
+        toggleTaskTimer(task.id);
+        openTaskEditModal(task.id, defaultColumnId);
+      };
+    } else {
+      modalTimerBtn.style.display = 'none';
+      if (modalTimerDisplay) modalTimerDisplay.style.display = 'none';
+    }
+  }
 
   const colSelect = document.getElementById('task-column-select');
   colSelect.innerHTML = boardState.columns.map(col => `
@@ -907,6 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
         category: document.getElementById('task-category-select').value,
         assignee: document.getElementById('task-assignee-select').value,
         estimatedHours: parseFloat(document.getElementById('task-est-hours-input').value) || 4,
+        actualHours: parseFloat(document.getElementById('task-actual-hours-input')?.value) || 0,
         columnId: document.getElementById('task-column-select').value,
         dueDate: document.getElementById('task-due-date-input').value || null,
         dependsOnTaskId: document.getElementById('task-dependency-select').value || null,

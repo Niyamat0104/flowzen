@@ -318,6 +318,19 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
               <label class="form-label">Estimated Hours</label>
               <input type="number" step="0.5" class="input" id="task-est-hours-input" required value="4">
             </div>
+
+            <div class="form-group">
+              <label class="form-label">Actual Hours Worked</label>
+              <div class="flex items-center gap-2">
+                <input type="number" step="0.1" min="0" class="input" id="task-actual-hours-input" placeholder="e.g. 2.5" style="flex: 1;">
+                <button type="button" class="btn btn-sm btn-outline" id="modal-timer-toggle-btn" style="white-space: nowrap;">
+                  ▶ Start Timer
+                </button>
+              </div>
+              <div id="modal-live-timer-display" style="font-size: 0.76rem; font-weight: 700; color: var(--color-muted); margin-top: 4px;">
+                ⏱ Timer Idle
+              </div>
+            </div>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
