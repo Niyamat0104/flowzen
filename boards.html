@@ -81,6 +81,43 @@
           </div>
         </div>
 
+        <!-- Workspace Executive Quick Metrics Bar -->
+        <div id="workspace-metrics-bar" class="grid grid-4 gap-3" style="margin-bottom: 2rem;">
+          <div class="card card-purple" style="padding: 1.1rem 1.25rem;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Total Workspaces</div>
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-family-heading);" id="metric-total-boards">0</div>
+          </div>
+          <div class="card card-cyan" style="padding: 1.1rem 1.25rem;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Total Active Tasks</div>
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-family-heading);" id="metric-total-tasks">0</div>
+          </div>
+          <div class="card card-green" style="padding: 1.1rem 1.25rem;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Avg Completion Rate</div>
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-family-heading);" id="metric-avg-completion">0%</div>
+          </div>
+          <div class="card card-yellow" style="padding: 1.1rem 1.25rem;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Tracked Effort Hours</div>
+            <div style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-family-heading);" id="metric-total-hours">0h</div>
+          </div>
+        </div>
+
+        <!-- Search & Filter Controls Bar -->
+        <div class="flex items-center justify-between gap-3" style="margin-bottom: 1.75rem; flex-wrap: wrap; background: var(--bg-card); padding: 0.85rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+          <div class="search-box" style="min-width: 260px; max-width: 420px; flex: 1;">
+            <input type="text" id="dashboard-search-input" class="input" placeholder="🔍 Search boards by title or description..." />
+          </div>
+          <div class="flex items-center gap-3">
+            <select class="select" id="dashboard-category-filter" style="width: auto; min-width: 190px;">
+              <option value="all">All Categories</option>
+              <option value="Software Development">Software Development</option>
+              <option value="Product Design">Product Design</option>
+              <option value="Marketing Campaign">Marketing Campaign</option>
+              <option value="Research">Research</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Boards Grid Container -->
         <div
           id="boards-grid"
@@ -181,7 +218,7 @@
         getCurrentUser,
         updateUserProfile,
       } from "./js/auth.js";
-      import { fetchUserBoards, createBoard, deleteBoard } from "./js/boards.js";
+      import { fetchUserBoards, createBoard, deleteBoard, cloneBoard, getBoardTaskStats } from "./js/boards.js";
       import { initTheme } from "./js/theme.js";
       import { openModal, closeModal, escapeHTML, openUserProfileModal } from "./js/ui-utils.js";
       import {
@@ -376,88 +413,146 @@
 
       function loadBoardsGrid() {
         const grid = document.getElementById("boards-grid");
-        fetchUserBoards((boards) => {
-          if (!boards || boards.length === 0) {
+        const searchInput = document.getElementById("dashboard-search-input");
+        const categoryFilter = document.getElementById("dashboard-category-filter");
+
+        const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
+        const selectedCategory = categoryFilter ? categoryFilter.value : "all";
+
+        fetchUserBoards((allBoards) => {
+          if (!allBoards) allBoards = [];
+
+          // 1. Calculate Workspace Overview Metrics across all user boards
+          let grandTotalTasks = 0;
+          let grandDoneTasks = 0;
+          let grandHoursLogged = 0;
+
+          allBoards.forEach(b => {
+            const st = getBoardTaskStats(b.id);
+            grandTotalTasks += st.totalTasks;
+            grandDoneTasks += st.doneTasks;
+            grandHoursLogged += st.totalHoursLogged;
+          });
+
+          const grandCompletion = grandTotalTasks > 0 ? Math.round((grandDoneTasks / grandTotalTasks) * 100) : 0;
+
+          const mBoards = document.getElementById("metric-total-boards");
+          const mTasks = document.getElementById("metric-total-tasks");
+          const mComp = document.getElementById("metric-avg-completion");
+          const mHours = document.getElementById("metric-total-hours");
+
+          if (mBoards) mBoards.innerText = allBoards.length;
+          if (mTasks) mTasks.innerText = grandTotalTasks;
+          if (mComp) mComp.innerText = `${grandCompletion}%`;
+          if (mHours) mHours.innerText = `${grandHoursLogged.toFixed(1)}h`;
+
+          // 2. Filter boards based on Search Query & Category Select
+          const filteredBoards = allBoards.filter(b => {
+            const matchesSearch = !searchQuery || 
+              b.title.toLowerCase().includes(searchQuery) || 
+              (b.description && b.description.toLowerCase().includes(searchQuery));
+            const matchesCategory = selectedCategory === "all" || (b.projectType || "Software Development") === selectedCategory;
+            return matchesSearch && matchesCategory;
+          });
+
+          if (filteredBoards.length === 0) {
             grid.innerHTML = `
-            <div class="card card-yellow text-center" style="grid-column: 1 / -1; padding: 3.5rem 1.5rem;">
-              <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: var(--font-family-heading);">No Boards Created Yet</h3>
-              <p style="margin-bottom: 1.5rem; color: var(--color-muted);">Click "Create New Board" above to start your first Kanban board or "Restore Board" to upload a JSON backup.</p>
-            </div>
-          `;
+              <div class="card card-yellow text-center" style="grid-column: 1 / -1; padding: 3rem 1.5rem;">
+                <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem; font-family: var(--font-family-heading);">No Matching Workspaces Found</h3>
+                <p style="color: var(--color-muted); font-size: 0.9rem;">${allBoards.length === 0 ? 'Click "Create New Board" to start your first workspace.' : 'Try adjusting your search query or category filter.'}</p>
+              </div>
+            `;
             return;
           }
 
-          grid.innerHTML = boards
-            .map(
-              (board) => {
-                const category = board.projectType || "Software Development";
-                let badgeClass = "badge-medium";
-                if (category === "Marketing Campaign") badgeClass = "badge-urgent";
-                else if (category === "Product Design") badgeClass = "badge-low";
-                else if (category === "Research") badgeClass = "badge-high";
+          grid.innerHTML = filteredBoards
+            .map((board) => {
+              const category = board.projectType || "Software Development";
+              let badgeClass = "badge-medium";
+              if (category === "Marketing Campaign") badgeClass = "badge-urgent";
+              else if (category === "Product Design") badgeClass = "badge-low";
+              else if (category === "Research") badgeClass = "badge-high";
 
-                const deadlineFormatted = board.targetDeadline 
-                  ? `📅 ${board.targetDeadline}`
-                  : `📅 Continuous`;
+              const deadlineFormatted = board.targetDeadline 
+                ? `📅 ${board.targetDeadline}`
+                : `📅 Continuous`;
 
-                const members = Array.isArray(board.team) && board.team.length > 0 
-                  ? board.team 
-                  : (board.memberIds || [board.ownerId]);
+              const members = Array.isArray(board.team) && board.team.length > 0 
+                ? board.team 
+                : (board.memberIds || [board.ownerId]);
 
-                return `
-          <div class="board-card-item" data-board-id="${board.id}">
-            <div>
-              <div class="board-card-header">
-                <span class="badge ${badgeClass}">${escapeHTML(category)}</span>
-                <div class="flex items-center gap-2">
-                  <span style="font-size: 0.76rem; font-weight: 600; color: var(--color-muted);" title="Target Deadline">${escapeHTML(deadlineFormatted)}</span>
-                  ${board.id !== 'board_demo_1' && board.id !== 'board_demo_2' ? `
-                    <button type="button" class="btn btn-sm btn-icon delete-board-btn" data-board-id="${board.id}" title="Delete Board" style="padding: 0.2rem 0.45rem; font-size: 0.72rem; color: var(--accent-coral);">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                    </button>
-                  ` : ''}
+              const stats = getBoardTaskStats(board.id);
+
+              return `
+                <div class="board-card-item" data-board-id="${board.id}">
+                  <div>
+                    <div class="board-card-header">
+                      <span class="badge ${badgeClass}">${escapeHTML(category)}</span>
+                      <div class="flex items-center gap-2">
+                        <span style="font-size: 0.74rem; font-weight: 600; color: var(--color-muted);" title="Target Deadline">${escapeHTML(deadlineFormatted)}</span>
+                        ${board.id !== 'board_demo_1' && board.id !== 'board_demo_2' ? `
+                          <button type="button" class="btn btn-sm btn-icon delete-board-btn" data-board-id="${board.id}" title="Delete Board" style="padding: 0.2rem 0.45rem; font-size: 0.72rem; color: var(--accent-coral);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          </button>
+                        ` : ''}
+                      </div>
+                    </div>
+                    
+                    <h3 class="board-card-title">${escapeHTML(board.title)}</h3>
+                    <p class="board-card-desc">
+                      ${escapeHTML(board.description || "No workspace description provided")}
+                    </p>
+
+                    <!-- Board Task Progress Meter -->
+                    <div style="margin-top: 0.65rem; margin-bottom: 1.1rem; background: var(--bg-alt); padding: 0.6rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+                      <div class="flex items-center justify-between" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                        <span>Tasks (${stats.doneTasks}/${stats.totalTasks})</span>
+                        <span style="color: var(--primary); font-weight: 800;">${stats.completionPct}%</span>
+                      </div>
+                      <div class="progress-container" style="height: 6px;">
+                        <div class="progress-fill" style="width: ${stats.completionPct}%;"></div>
+                      </div>
+                      <div class="flex items-center justify-between" style="font-size: 0.7rem; color: var(--text-tertiary); margin-top: 4px;">
+                        <span>⏱ Logged: <strong>${stats.totalHoursLogged}h</strong> / ${stats.totalHoursEst}h est</span>
+                      </div>
+                    </div>
+
+                    <!-- Board Export & Report Downloads Bar -->
+                    <div class="flex items-center gap-1.5" style="margin-bottom: 1.25rem; flex-wrap: wrap;">
+                      <button type="button" class="btn btn-sm btn-outline export-card-pdf-btn" data-board-id="${board.id}" title="Generate Printable PDF Executive Report" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                        📄 PDF
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline export-card-csv-btn" data-board-id="${board.id}" title="Export Tasks to Excel / CSV Spreadsheet" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                        📊 CSV
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline export-card-json-btn" data-board-id="${board.id}" title="Export JSON Offline Backup" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                        📥 JSON
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline clone-board-btn" data-board-id="${board.id}" title="Duplicate / Clone workspace board" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                        📋 Clone
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="board-card-footer">
+                    <div class="board-members-avatars">
+                      ${members
+                        .slice(0, 4)
+                        .map(
+                          (m) => `
+                        <div class="avatar-pill" title="${typeof m === 'object' ? (m.name || 'Member') : 'Member'}">${getMemberInitial(m)}</div>
+                      `,
+                        )
+                        .join("")}
+                    </div>
+
+                    <a href="board.html?id=${board.id}" class="btn btn-sm btn-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+                      Open Board <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              
-              <h3 class="board-card-title">${escapeHTML(board.title)}</h3>
-              <p class="board-card-desc">
-                ${escapeHTML(board.description || "No workspace description provided")}
-              </p>
-
-              <!-- Board Export & Report Downloads Bar -->
-              <div class="flex items-center gap-2" style="margin-bottom: 1.25rem; flex-wrap: wrap;">
-                <button type="button" class="btn btn-sm btn-outline export-card-pdf-btn" data-board-id="${board.id}" title="Generate Printable PDF Executive Report" style="font-size: 0.74rem; padding: 0.25rem 0.6rem;">
-                  📄 PDF Report
-                </button>
-                <button type="button" class="btn btn-sm btn-outline export-card-csv-btn" data-board-id="${board.id}" title="Export Tasks to Excel / CSV Spreadsheet" style="font-size: 0.74rem; padding: 0.25rem 0.6rem;">
-                  📊 Excel CSV
-                </button>
-                <button type="button" class="btn btn-sm btn-outline export-card-json-btn" data-board-id="${board.id}" title="Export JSON Offline Backup" style="font-size: 0.74rem; padding: 0.25rem 0.6rem;">
-                  📥 JSON
-                </button>
-              </div>
-            </div>
-
-            <div class="board-card-footer">
-              <div class="board-members-avatars">
-                ${members
-                  .slice(0, 4)
-                  .map(
-                    (m) => `
-                  <div class="avatar-pill" title="${typeof m === 'object' ? (m.name || 'Member') : 'Member'}">${getMemberInitial(m)}</div>
-                `,
-                  )
-                  .join("")}
-              </div>
-
-              <a href="board.html?id=${board.id}" class="btn btn-sm btn-primary" style="display: inline-flex; align-items: center; gap: 6px;">
-                Open Board <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </a>
-            </div>
-          </div>
-        `;
-              }
-            )
+              `;
+            })
             .join("");
 
           grid.querySelectorAll(".board-card-item").forEach((card) => {
@@ -494,6 +589,15 @@
             });
           });
 
+          grid.querySelectorAll(".clone-board-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const bId = btn.getAttribute("data-board-id");
+              cloneBoard(bId);
+              loadBoardsGrid();
+            });
+          });
+
           grid.querySelectorAll(".delete-board-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => {
               e.stopPropagation();
@@ -506,6 +610,19 @@
           });
         });
       }
+
+      // Attach Live Search & Category Filter Listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        const sInput = document.getElementById("dashboard-search-input");
+        const cFilter = document.getElementById("dashboard-category-filter");
+
+        if (sInput) {
+          sInput.addEventListener("input", () => loadBoardsGrid());
+        }
+        if (cFilter) {
+          cFilter.addEventListener("change", () => loadBoardsGrid());
+        }
+      });
     </script>
   </body>
 </html>

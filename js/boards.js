@@ -180,6 +180,80 @@ export function deleteBoard(boardId) {
   showToast("Board deleted.", "info");
 }
 
+export function cloneBoard(boardId) {
+  const source = getBoardById(boardId);
+  if (!source) return null;
+
+  const user = getCurrentUser();
+  const userId = user ? (user.id || user.uid) : 'usr_owner';
+  const newId = generateId("board");
+  const now = new Date().toISOString();
+
+  const clonedBoard = {
+    ...source,
+    id: newId,
+    title: `${source.title} (Copy)`,
+    createdAt: now,
+    ownerId: userId
+  };
+
+  const boards = getStoredBoards();
+  boards.unshift(clonedBoard);
+  saveStoredBoards(boards);
+
+  localStorage.setItem(`flowzen_board_${newId}`, JSON.stringify(clonedBoard));
+
+  // Clone tasks and columns
+  const rawTasks = localStorage.getItem(`flowzen_tasks_${boardId}`);
+  const rawCols = localStorage.getItem(`flowzen_cols_${boardId}`);
+  if (rawCols) localStorage.setItem(`flowzen_cols_${newId}`, rawCols);
+  if (rawTasks) localStorage.setItem(`flowzen_tasks_${newId}`, rawTasks);
+
+  logActivity(newId, `Duplicated board from "${source.title}"`);
+  showToast(`Duplicated board "${source.title}"!`, "success");
+  return clonedBoard;
+}
+
+export function getBoardTaskStats(boardId) {
+  try {
+    const rawTasks = localStorage.getItem(`flowzen_tasks_${boardId}`);
+    const rawCols = localStorage.getItem(`flowzen_cols_${boardId}`);
+
+    let tasks = [];
+    if (rawTasks) {
+      tasks = JSON.parse(rawTasks);
+    } else if (boardId === 'board_demo_1') {
+      tasks = [
+        { id: 't1', title: 'Task 1', columnId: 'col_done', actualHours: 3.5, estimatedHours: 4 },
+        { id: 't2', title: 'Task 2', columnId: 'col_in_progress', actualHours: 2.0, estimatedHours: 4 },
+        { id: 't3', title: 'Task 3', columnId: 'col_todo', actualHours: 0, estimatedHours: 4 }
+      ];
+    }
+
+    let doneColIds = ['col_done'];
+    if (rawCols) {
+      const cols = JSON.parse(rawCols);
+      doneColIds = cols.filter(c => c.isDoneColumn || (c.title && (c.title.toLowerCase().includes('done') || c.title.toLowerCase().includes('completed')))).map(c => c.id);
+      if (doneColIds.length === 0 && cols.length > 0) doneColIds = [cols[cols.length - 1].id];
+    }
+
+    const total = tasks.length;
+    const done = tasks.filter(t => doneColIds.includes(t.columnId)).length;
+    const totalHours = tasks.reduce((sum, t) => sum + (parseFloat(t.actualHours) || 0), 0);
+    const estHours = tasks.reduce((sum, t) => sum + (parseFloat(t.estimatedHours) || 4), 0);
+
+    return {
+      totalTasks: total,
+      doneTasks: done,
+      completionPct: total > 0 ? Math.round((done / total) * 100) : 0,
+      totalHoursLogged: Math.round(totalHours * 10) / 10,
+      totalHoursEst: Math.round(estHours * 10) / 10
+    };
+  } catch (e) {
+    return { totalTasks: 0, doneTasks: 0, completionPct: 0, totalHoursLogged: 0, totalHoursEst: 0 };
+  }
+}
+
 export function sanitizeBoardData(board) {
   if (!board) return null;
 
