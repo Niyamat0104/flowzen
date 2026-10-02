@@ -37,6 +37,9 @@
 
       <div class="flex items-center gap-3" id="nav-actions-container">
         <a href="#circular-hub" class="font-bold hidden-mobile">Features</a>
+        <button class="btn btn-sm btn-outline hidden-mobile" id="nav-cmd-hub-btn" title="Open Command Palette & Shortcuts (⌘K)">
+          <span style="font-size: 0.78rem;">⚡ Command</span> <kbd class="kbd-badge" style="font-size: 0.65rem;">⌘K</kbd>
+        </button>
         <button class="btn btn-sm btn-outline theme-toggle-btn">
           Dark Mode
         </button>
@@ -922,6 +925,7 @@
         openUserProfileModal,
       } from "./js/ui-utils.js";
       import { initLiveKanbanShowcase } from "./js/live-kanban-showcase.js";
+      import { initCommandPalette, openCommandPalette } from "./js/command-palette.js";
 
       let isSignUpMode = false;
       let cardDeckIndex = 0;
@@ -929,6 +933,10 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
+        initCommandPalette();
+
+        const cmdBtn = document.getElementById("nav-cmd-hub-btn");
+        if (cmdBtn) cmdBtn.onclick = () => openCommandPalette();
         initLiveKanbanShowcase();
 
         // Zoho Sprints Style Hero Floating Cards Scroll Parallax & Convergence Engine
