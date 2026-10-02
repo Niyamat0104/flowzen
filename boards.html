@@ -30,9 +30,6 @@
       </a>
 
       <div class="flex items-center gap-3">
-        <button class="btn btn-sm btn-outline hidden-mobile" id="nav-cmd-hub-btn" title="Open Command Palette & Shortcuts (⌘K)">
-          <span style="font-size: 0.78rem;">⚡ Command</span> <kbd class="kbd-badge" style="font-size: 0.65rem;">⌘K</kbd>
-        </button>
         <button class="btn btn-sm btn-outline theme-toggle-btn">
           Dark Mode
         </button>
@@ -230,16 +227,13 @@
         exportBoardToCSV,
         generatePDFReport
       } from "./js/export-engine.js";
-      import { initCommandPalette, openCommandPalette } from "./js/command-palette.js";
+      import { initCommandPalette } from "./js/command-palette.js";
 
       let additionalTeamRows = [];
 
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
         initCommandPalette();
-
-        const cmdBtn = document.getElementById("nav-cmd-hub-btn");
-        if (cmdBtn) cmdBtn.onclick = () => openCommandPalette();
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
