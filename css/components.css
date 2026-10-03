@@ -1447,35 +1447,21 @@
   align-items: center;
   width: 100%;
   margin: 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
 elevenlabs-convai {
   width: 100%;
   max-width: 480px;
-  border-radius: 0px !important;
+  border-radius: 12px !important;
 }
 
-.voice-visualizer-box {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.tour-chapter-card:hover {
-  border-color: #4F46E5 !important;
-  box-shadow: 4px 4px 0px #000 !important;
-}
-
-.quick-ask-btn {
-  font-size: 0.78rem !important;
-  padding: 4px 10px !important;
-  border-radius: 0px !important;
-}
-
-.quick-ask-btn:hover {
-  background: #4F46E5 !important;
+.modal-close:hover {
+  background: var(--primary) !important;
   color: #FFFFFF !important;
   border-color: #000 !important;
+  transform: rotate(90deg);
 }
 
 

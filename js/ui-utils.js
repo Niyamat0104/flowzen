@@ -166,7 +166,7 @@ export function openUserProfileModal(user, updateUserProfileFn) {
   openModal('user-profile-modal');
 }
 
-// Setup Modal backdrop click handlers globally
+// Setup Modal backdrop and dynamic close button click handlers globally
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', (e) => {
@@ -177,13 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.modal-close, [data-close-modal]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const modal = btn.closest('.modal-backdrop');
+  // Global event delegation for all modal close triggers (static & dynamic)
+  document.addEventListener('click', (e) => {
+    const closeBtn = e.target.closest('.modal-close, [data-close-modal]');
+    if (closeBtn) {
+      e.preventDefault();
+      const modal = closeBtn.closest('.modal-backdrop');
       if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
       }
-    });
+    }
   });
 });
