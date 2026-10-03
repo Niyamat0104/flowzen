@@ -6,6 +6,7 @@
  */
 
 import { speakText, stopSpeech } from './elevenlabs-voice.js';
+import { openCommandPalette, closeCommandPalette } from './command-palette.js';
 
 let isTourActive = false;
 let isTourPaused = false;
@@ -16,11 +17,10 @@ export const DEMO_STEPS = [
   {
     id: 'kanban_overview',
     title: '1. Executive Kanban Overview',
-    selector: '.hero-showcase-container, .board-container, #circular-hub',
-    speech: 'Welcome to the FlowZen live guided tour! Notice our executive Kanban board layout featuring To Do, In Progress, Review, and Done columns with real-time state synchronization.',
-    duration: 7000,
+    selector: '.hero-showcase-container, #kanban-board-container, .board-container, #circular-hub',
+    speech: 'Welcome to FlowZen! Here is our executive Kanban layout featuring real-time collaborative columns—To Do, In Progress, Review, and Done—with instant state sync.',
     action: (step) => {
-      const target = document.querySelector(step.selector) || document.querySelector('header');
+      const target = document.querySelector(step.selector) || document.querySelector('.navbar') || document.body;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightElement(target);
@@ -30,11 +30,13 @@ export const DEMO_STEPS = [
   {
     id: 'risk_scoring',
     title: '2. Dynamic Task Risk Scoring (0–100)',
-    selector: '.bento-grid, .hero-floating-card, [data-risk]',
-    speech: 'FlowZen evaluates deadline pressure, priority, and estimated hours to calculate a dynamic 0 to 100 Risk Score for every task. High risk tasks are highlighted in red for immediate attention.',
-    duration: 8000,
+    selector: '.hero-float-left, .task-card[data-risk], .bento-grid, [data-risk]',
+    speech: 'FlowZen evaluates deadline pressure, priority, effort hours, and dependencies to compute a dynamic 0 to 100 Risk Score for every task. High risk items are flagged in red.',
     action: (step) => {
-      const target = document.querySelector('.hero-float-left') || document.querySelector(step.selector) || document.body;
+      const target = document.querySelector('.hero-float-left') 
+        || document.querySelector('.task-card') 
+        || document.querySelector(step.selector) 
+        || document.body;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightElement(target);
@@ -46,23 +48,40 @@ export const DEMO_STEPS = [
     title: '3. Multi-View Kanban, Calendar & Timeline',
     selector: '#view-mode-tabs, .bento-4, .hero-center-content',
     speech: 'Switch seamlessly between standard Kanban columns, an interactive Calendar view for deadline tracking, and a visual Gantt timeline for team milestones.',
-    duration: 7500,
     action: (step) => {
-      const target = document.querySelector(step.selector) || document.querySelector('.hero-center-content');
+      const target = document.querySelector('#view-mode-tabs') 
+        || document.querySelector('.hero-center-content') 
+        || document.querySelector(step.selector);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightElement(target);
+
+        // Try clicking view mode buttons if present on board.html
+        const calBtn = document.querySelector('[data-view="calendar"], #view-btn-calendar');
+        if (calBtn) {
+          setTimeout(() => calBtn.click(), 1500);
+          setTimeout(() => {
+            const timeBtn = document.querySelector('[data-view="timeline"], #view-btn-timeline');
+            if (timeBtn) timeBtn.click();
+          }, 3500);
+          setTimeout(() => {
+            const kanbanBtn = document.querySelector('[data-view="kanban"], #view-btn-board');
+            if (kanbanBtn) kanbanBtn.click();
+          }, 5500);
+        }
       }
     }
   },
   {
     id: 'live_stopwatch',
     title: '4. Live Focus Stopwatch & Velocity',
-    selector: '.hero-moving-clock-widget, #task-timer-display',
-    speech: 'Track focus time directly on tasks using built-in stopwatch timers. FlowZen compares estimated vs logged hours to compute effort velocity ratios.',
-    duration: 7000,
+    selector: '.hero-moving-clock-widget, #task-timer-display, .bento-6',
+    speech: 'Log focus hours effortlessly with built-in task timers. FlowZen compares estimated vs logged hours to compute effort velocity ratios for your team.',
     action: (step) => {
-      const target = document.querySelector('.hero-moving-clock-widget') || document.querySelector(step.selector);
+      const target = document.querySelector('.hero-moving-clock-widget') 
+        || document.querySelector('.timer-widget') 
+        || document.querySelector(step.selector) 
+        || document.body;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightElement(target);
@@ -71,15 +90,32 @@ export const DEMO_STEPS = [
   },
   {
     id: 'command_palette',
-    title: '5. Command Palette (⌘K) & Exports',
-    selector: '#hero-tutorial-btn, #nav-cmd-hub-btn',
-    speech: 'Press Command+K anytime to launch the Command Hub. Search tasks instantly, toggle dark or light mode, or export your entire workspace to JSON, CSV, or PDF summaries.',
-    duration: 8000,
+    title: '5. Command Palette (⌘K) & Data Exports',
+    selector: '#command-palette-modal, #hero-tutorial-btn, .hero-btn-glass-primary',
+    speech: 'Press Command+K or Control+K anytime to launch the Command Hub. Search tasks, switch themes, or export your workspace data to CSV spreadsheets and PDF executive reports.',
     action: (step) => {
-      const target = document.querySelector('.hero-btn-glass-primary') || document.body;
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        highlightElement(target);
+      // Programmatically trigger Command Palette on screen for demonstration
+      if (typeof openCommandPalette === 'function') {
+        openCommandPalette();
+        setTimeout(() => {
+          const input = document.getElementById('cmd-palette-input');
+          if (input) {
+            input.value = 'Risk Analysis Report';
+            input.dispatchEvent(new Event('input'));
+          }
+          const modal = document.getElementById('command-palette-modal');
+          if (modal) highlightElement(modal);
+        }, 400);
+
+        setTimeout(() => {
+          if (typeof closeCommandPalette === 'function') closeCommandPalette();
+        }, 5500);
+      } else {
+        const target = document.querySelector('.hero-btn-glass-primary') || document.body;
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightElement(target);
+        }
       }
     }
   }
@@ -126,10 +162,11 @@ function executeCurrentTourStep() {
       step.action(step);
     } catch (e) {
       console.warn('Tour action error:', e);
+      handleTourError(e);
     }
   }
 
-  // Play AI voice explanation
+  // Play AI voice explanation synchronized with step
   speakText(step.speech, () => {
     if (isTourActive && !isTourPaused) {
       stepTimeoutId = setTimeout(() => {
@@ -141,31 +178,12 @@ function executeCurrentTourStep() {
 }
 
 /**
- * Pause / Resume Live Demo
+ * Handle Tour Error Gracefully
  */
-export function togglePauseDemo() {
-  isTourPaused = !isTourPaused;
-  const pauseBtn = document.getElementById('tour-pause-btn');
-
-  if (isTourPaused) {
-    stopSpeech();
-    if (stepTimeoutId) clearTimeout(stepTimeoutId);
-    if (pauseBtn) pauseBtn.innerHTML = '▶️ Resume';
-    showTourCaption('Tour Paused. Click Resume to continue guided automation.');
-  } else {
-    if (pauseBtn) pauseBtn.innerHTML = '⏸️ Pause';
-    executeCurrentTourStep();
-  }
-}
-
-/**
- * Next Tour Step
- */
-export function nextTourStep() {
-  stopSpeech();
-  if (stepTimeoutId) clearTimeout(stepTimeoutId);
-  currentStepIndex = (currentStepIndex + 1) % DEMO_STEPS.length;
-  executeCurrentTourStep();
+function handleTourError(err) {
+  const msg = err.message || 'An unexpected action error occurred.';
+  showTourCaption(`⚠️ Notice: ${msg} - Continuing tour...`);
+  speakText(`Notice: ${msg}. Resuming guided tour.`);
 }
 
 /**
@@ -184,6 +202,34 @@ function handleTourKeydown(e) {
     e.preventDefault();
     stopLiveGuidedDemo();
   }
+}
+
+/**
+ * Pause / Resume Live Demo
+ */
+export function togglePauseDemo() {
+  isTourPaused = !isTourPaused;
+  const pauseBtn = document.getElementById('tour-pause-btn');
+
+  if (isTourPaused) {
+    stopSpeech();
+    if (stepTimeoutId) clearTimeout(stepTimeoutId);
+    if (pauseBtn) pauseBtn.innerHTML = '▶️ Resume';
+    showTourCaption('Tour Paused. Press Space or click Resume to continue.');
+  } else {
+    if (pauseBtn) pauseBtn.innerHTML = '⏸️ Pause';
+    executeCurrentTourStep();
+  }
+}
+
+/**
+ * Next Tour Step
+ */
+export function nextTourStep() {
+  stopSpeech();
+  if (stepTimeoutId) clearTimeout(stepTimeoutId);
+  currentStepIndex = (currentStepIndex + 1) % DEMO_STEPS.length;
+  executeCurrentTourStep();
 }
 
 /**
@@ -270,7 +316,7 @@ function createTourControlUI() {
     left: 50%;
     transform: translateX(-50%);
     z-index: 9999;
-    background: rgba(15, 23, 42, 0.92);
+    background: rgba(15, 23, 42, 0.94);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     color: #FFFFFF;
