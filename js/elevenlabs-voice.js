@@ -172,9 +172,14 @@ export function renderVoiceTutorialModalContent(containerEl) {
         <div id="elevenlabs-convai-container"></div>
       </div>
 
-      <div class="modal-footer" style="background: var(--bg-alt); border-top: 1px solid var(--color-border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+      <div class="modal-footer" style="background: var(--bg-alt); border-top: 1px solid var(--color-border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
         <button type="button" class="btn btn-outline" data-close-modal id="voice-tutorial-close-btn">Close</button>
-        <a href="boards.html" class="btn btn-primary" id="voice-tutorial-launch-btn">Launch Workspace</a>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary" id="start-guided-demo-btn" style="font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            ▶️ Start Live AI Tour
+          </button>
+          <a href="boards.html" class="btn btn-primary" id="voice-tutorial-launch-btn">Launch Workspace</a>
+        </div>
       </div>
     </div>
   `;
@@ -186,6 +191,17 @@ export function renderVoiceTutorialModalContent(containerEl) {
       closeModal('tutorial-modal');
     });
   });
+
+  const startTourBtn = containerEl.querySelector('#start-guided-demo-btn');
+  if (startTourBtn) {
+    startTourBtn.addEventListener('click', async () => {
+      closeModal('tutorial-modal');
+      const tourModule = await import('./live-demo-tour.js');
+      if (tourModule && typeof tourModule.startLiveGuidedDemo === 'function') {
+        tourModule.startLiveGuidedDemo();
+      }
+    });
+  }
 
   updateWidgetElement();
 }
