@@ -574,6 +574,9 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
     </div>
   </div>
 
+  <!-- Modal: Voice Tutorial Modal Container -->
+  <div class="modal-backdrop" id="tutorial-modal"></div>
+
   <!-- JS Modules Core App Initialization -->
   <script type="module">
     import { initAuth, getCurrentUser, logoutUser, updateUserProfile } from './js/auth.js';
@@ -587,10 +590,20 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
     import { openModal, closeModal, showToast, openUserProfileModal } from './js/ui-utils.js';
     import { exportBoardToJSON, exportBoardToCSV, generatePDFReport } from './js/export-engine.js';
     import { initCommandPalette } from './js/command-palette.js';
+    import { initElevenLabsVoice, renderVoiceTutorialModalContent, createFloatingVoicePill } from './js/elevenlabs-voice.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
       initCommandPalette();
+      initElevenLabsVoice();
+
+      createFloatingVoicePill(() => {
+        const tutorialModal = document.getElementById("tutorial-modal");
+        if (tutorialModal) {
+          renderVoiceTutorialModalContent(tutorialModal);
+          openModal("tutorial-modal");
+        }
+      });
 
       // Handle Back-Forward Cache (bfcache) to prevent freeze on browser back button
       window.addEventListener('pageshow', (e) => {

@@ -929,6 +929,7 @@
       } from "./js/ui-utils.js";
       import { initLiveKanbanShowcase } from "./js/live-kanban-showcase.js";
       import { initCommandPalette, openCommandPalette } from "./js/command-palette.js";
+      import { initElevenLabsVoice, renderVoiceTutorialModalContent, createFloatingVoicePill } from "./js/elevenlabs-voice.js";
 
       let isSignUpMode = false;
       let cardDeckIndex = 0;
@@ -937,8 +938,13 @@
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
         initCommandPalette();
+        initElevenLabsVoice();
 
         initLiveKanbanShowcase();
+
+        createFloatingVoicePill(() => {
+          openVoiceTutorialModal();
+        });
 
         // Zoho Sprints Style Hero Floating Cards Scroll Parallax & Convergence Engine
         const cardLeft = document.getElementById("parallax-card-left");
@@ -1186,17 +1192,22 @@
           });
         }
 
-        document
-          .getElementById("nav-tutorial-btn")
-          .addEventListener("click", () => {
+        function openVoiceTutorialModal() {
+          const tutorialModal = document.getElementById("tutorial-modal");
+          if (tutorialModal) {
+            renderVoiceTutorialModalContent(tutorialModal);
             openModal("tutorial-modal");
-          });
+          }
+        }
 
-        document
-          .getElementById("hero-tutorial-btn")
-          .addEventListener("click", () => {
-            openModal("tutorial-modal");
+        document.getElementById("nav-tutorial-btn")?.addEventListener("click", openVoiceTutorialModal);
+        document.getElementById("hero-tutorial-btn")?.addEventListener("click", openVoiceTutorialModal);
+        document.querySelectorAll("[href='#tutorial-modal']").forEach(el => {
+          el.addEventListener("click", (e) => {
+            e.preventDefault();
+            openVoiceTutorialModal();
           });
+        });
 
         document
           .getElementById("demo-quick-login-btn")

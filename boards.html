@@ -210,6 +210,9 @@
       </div>
     </div>
 
+    <!-- Modal: Voice Tutorial Modal Container -->
+    <div class="modal-backdrop" id="tutorial-modal"></div>
+
     <!-- JS Module Scripts -->
     <script type="module">
       import {
@@ -228,12 +231,22 @@
         generatePDFReport
       } from "./js/export-engine.js";
       import { initCommandPalette } from "./js/command-palette.js";
+      import { initElevenLabsVoice, renderVoiceTutorialModalContent, createFloatingVoicePill } from "./js/elevenlabs-voice.js";
 
       let additionalTeamRows = [];
 
       document.addEventListener("DOMContentLoaded", () => {
         initTheme();
         initCommandPalette();
+        initElevenLabsVoice();
+
+        createFloatingVoicePill(() => {
+          const tutorialModal = document.getElementById("tutorial-modal");
+          if (tutorialModal) {
+            renderVoiceTutorialModalContent(tutorialModal);
+            openModal("tutorial-modal");
+          }
+        });
 
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
