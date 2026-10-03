@@ -100,6 +100,7 @@ export function startLiveGuidedDemo() {
   document.body.style.overflow = '';
 
   createTourControlUI();
+  window.addEventListener('keydown', handleTourKeydown);
   executeCurrentTourStep();
 }
 
@@ -168,6 +169,24 @@ export function nextTourStep() {
 }
 
 /**
+ * Keyboard Navigation Listener during Live Demo Tour
+ */
+function handleTourKeydown(e) {
+  if (!isTourActive) return;
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    togglePauseDemo();
+  } else if (e.code === 'ArrowRight') {
+    e.preventDefault();
+    nextTourStep();
+  } else if (e.code === 'Escape') {
+    e.preventDefault();
+    stopLiveGuidedDemo();
+  }
+}
+
+/**
  * Stop & Exit Live Demo
  */
 export function stopLiveGuidedDemo() {
@@ -175,6 +194,8 @@ export function stopLiveGuidedDemo() {
   isTourPaused = false;
   stopSpeech();
   if (stepTimeoutId) clearTimeout(stepTimeoutId);
+
+  window.removeEventListener('keydown', handleTourKeydown);
 
   removeSpotlight();
 
