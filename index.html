@@ -1192,21 +1192,23 @@
           });
         }
 
-        function openVoiceTutorialModal() {
-          const tutorialModal = document.getElementById("tutorial-modal");
-          if (tutorialModal) {
-            renderVoiceTutorialModalContent(tutorialModal);
-            openModal("tutorial-modal");
+        async function launchDirectLiveTutorial(e) {
+          if (e) e.preventDefault();
+          try {
+            demoQuickLogin();
+          } catch (err) {
+            console.warn('Demo login note:', err);
+          }
+          const tourModule = await import('./js/live-demo-tour.js');
+          if (tourModule && typeof tourModule.startLiveGuidedDemo === 'function') {
+            tourModule.startLiveGuidedDemo();
           }
         }
 
-        document.getElementById("nav-tutorial-btn")?.addEventListener("click", openVoiceTutorialModal);
-        document.getElementById("hero-tutorial-btn")?.addEventListener("click", openVoiceTutorialModal);
+        document.getElementById("nav-tutorial-btn")?.addEventListener("click", launchDirectLiveTutorial);
+        document.getElementById("hero-tutorial-btn")?.addEventListener("click", launchDirectLiveTutorial);
         document.querySelectorAll("[href='#tutorial-modal']").forEach(el => {
-          el.addEventListener("click", (e) => {
-            e.preventDefault();
-            openVoiceTutorialModal();
-          });
+          el.addEventListener("click", launchDirectLiveTutorial);
         });
 
         document

@@ -240,11 +240,10 @@
         initCommandPalette();
         initElevenLabsVoice();
 
-        createFloatingVoicePill(() => {
-          const tutorialModal = document.getElementById("tutorial-modal");
-          if (tutorialModal) {
-            renderVoiceTutorialModalContent(tutorialModal);
-            openModal("tutorial-modal");
+        createFloatingVoicePill(async () => {
+          const tourModule = await import("./js/live-demo-tour.js");
+          if (tourModule && typeof tourModule.startLiveGuidedDemo === "function") {
+            tourModule.startLiveGuidedDemo();
           }
         });
 
