@@ -232,6 +232,7 @@
       } from "./js/export-engine.js";
       import { initCommandPalette } from "./js/command-palette.js";
       import { initElevenLabsVoice, renderVoiceTutorialModalContent, createFloatingVoicePill } from "./js/elevenlabs-voice.js";
+      import { startLiveGuidedDemo } from "./js/live-demo-tour.js";
 
       let additionalTeamRows = [];
 
@@ -240,11 +241,8 @@
         initCommandPalette();
         initElevenLabsVoice();
 
-        createFloatingVoicePill(async () => {
-          const tourModule = await import("./js/live-demo-tour.js");
-          if (tourModule && typeof tourModule.startLiveGuidedDemo === "function") {
-            tourModule.startLiveGuidedDemo();
-          }
+        createFloatingVoicePill(() => {
+          startLiveGuidedDemo();
         });
 
         window.addEventListener("pageshow", (e) => {

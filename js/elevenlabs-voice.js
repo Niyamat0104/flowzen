@@ -28,6 +28,63 @@ export function loadElevenLabsScript() {
   });
 }
 
+let isVoicePlaying = false;
+let currentUtterance = null;
+
+/**
+ * Native Speech Synthesis Voice Engine for Tour Narration & Q&A
+ */
+export function speakText(text, onEndCallback = null) {
+  stopSpeech();
+
+  if (!('speechSynthesis' in window)) {
+    console.warn('Speech synthesis not supported.');
+    if (onEndCallback) onEndCallback();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.98;
+  utterance.pitch = 1.0;
+
+  const voices = window.speechSynthesis.getVoices();
+  const selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel'))) || voices.find(v => v.lang.startsWith('en'));
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+  }
+
+  isVoicePlaying = true;
+  currentUtterance = utterance;
+
+  utterance.onend = () => {
+    isVoicePlaying = false;
+    currentUtterance = null;
+    if (onEndCallback) onEndCallback();
+  };
+
+  utterance.onerror = (err) => {
+    console.warn('Speech synthesis note:', err);
+    isVoicePlaying = false;
+    currentUtterance = null;
+    if (onEndCallback) onEndCallback();
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * Stop Active Speech Playback
+ */
+export function stopSpeech() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  isVoicePlaying = false;
+  currentUtterance = null;
+}
+
 /**
  * Get Saved ElevenLabs Agent ID
  */

@@ -591,17 +591,15 @@ Type any question above or click a suggestion pill to inspect risk scores (0-100
     import { exportBoardToJSON, exportBoardToCSV, generatePDFReport } from './js/export-engine.js';
     import { initCommandPalette } from './js/command-palette.js';
     import { initElevenLabsVoice, renderVoiceTutorialModalContent, createFloatingVoicePill } from './js/elevenlabs-voice.js';
+    import { startLiveGuidedDemo } from './js/live-demo-tour.js';
 
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
       initCommandPalette();
       initElevenLabsVoice();
 
-      createFloatingVoicePill(async () => {
-        const tourModule = await import("./js/live-demo-tour.js");
-        if (tourModule && typeof tourModule.startLiveGuidedDemo === "function") {
-          tourModule.startLiveGuidedDemo();
-        }
+      createFloatingVoicePill(() => {
+        startLiveGuidedDemo();
       });
 
       // Handle Back-Forward Cache (bfcache) to prevent freeze on browser back button
