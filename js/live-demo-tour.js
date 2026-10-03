@@ -17,16 +17,10 @@ let stepTimeoutId = null;
 export const DEMO_STEPS = [
   {
     id: 'kanban_overview',
-    title: '1. Executive Kanban Overview',
-    selector: '.hero-showcase-container, #kanban-board-container, .board-container, #circular-hub',
-    speech: 'Welcome to FlowZen! Here is our executive Kanban layout featuring real-time collaborative columns—To Do, In Progress, Review, and Done—with instant state sync.',
+    title: '1. Executive Kanban Board Overview',
+    selector: '.board-container, #kanban-board-container, .hero-showcase-container',
+    speech: 'Welcome to FlowZen! Notice our executive Kanban board layout featuring To Do, In Progress, Review, and Done columns with real-time state synchronization.',
     action: (step) => {
-      try {
-        demoQuickLogin();
-      } catch (e) {
-        console.warn('Demo login note:', e);
-      }
-
       const target = document.querySelector(step.selector) || document.querySelector('.navbar') || document.body;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -37,11 +31,11 @@ export const DEMO_STEPS = [
   {
     id: 'risk_scoring',
     title: '2. Dynamic Task Risk Scoring (0–100)',
-    selector: '.hero-float-left, .task-card[data-risk], .bento-grid, [data-risk]',
-    speech: 'FlowZen evaluates deadline pressure, priority, effort hours, and dependencies to compute a dynamic 0 to 100 Risk Score for every task. High risk items are flagged in red.',
+    selector: '.task-card[data-risk], .hero-float-left, [data-risk]',
+    speech: 'FlowZen evaluates deadline pressure, priority, effort hours, and dependencies to compute a dynamic 0 to 100 Risk Score for every task. High risk items are highlighted in red for immediate attention.',
     action: (step) => {
-      const target = document.querySelector('.hero-float-left') 
-        || document.querySelector('.task-card') 
+      const target = document.querySelector('.task-card[data-risk]') 
+        || document.querySelector('.hero-float-left') 
         || document.querySelector(step.selector) 
         || document.body;
       if (target) {
@@ -53,39 +47,40 @@ export const DEMO_STEPS = [
   {
     id: 'multi_view',
     title: '3. Multi-View Kanban, Calendar & Timeline',
-    selector: '#view-mode-tabs, .bento-4, .hero-center-content',
+    selector: '#view-mode-tabs, .view-mode-switch, .hero-center-content',
     speech: 'Switch seamlessly between standard Kanban columns, an interactive Calendar view for deadline tracking, and a visual Gantt timeline for team milestones.',
     action: (step) => {
       const target = document.querySelector('#view-mode-tabs') 
-        || document.querySelector('.hero-center-content') 
+        || document.querySelector('.view-mode-switch') 
         || document.querySelector(step.selector);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightElement(target);
 
+        // Click view mode buttons dynamically if on board.html
         const calBtn = document.querySelector('[data-view="calendar"], #view-btn-calendar');
         if (calBtn) {
-          setTimeout(() => calBtn.click(), 1500);
+          setTimeout(() => calBtn.click(), 1200);
           setTimeout(() => {
             const timeBtn = document.querySelector('[data-view="timeline"], #view-btn-timeline');
             if (timeBtn) timeBtn.click();
-          }, 3500);
+          }, 3200);
           setTimeout(() => {
             const kanbanBtn = document.querySelector('[data-view="kanban"], #view-btn-board');
             if (kanbanBtn) kanbanBtn.click();
-          }, 5500);
+          }, 5200);
         }
       }
     }
   },
   {
     id: 'live_stopwatch',
-    title: '4. Live Focus Stopwatch & Velocity',
-    selector: '.hero-moving-clock-widget, #task-timer-display, .bento-6',
+    title: '4. Live Focus Stopwatch & Time Tracking',
+    selector: '#task-timer-display, .hero-moving-clock-widget, .timer-widget',
     speech: 'Log focus hours effortlessly with built-in task timers. FlowZen compares estimated vs logged hours to compute effort velocity ratios for your team.',
     action: (step) => {
-      const target = document.querySelector('.hero-moving-clock-widget') 
-        || document.querySelector('.timer-widget') 
+      const target = document.querySelector('#task-timer-display') 
+        || document.querySelector('.hero-moving-clock-widget') 
         || document.querySelector(step.selector) 
         || document.body;
       if (target) {
@@ -97,8 +92,8 @@ export const DEMO_STEPS = [
   {
     id: 'command_palette',
     title: '5. Command Palette (⌘K) & Data Exports',
-    selector: '#command-palette-modal, #hero-tutorial-btn, .hero-btn-glass-primary',
-    speech: 'Press Command+K or Control+K anytime to launch the Command Hub. Search tasks, switch themes, or export your workspace data to CSV spreadsheets and PDF executive reports.',
+    selector: '#command-palette-modal, #nav-cmd-hub-btn, .hero-btn-glass-primary',
+    speech: 'Press Command+K or Control+K anytime to launch the Command Hub. Search tasks, switch dark or light themes, or export your workspace data to CSV spreadsheets and PDF executive reports.',
     action: (step) => {
       if (typeof openCommandPalette === 'function') {
         openCommandPalette();
@@ -114,7 +109,7 @@ export const DEMO_STEPS = [
 
         setTimeout(() => {
           if (typeof closeCommandPalette === 'function') closeCommandPalette();
-        }, 5500);
+        }, 5200);
       } else {
         const target = document.querySelector('.hero-btn-glass-primary') || document.body;
         if (target) {
@@ -130,11 +125,19 @@ export const DEMO_STEPS = [
  * Start Live Guided Demo Engine
  */
 export function startLiveGuidedDemo() {
-  if (isTourActive) return;
+  // Force clean reset of any existing tour state
+  stopLiveGuidedDemo();
 
   isTourActive = true;
   isTourPaused = false;
   currentStepIndex = 0;
+
+  // Auto-login to Demo Account
+  try {
+    demoQuickLogin();
+  } catch (e) {
+    console.warn('Demo login note:', e);
+  }
 
   // Close any open modals to reveal page background
   document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
@@ -184,7 +187,7 @@ function executeCurrentTourStep() {
  */
 function handleTourError(err) {
   const msg = err.message || 'An unexpected action error occurred.';
-  showTourCaption(`⚠️ Notice: ${msg} - Continuing tour...`);
+  showTourCaption(`⚠️ Notice: ${msg} - Resuming tour...`);
   speakText(`Notice: ${msg}. Resuming guided tour.`);
 }
 
@@ -260,14 +263,24 @@ export function stopLiveGuidedDemo() {
 function completeLiveGuidedDemo() {
   stopSpeech();
   removeSpotlight();
-  showTourCaption('🎉 Live AI Guided Tour Complete! Launching Demo Workspace...');
 
-  speakText('Live guided tour complete! Launching demo workspace.', () => {
-    setTimeout(() => {
-      stopLiveGuidedDemo();
-      window.location.href = 'board.html?id=board_demo_1';
-    }, 1500);
-  });
+  // If on index.html, redirect to demo board to continue live demo!
+  if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
+    showTourCaption('🎉 Landing Page Tour Complete! Launching Live Demo Workspace...');
+    speakText('Landing page tour complete! Launching live demo workspace now.', () => {
+      setTimeout(() => {
+        stopLiveGuidedDemo();
+        window.location.href = 'board.html?id=board_demo_1&autotour=true';
+      }, 1200);
+    });
+  } else {
+    showTourCaption('🎉 Live Workspace AI Tour Complete! Enjoy building in FlowZen.');
+    speakText('Live workspace tour complete! You are ready to start building in FlowZen.', () => {
+      setTimeout(() => {
+        stopLiveGuidedDemo();
+      }, 1500);
+    });
+  }
 }
 
 /**
@@ -462,3 +475,15 @@ function escapeHTML(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+/**
+ * Auto-trigger tour if URL parameter ?autotour=true is present
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('autotour') === 'true') {
+    setTimeout(() => {
+      startLiveGuidedDemo();
+    }, 600);
+  }
+});
